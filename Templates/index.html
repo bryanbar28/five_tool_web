@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>5-Tool AI Employee Assessment</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        .tool { margin: 20px 0; }
+        textarea, input { width: 300px; }
+        button { margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>5-Tool AI Employee Assessment</h1>
+    <p>Enter data for each tool to get AI-generated outputs.</p>
+
+    <div class="tool">
+        <h2>Tool 1: Task Prioritizer</h2>
+        <textarea id="tool1_input" placeholder="Enter tasks (e.g., Finish report, Train team)"></textarea>
+        <button onclick="runTool('tool1')">Run</button>
+        <p id="tool1_output"></p>
+    </div>
+
+    <div class="tool">
+        <h2>Tool 2: Feedback Analyzer</h2>
+        <textarea id="tool2_input" placeholder="Enter feedback (e.g., Great work)"></textarea>
+        <button onclick="runTool('tool2')">Run</button>
+        <p id="tool2_output"></p>
+    </div>
+
+    <div class="tool">
+        <h2>Tool 3: Goal Setter</h2>
+        <input type="text" id="tool3_input" placeholder="Enter role (e.g., Software Engineer)">
+        <button onclick="runTool('tool3')">Run</button>
+        <p id="tool3_output"></p>
+    </div>
+
+    <div class="tool">
+        <h2>Tool 4: Performance Summarizer</h2>
+        <textarea id="tool4_input" placeholder="Enter performance report"></textarea>
+        <button onclick="runTool('tool4')">Run</button>
+        <p id="tool4_output"></p>
+    </div>
+
+    <div class="tool">
+        <h2>Tool 5: Resource Recommender</h2>
+        <input type="text" id="tool5_input" placeholder="Enter skill gap (e.g., leadership)">
+        <button onclick="runTool('tool5')">Run</button>
+        <p id="tool5_output"></p>
+    </div>
+
+    <script>
+        async function runTool(tool) {
+            const input = document.getElementById(`${tool}_input`).value;
+            const response = await fetch(`/${tool}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ input: input })
+            });
+            const data = await response.json();
+            document.getElementById(`${tool}_output`).innerText = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+</html>
