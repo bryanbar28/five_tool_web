@@ -1,3 +1,5 @@
 .env
 *.pyc
 __pycache__/
+github-url.txt
+text.txt
