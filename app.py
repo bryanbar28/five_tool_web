@@ -1,33 +1,17 @@
 import streamlit as st
-import os
-from dotenv import load_dotenv
 from openai import OpenAI
 from supabase import create_client, Client
 import hashlib
 from datetime import datetime
 
-# Load environment variables (Cloud secrets first)
-print("Checking environment variables for Cloud secrets...")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+# Load secrets from Streamlit Cloud
+OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
+SUPABASE_URL = st.secrets["SUPABASE_URL"]
+SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 
-# Fallback to .env if running locally and no Cloud secrets
+# Check keys
 if not all([OPENAI_API_KEY, SUPABASE_URL, SUPABASE_KEY]):
-    print("No Cloud secrets found, falling back to .env...")
-    load_dotenv("C:/Users/bryan/Desktop/five_tool_web/.env")
-    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-    SUPABASE_URL = os.getenv("SUPABASE_URL")
-    SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-
-# Debug output
-print("OPENAI_API_KEY:", OPENAI_API_KEY)
-print("SUPABASE_URL:", SUPABASE_URL)
-print("SUPABASE_KEY:", SUPABASE_KEY)
-
-# Check keys after fallback
-if not all([OPENAI_API_KEY, SUPABASE_URL, SUPABASE_KEY]):
-    st.error("Missing API keys! Check OPENAI_API_KEY, SUPABASE_URL, and SUPABASE_KEY in Cloud secrets or local .env.")
+    st.error("Missing API keys! Check Streamlit secrets.")
     st.stop()
 
 try:
@@ -137,7 +121,6 @@ else:
     elif page == "💬 AI Chat & Ideal Employee":
         st.title("💬 AI Chat: Build Ideal 5-Tool Profile")
         st.write("Enter job descriptions, resumes, etc., to build an ideal employee profile. Feature coming soon...")
-        # Add full implementation later
 
     elif page == "📂 Repository ($9.99)":
         st.title("📂 Repository")
@@ -194,7 +177,6 @@ else:
             except Exception as e:
                 st.error(f"Analysis error: {str(e)}")
 
-    # Stubs for other features
     else:
         st.title(page)
         st.write("Feature coming soon...")
