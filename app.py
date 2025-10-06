@@ -6,14 +6,30 @@ from supabase import create_client, Client
 import hashlib
 from datetime import datetime
 
-# Load environment variables
-load_dotenv()
+# Load environment variables (Cloud secrets first)
+print("Checking environment variables for Cloud secrets...")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+# Fallback to .env if running locally and no Cloud secrets
 if not all([OPENAI_API_KEY, SUPABASE_URL, SUPABASE_KEY]):
-    st.error("Missing API keys in .env file! Check OPENAI_API_KEY, SUPABASE_URL, and SUPABASE_KEY.")
+    print("No Cloud secrets found, falling back to .env...")
+    load_dotenv("C:/Users/bryan/Desktop/five_tool_web/.env")
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    SUPABASE_URL = os.getenv("SUPABASE_URL")
+    SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+# Debug output
+print("OPENAI_API_KEY:", OPENAI_API_KEY)
+print("SUPABASE_URL:", SUPABASE_URL)
+print("SUPABASE_KEY:", SUPABASE_KEY)
+
+# Check keys after fallback
+if not all([OPENAI_API_KEY, SUPABASE_URL, SUPABASE_KEY]):
+    st.error("Missing API keys! Check OPENAI_API_KEY, SUPABASE_URL, and SUPABASE_KEY in Cloud secrets or local .env.")
     st.stop()
+
 try:
     client = OpenAI(api_key=OPENAI_API_KEY)
     supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
