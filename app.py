@@ -38,7 +38,6 @@ if "messages" not in st.session_state:
 # Login system
 def login():
     st.sidebar.title("Login")
-
     if st.session_state.reset_mode:
         st.sidebar.subheader("Reset Password")
         reset_email = st.sidebar.text_input("Registered Email", key="reset_email")
@@ -82,35 +81,89 @@ def login():
         if st.sidebar.button("Reset Password"):
             st.session_state.reset_mode = True
 
+# System prompts for AI in HR Consultant
+SYSTEM_PROMPTS = {
+    "diagnostic": "You are an AI in HR Consultant trained in the 5-Tool Framework...",
+    "coaching": "You are an AI in HR Consultant helping users unlock strengths...",
+    "hiring": "You are an AI in HR Consultant assessing candidates...",
+    "mna": "You are an AI in HR Consultant specializing in M&A..."
+}
+
 # Main app logic
 if not st.session_state.logged_in:
     login()
 else:
     st.sidebar.title("5-Tool Dashboard")
     pages = [
-        "🧠 Behavioral Strategist Chat",
+        "🤖 AI in HR Consultant",
         "🔧 5-Tool Analyzer",
-        "📂 Repository ($9.99)",
-        "🔄 360 Feedback",
-        "😓 Behavior Under Pressure",
-        "⚖️ Behavioral Calibration",
-        "⚠️ Toxicity Grid",
-        "📋 Hiring Rubric",
-        "👑 Leadership Calibration",
-        "✅ Leadership Eligibility",
-        "🎯 Risk-Sensitive Roles",
-        "🚨 SME Derailment",
-        "🧰 Deep-Research Framework",
-        "📊 SWOT 2.0 ($3.99)",
-        "📚 Book Reader ($5.99)",
-        "📰 Articles Uploader ($5.99)"
+        "🔄 360 Feedback"
     ]
     page = st.sidebar.selectbox("Select Feature", pages)
 
-    if page == "🔄 360 Feedback":
+    # Module 1: AI in HR Consultant
+    if page == "🤖 AI in HR Consultant":
+        st.title("🤖 AI in HR Consultant Chat")
+        st.caption("Talk to your AI HR consultant. Diagnose, recalibrate, and strategize.")
+        mode = st.selectbox("Choose your strategic lens:", list(SYSTEM_PROMPTS.keys()))
+        st.session_state["mode"] = mode
+
+        for msg in st.session_state.messages:
+            with st.chat_message(msg["role"]):
+                st.markdown(msg["content"])
+
+        user_input = st.chat_input("Ask your consultant anything...")
+        if user_input:
+            st.session_state.messages.append({"role": "user", "content": user_input})
+            messages = [{"role": "system", "content": SYSTEM_PROMPTS[mode]}] + st.session_state.messages
+            response = client.chat.completions.create(
+                model="gpt-4",
+                messages=messages,
+                temperature=0.7
+            )
+            assistant_reply = response.choices[0].message.content
+            st.session_state.messages.append({"role": "assistant", "content": assistant_reply})
+            with st.chat_message("assistant"):
+                st.markdown(assistant_reply)
+
+    # Module 2: 5-Tool Analyzer
+    elif page == "🔧 5-Tool Analyzer":
+        st.title("🔧 5-Tool Employee Framework Analyzer")
+        main_input = st.text_area("📄 Role or Resume Context", height=200)
+        notes_input = st.text_area("📝 Additional Notes or Updates", height=150)
+        if st.button("🚀 Generate Profile"):
+            if not main_input:
+                st.warning("Please enter role or resume context.")
+            else:
+                full_context = f"{main_input}\n\nAdditional Notes:\n{notes_input}"
+                prompt = f"""
+                You are an AI in HR Consultant using the 5-Tool Framework. Score the individual from 1–5 on:
+                - Speed
+                - Ownership
+                - Fielding
+                - Hitting for Average
+                - Arm Strength
+
+                Then interpret the profile using Bryan Barrera’s leadership criteria. Input: {full_context}
+                """
+                completion = client.chat.completions.create(
+                    model="gpt-4",
+                    messages=[{"role": "user", "content": prompt}]
+                )
+                result = completion.choices[0].message.content
+                st.session_state.last_analysis = result
+                st.markdown("### 🧠 Ideal 5-Tool Profile")
+                st.markdown(result)
+        if 'last_analysis' in st.session_state:
+            st.markdown("---")
+            st.markdown("### 🗂️ Last Generated Profile")
+            st.markdown(st.session_state.last_analysis)
+
+    # Module 3: 360 Feedback
+    elif page == "🔄 360 Feedback":
         st.title("🔄 360 Degree Feedback (5-Tool Style)")
 
-        # Section 1: 360 Scale Reference
+        # Section 1: Scale Reference
         st.markdown("### 1️⃣ 360 Scale Reference")
         st.markdown("""
         | **Tool** | **Needs Development (1–2)** | **Effective (3–4)** | **Exceptional (5)** | **Behavioral Drift Triggers** |
@@ -142,7 +195,7 @@ else:
             else:
                 full_input = f"{role_context}\n\nAdditional Notes:\n{notes_context}"
                 scoring_prompt = f"""
-                You are a behavioral strategist using the 5-Tool Framework to assess 360-degree feedback.
+                You are an AI in HR Consultant using the 5-Tool Framework to assess 360-degree feedback.
                 Score the individual from 1–5 on:
                 - Speed
                 - Power
@@ -171,7 +224,7 @@ else:
 
         # Section 4: AI Chat on Other 360 Models
         st.markdown("### 4️⃣ Ask About Other 360 Models")
-        chat_query = st.text_input("Ask your strategist about other feedback models...")
+        chat_query = st.text_input("Ask your consultant about other feedback models...")
         if chat_query:
             chat_prompt = f"""
             A user asked: "{chat_query}"
@@ -182,7 +235,7 @@ else:
                 messages=[{"role": "user", "content": chat_prompt}],
                 temperature=0.7
             )
-            st.markdown("#### 🧠 Strategist Response")
+            st.markdown("#### 🧠 Consultant Response")
             st.markdown(chat_response.choices[0].message.content)
 
         # Section 5: Scorecard Generator
@@ -200,7 +253,3 @@ else:
             )
             st.markdown("### 📊 Scorecard")
             st.markdown(score_response.choices[0].message.content)
-
-    else:
-        st.title(page)
-        st.info("This module is coming soon. Stay tuned.")
