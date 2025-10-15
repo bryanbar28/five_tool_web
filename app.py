@@ -120,7 +120,7 @@ else:
     elif page == "🔧 5-Tool Analyzer":
         st.title("🔧 5-Tool Employee Framework Analyzer")
         st.markdown("### 📘 Reference: Introduction into the 5 Tool Employee Framework")
-        st.markdown(\"\"\"
+        st.markdown("""
         **5 Tool Baseball Player**
         1. Hitting for Average – Consistently making contact and getting on base.
         2. Hitting for Power – Ability to drive the ball for extra bases or home runs.
