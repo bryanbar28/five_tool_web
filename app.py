@@ -92,8 +92,7 @@ else:
     pages = [
         "🤖 AI in HR Consultant",
         "🔧 5-Tool Analyzer",
-        "🔄 360 Feedback"
-    ]
+        "🔄 360 Feedback"]
     page = st.sidebar.selectbox("Select Feature", pages)
     if page == "🤖 AI in HR Consultant":
         st.title("🤖 AI in HR Consultant Chat")
