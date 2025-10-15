@@ -84,10 +84,10 @@ def login():
 
 # Strategist modes
 SYSTEM_PROMPTS = {
-    "diagnostic": "You are a behavioral strategist trained in the 5-Tool Framework...",
-    "coaching": "You are a performance coach using the 5-Tool Framework...",
-    "hiring": "You are a hiring strategist using the 5-Tool Framework...",
-    "mna": "You are a behavioral strategist specializing in Mergers & Acquisitions..."
+    "diagnostic": "You are a behavioral strategist trained in the 5-Tool Framework. You diagnose performance drift, recalibrate strengths under pressure, and guide users through leadership, hiring, and cultural alignment. You speak plainly, challenge assumptions, and offer actionable insights tailored to high-stakes roles.",
+    "coaching": "You are a performance coach using the 5-Tool Framework. You help users unlock strengths, overcome drift, and build leadership capacity under pressure. You ask sharp questions and offer strategic nudges.",
+    "hiring": "You are a hiring strategist using the 5-Tool Framework. You assess candidates for resilience, adaptability, and strategic alignment. You help users craft interview questions and decode behavioral signals.",
+    "mna": "You are a behavioral strategist specializing in Mergers & Acquisitions. You use the 5-Tool Framework to compare branches, decode team dynamics, and identify high-performing sites. You analyze resumes, reviews, and demographic patterns to uncover behavioral truths—like how top performers often come from nontraditional backgrounds, working multiple jobs while pursuing online education. You help executives replicate success across failing sites by surfacing what works, where, and why."
 }
 
 # Main app logic
@@ -115,11 +115,88 @@ else:
     ]
     page = st.sidebar.selectbox("Select Feature", pages)
 
-    if page == "🔄 360 Feedback":
+    if page == "🧠 Behavioral Strategist Chat":
+        st.title("🧠 5-Tool Behavioral Intelligence Chat")
+        st.caption("Talk to your behavioral strategist. Diagnose, recalibrate, and strategize.")
+        mode = st.selectbox("Choose your strategic lens:", list(SYSTEM_PROMPTS.keys()))
+        st.session_state["mode"] = mode
+
+        for msg in st.session_state.messages:
+            with st.chat_message(msg["role"]):
+                st.markdown(msg["content"])
+
+        user_input = st.chat_input("Ask your strategist anything...")
+        if user_input:
+            st.session_state.messages.append({"role": "user", "content": user_input})
+            messages = [{"role": "system", "content": SYSTEM_PROMPTS[mode]}] + st.session_state.messages
+            response = client.chat.completions.create(
+                model="gpt-4",
+                messages=messages,
+                temperature=0.7
+            )
+            assistant_reply = response.choices[0].message.content
+            st.session_state.messages.append({"role": "assistant", "content": assistant_reply})
+            with st.chat_message("assistant"):
+                st.markdown(assistant_reply)    elif page == "🔧 5-Tool Analyzer":
+        st.title("🔧 5-Tool Employee Framework Analyzer")
+        main_input = st.text_area("📄 Role or Resume Context", height=200)
+        notes_input = st.text_area("📝 Additional Notes or Updates", height=150)
+        if st.button("🚀 Generate Profile"):
+            if not main_input:
+                st.warning("Please enter role or resume context.")
+            else:
+                full_context = f"{main_input}\n\nAdditional Notes:\n{notes_input}"
+                prompt = f"""
+                You are a behavioral strategist using the 5-Tool Framework. Score the individual from 1–5 on:
+                - Speed
+                - Ownership
+                - Fielding
+                - Hitting for Average
+                - Arm Strength
+
+                Then interpret the profile using Bryan Barrera’s leadership criteria. Input: {full_context}
+                """
+                completion = client.chat.completions.create(
+                    model="gpt-4",
+                    messages=[{"role": "user", "content": prompt}]
+                )
+                result = completion.choices[0].message.content
+                st.session_state.last_analysis = result
+                st.markdown("### 🧠 Ideal 5-Tool Profile")
+                st.markdown(result)
+        if 'last_analysis' in st.session_state:
+            st.markdown("---")
+            st.markdown("### 🗂️ Last Generated Profile")
+            st.markdown(st.session_state.last_analysis)
+
+    elif page == "📂 Repository ($9.99)":
+        st.title("📂 Repository")
+        if st.text_input("Enter access code ($9.99)", type="password") == "PAID999":
+            dept = st.text_input("Department")
+            pos = st.text_input("Position")
+            data_type = st.selectbox("Data Type", ["Job Desc", "Resume", "Review", "Interview", "Notes"])
+            content = st.text_area("Content")
+            if st.button("Save"):
+                supabase.table('repo').insert({
+                    'user_id': st.session_state.user_id,
+                    'department': dept,
+                    'position': pos,
+                    'data_type': data_type,
+                    'content': content,
+                    'timestamp': datetime.now().isoformat()
+                }).execute()
+                st.success("Saved!")
+            data = supabase.table('repo').select('*').eq('user_id', st.session_state.user_id).execute().data
+            for item in data:
+                st.markdown(f"**{item['department']} – {item['position']} ({item['data_type']})**")
+                st.markdown(item['content'])
+                st.markdown("---")
+
+    elif page == "🔄 360 Feedback":
         st.title("🔄 360 Degree Feedback (5-Tool Style)")
 
-        # 📊 Scoring Scale Reference
-        st.markdown("### 📊 Scoring Scale Reference")
+        # Section 1: Scoring Scale Reference
+        st.markdown("### 1️⃣ Scoring Scale Reference")
         st.markdown("""
         | **Total Score** | **Interpretation** | **Action** |
         |----------------|--------------------|------------|
@@ -128,17 +205,24 @@ else:
         | **Below 15** | High-Risk (90-Day Alert): Likely showing behavioral drift (e.g., blaming others, inconsistency, divisiveness). Risks team disruption. | Do not promote. Address drift directly. Consider role change or exit if drift is chronic. |
         """)
 
-        # 📝 Input Section
-        st.markdown("### 📝 Feedback Context")
-        role_context = st.text_area("📄 Role or Resume Context", height=200)
-        notes_context = st.text_area("📝 Additional Notes or Updates", height=150)
+        # Section 2: Scoring Breakdown
+        st.markdown("### 2️⃣ Scoring Breakdown Rubric")
+        st.markdown("""
+        | **Tool** | **Definition** | **Scoring Guidance** |
+        |---------|----------------|-----------------------|
+        | Speed | Cognitive & Behavioral Agility | 1 = Rigid, 5 = Adaptive |
+        | Ownership | Initiative & Decisiveness | 1 = Passive, 5 = Proactive |
+        | Fielding | Strategic Perception & Sensemaking | 1 = Reactive, 5 = Anticipatory |
+        | Hitting for Average | Reliability, Rigor & Execution | 1 = Inconsistent, 5 = Dependable |
+        | Arm Strength | Reach & Influence | 1 = Isolated, 5 = Impactful |
+        """)
 
-        # 🤖 Strategist Chat
-        st.markdown("### 🤖 Ask About Other 360 Models")
+        # Section 3: Ask About Other Models
+        st.markdown("### 3️⃣ Ask About Other 360 Models")
         chat_query = st.text_input("Ask your strategist about other feedback models...")
         if chat_query:
             chat_prompt = f"""
-            You are a behavioral strategist trained in the 5-Tool Framework. A user asked: "{chat_query}"
+            A user asked: "{chat_query}"
             Recommend other 360-degree feedback models (e.g., Bracken, Church, Korn Ferry) and explain how they compare to the 5-Tool approach.
             """
             chat_response = client.chat.completions.create(
@@ -149,8 +233,10 @@ else:
             st.markdown("#### 🧠 Strategist Response")
             st.markdown(chat_response.choices[0].message.content)
 
-        # 🚀 Generate Button
-        st.markdown("### 🚀 Generate 5-Tool Feedback Profile")
+        # Generate Button
+        st.markdown("### 🚀 Generate Feedback Profile")
+        role_context = st.text_area("📄 Role or Resume Context", height=200)
+        notes_context = st.text_area("📝 Additional Notes or Updates", height=150)
         if st.button("Generate Feedback Profile"):
             if not role_context:
                 st.warning("Please enter role or resume context.")
@@ -183,8 +269,25 @@ else:
                 st.markdown("### 🧠 Feedback Profile")
                 st.markdown(result)
 
-        # 🗂️ Last Generated Profile
         if 'last_feedback' in st.session_state:
             st.markdown("---")
             st.markdown("### 🗂️ Last Generated Feedback")
             st.markdown(st.session_state.last_feedback)
+
+    # Scaffold remaining pages
+    elif page in [
+        "😓 Behavior Under Pressure",
+        "⚖️ Behavioral Calibration",
+        "⚠️ Toxicity Grid",
+        "📋 Hiring Rubric",
+        "👑 Leadership Calibration",
+        "✅ Leadership Eligibility",
+        "🎯 Risk-Sensitive Roles",
+        "🚨 SME Derailment",
+        "🧰 Deep-Research Framework",
+        "📊 SWOT 2.0 ($3.99)",
+        "📚 Book Reader ($5.99)",
+        "📰 Articles Uploader ($5.99)"
+    ]:
+        st.title(page)
+        st.info("This module is coming soon. Stay tuned.")
