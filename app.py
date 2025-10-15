@@ -15,7 +15,6 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 def hash_password(pw):
     return hashlib.sha256(pw.encode()).hexdigest()
 
-# Disable text selection to protect proprietary content
 st.markdown("""
     <style>
     div[data-testid="stMarkdownContainer"] {
@@ -27,13 +26,13 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Session state
 if 'reset_mode' not in st.session_state:
     st.session_state.reset_mode = False
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 if "messages" not in st.session_state:
     st.session_state.messages = []
+
 def login():
     st.sidebar.title("Login")
     if st.session_state.reset_mode:
@@ -43,9 +42,7 @@ def login():
         if st.sidebar.button("Confirm Reset"):
             user = supabase.table('users').select('id').eq('email', reset_email).execute().data
             if user:
-                supabase.table('users').update({
-                    'password_hash': hash_password(new_password)
-                }).eq('email', reset_email).execute()
+                supabase.table('users').update({'password_hash': hash_password(new_password)}).eq('email', reset_email).execute()
                 st.sidebar.success("Password reset successful. Please log in.")
                 st.session_state.reset_mode = False
             else:
@@ -71,14 +68,12 @@ def login():
                 if existing:
                     st.sidebar.error("Email already registered")
                 else:
-                    supabase.table('users').insert({
-                        'email': email,
-                        'password_hash': hash_password(password)
-                    }).execute()
+                    supabase.table('users').insert({'email': email, 'password_hash': hash_password(password)}).execute()
                     st.sidebar.success("Registered! Please log in.")
         if st.sidebar.button("Reset Password"):
             st.session_state.reset_mode = True
-            SYSTEM_PROMPTS = {
+
+SYSTEM_PROMPTS = {
     "diagnostic": "You are an AI in HR Consultant trained in the 5-Tool Framework...",
     "coaching": "You are an AI in HR Consultant helping users unlock strengths...",
     "hiring": "You are an AI in HR Consultant assessing candidates...",
@@ -92,8 +87,11 @@ else:
     pages = [
         "🤖 AI in HR Consultant",
         "🔧 5-Tool Analyzer",
-        "🔄 360 Feedback"]
+        "🔄 360 Feedback"
+    ]
     page = st.sidebar.selectbox("Select Feature", pages)
+
+    # AI in HR Consultant
     if page == "🤖 AI in HR Consultant":
         st.title("🤖 AI in HR Consultant Chat")
         st.caption("Talk to your AI HR consultant. Diagnose, recalibrate, and strategize.")
@@ -117,7 +115,9 @@ else:
             st.session_state.messages.append({"role": "assistant", "content": assistant_reply})
             with st.chat_message("assistant"):
                 st.markdown(assistant_reply)
-                elif page == "🔧 5-Tool Analyzer":
+
+    # 5-Tool Analyzer
+    elif page == "🔧 5-Tool Analyzer":
         st.title("🔧 5-Tool Employee Framework Analyzer")
         st.markdown("### 📘 Reference: Introduction into the 5 Tool Employee Framework")
         st.markdown(\"\"\"
@@ -165,10 +165,10 @@ else:
             st.markdown("---")
             st.markdown("### 🗂️ Last Generated Profile")
             st.markdown(st.session_state.last_analysis)
-            elif page == "🔄 360 Feedback":
-        st.title("🔄 360 Degree Feedback (5-Tool Style)")
 
-        # Section 1: Scale Reference
+    # 360 Feedback
+    elif page == "🔄 360 Feedback":
+        st.title("🔄 360 Degree Feedback (5-Tool Style)")
         st.markdown("### 1️⃣ 360 Scale Reference")
         st.markdown("""
         | **Tool** | **Needs Development (1–2)** | **Effective (3–4)** | **Exceptional (5)** | **Behavioral Drift Triggers** |
@@ -180,7 +180,6 @@ else:
         | Arm Strength | Isolated or lacks influence | Builds trust and influence | Inspires and aligns teams | Withdrawal, lack of collaboration |
         """)
 
-        # Section 2: Scoring Breakdown
         st.markdown("### 2️⃣ Scoring Breakdown Rubric")
         st.markdown("""
         | **Total Score** | **Interpretation** | **Action** |
@@ -190,7 +189,6 @@ else:
         | **Below 15** | High-Risk: Likely showing behavioral drift | Address drift; consider role change or exit |
         """)
 
-        # Section 3: Generate Feedback Profile
         st.markdown("### 3️⃣ Generate Feedback Profile")
         role_context = st.text_area("📄 Role or Resume Context", height=200)
         notes_context = st.text_area("📝 Additional Notes or Updates", height=150)
@@ -227,7 +225,6 @@ else:
             st.markdown("### 🗂️ Last Generated Feedback")
             st.markdown(st.session_state.last_feedback)
 
-        # Section 4: AI Chat on Other 360 Models
         st.markdown("### 4️⃣ Ask About Other 360 Models")
         chat_query = st.text_input("Ask your consultant about other feedback models...")
         if chat_query:
@@ -243,7 +240,6 @@ else:
             st.markdown("#### 🧠 Consultant Response")
             st.markdown(chat_response.choices[0].message.content)
 
-        # Section 5: Scorecard Generator
         st.markdown("### 5️⃣ Generate Scorecard")
         score_input = st.text_area("Paste the feedback profile here to generate a scorecard")
         if st.button("Generate Scorecard"):
