@@ -86,11 +86,13 @@ def login():
 
 # Strategist modes
 SYSTEM_PROMPTS = {
-    "diagnostic": "You are a behavioral strategist trained in the 5-Tool Framework. You diagnose performance drift, recalibrate strengths under pressure, and guide users through leadership, hiring, and cultural alignment. You speak plainly, challenge assumptions, and offer actionable insights tailored to high-stakes roles.",
-    "coaching": "You are a performance coach using the 5-Tool Framework. You help users unlock strengths, overcome drift, and build leadership capacity under pressure. You ask sharp questions and offer strategic nudges.",
-    "hiring": "You are a hiring strategist using the 5-Tool Framework. You assess candidates for resilience, adaptability, and strategic alignment. You help users craft interview questions and decode behavioral signals.",
-    "mna": "You are a behavioral strategist specializing in Mergers & Acquisitions. You use the 5-Tool Framework to compare branches, decode team dynamics, and identify high-performing sites. You analyze resumes, reviews, and demographic patterns to uncover behavioral truths—like how top performers often come from nontraditional backgrounds, working multiple jobs while pursuing online education. You help executives replicate success across failing sites by surfacing what works, where, and why."
-}# Main app logic
+    "diagnostic": "You are a behavioral strategist trained in the 5-Tool Framework...",
+    "coaching": "You are a performance coach using the 5-Tool Framework...",
+    "hiring": "You are a hiring strategist using the 5-Tool Framework...",
+    "mna": "You are a behavioral strategist specializing in Mergers & Acquisitions..."
+}
+
+# Main app logic
 if not st.session_state.logged_in:
     login()
 else:
@@ -149,22 +151,7 @@ else:
             else:
                 full_context = f"{main_input}\n\nAdditional Notes:\n{notes_input}"
                 prompt = f"""
-                You are a behavioral strategist advising a founder in the injection molding and medical device space.
-                They are recruiting a board member with 3% equity who will:
-                - Help secure ISO 13485 and FDA QSR certification
-                - Mentor the internal team on regulatory and operational excellence
-                - Act as a strategic consultant, not just a passive advisor
-                - Engage with professional communities like:
-                  - Society of Manufacturing Engineers (SME)
-                  - MedAccred (medical OEM quality consortium)
-                  - MedDevice, DeviceTalks, and similar forums
-                Using the 5-Tool Employee Framework:
-                - Hitting for Average: Technical competence, consistency
-                - Power: Strategic impact, decision-making
-                - Speed: Adaptability, quick learning
-                - Arm Strength: Teamwork, collaboration
-                - Fielding: Stress resilience, reliability
-                Analyze the ideal board member profile for this role. Score each tool 1–10. Include behavioral traits, strategic value, and drift risks. Use markdown formatting.
+                You are a behavioral strategist advising a founder in the injection molding and medical device space...
                 Input context: {full_context}
                 """
                 completion = client.chat.completions.create(
@@ -180,6 +167,36 @@ else:
             st.markdown("### 🗂️ Last Generated Profile")
             st.markdown(st.session_state.last_analysis)
 
+        st.markdown("---")
+        st.markdown("### 📘 5-Tool Framework Reference")
+        st.markdown("""
+        **Introduction into the 5 Tool Employee Framework**  
+        *An Interchangeable Model*
+
+        #### ⚾ 5 Tool Baseball Player
+        1. **Hitting for Average** – Consistently making contact and getting on base  
+        2. **Hitting for Power** – Ability to drive the ball for extra bases or home runs  
+        3. **Speed** – Quickness on the bases and in the field  
+        4. **Fielding** – Defensive ability, including range and reaction time  
+        5. **Arm Strength** – Throwing ability, especially for outfielders and infielders  
+
+        #### 🧠 Baseball Tools vs. Professional Skills
+        1. ⚾ **Hitting → Technical Competence**  
+        Just like hitting is fundamental for a baseball player, mastering core skills is crucial for a professional. Without solid technical ability, everything else suffers.
+
+        2. 🧤 **Fielding → Problem-Solving Ability**  
+        A great fielder reacts quickly, adjusts to the situation, and prevents errors—just like a skilled problem solver who diagnoses inefficiencies and finds solutions before bigger issues arise.
+
+        3. ⚡ **Speed → Adaptability & Continuous Learning**  
+        Speed gives a player a competitive edge, allowing them to react fast and adjust on the fly. In the business world, adaptability and continuous learning ensure professionals keep up with changes and remain ahead of the curve.
+
+        4. 💪 **Arm Strength → Communication & Leadership**  
+        A powerful arm is necessary for making impactful plays—just like effective communication and leadership drive motivation, accountability, and team success.
+
+        5. 🚀 **Power → Strategic Decision-Making**  
+        Power hitters change the game with big plays, just like leaders who think long-term and make high-impact decisions based on data and vision.
+        """)
+
     elif page == "📂 Repository ($9.99)":
         st.title("📂 Repository")
         if st.text_input("Enter access code ($9.99)", type="password") == "PAID999":
@@ -188,40 +205,4 @@ else:
             data_type = st.selectbox("Data Type", ["Job Desc", "Resume", "Review", "Interview", "Notes"])
             content = st.text_area("Content")
             if st.button("Save"):
-                supabase.table('repo').insert({
-                    'user_id': st.session_state.user_id,
-                    'department': dept,
-                    'position': pos,
-                    'data_type': data_type,
-                    'content': content,
-                    'timestamp': datetime.now().isoformat()
-                }).execute()
-                st.success("Saved!")
-            data = supabase.table('repo').select('*').eq('user_id', st.session_state.user_id).execute().data
-            for row in data:
-                st.write(f"{row['department']} - {row['position']} ({row['data_type']}): {row['content']} [{row['timestamp']}]")
-        else:
-            st.warning("Pay $9.99 to unlock full repository.")
-
-    elif page == "🔄 360 Feedback":
-        st.title("🔄 360 Degree Feedback")
-        st.markdown("""
-        | Tool | Needs Development (1-2) | Effective (3-4) | Exceptional (5) | Behavioral Drift Triggers |
-        |------|-------------------------|-----------------|-----------------|--------------------------|
-        | Speed | Reacts impulsively or freezes | Adjusts quickly | Seamlessly adapts | Sudden tardiness |
-        | Power | Hesitates to own outcomes | Takes initiative | Owns mission fully | Blame-shifting |
-        | Fielding | Misses risks, blames others | Spots risks early | Anticipates consequences | Neglecting morale |
-        | Hitting for Avg. | Avoids ambiguity | Delivers consistently | Anchors team rhythm | Inconsistent delivery |
-        | Arm Strength | Charms without substance | Communicates clearly | Inspires across hierarchies | Divisive communication |
-        """)
-        notes = st.text_area("Enter feedback notes")
-        if st.button("Analyze"):
-            prompt = f"Score 360 feedback based on grid for: {notes}"
-            completion = client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": prompt}]
-            )
-            st.markdown("### 🧠 Feedback Analysis")
-            st.markdown(completion.choices[0].message.content)
-
-    # Add remaining modules below this line as needed
+                supabase.table
