@@ -34,8 +34,6 @@ if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 if "messages" not in st.session_state:
     st.session_state.messages = []
-
-# Login system
 def login():
     st.sidebar.title("Login")
     if st.session_state.reset_mode:
@@ -80,16 +78,13 @@ def login():
                     st.sidebar.success("Registered! Please log in.")
         if st.sidebar.button("Reset Password"):
             st.session_state.reset_mode = True
-
-# System prompts for AI in HR Consultant
-SYSTEM_PROMPTS = {
+            SYSTEM_PROMPTS = {
     "diagnostic": "You are an AI in HR Consultant trained in the 5-Tool Framework...",
     "coaching": "You are an AI in HR Consultant helping users unlock strengths...",
     "hiring": "You are an AI in HR Consultant assessing candidates...",
     "mna": "You are an AI in HR Consultant specializing in M&A..."
 }
 
-# Main app logic
 if not st.session_state.logged_in:
     login()
 else:
@@ -100,8 +95,6 @@ else:
         "🔄 360 Feedback"
     ]
     page = st.sidebar.selectbox("Select Feature", pages)
-
-    # Module 1: AI in HR Consultant
     if page == "🤖 AI in HR Consultant":
         st.title("🤖 AI in HR Consultant Chat")
         st.caption("Talk to your AI HR consultant. Diagnose, recalibrate, and strategize.")
@@ -125,10 +118,25 @@ else:
             st.session_state.messages.append({"role": "assistant", "content": assistant_reply})
             with st.chat_message("assistant"):
                 st.markdown(assistant_reply)
-
-    # Module 2: 5-Tool Analyzer
-    elif page == "🔧 5-Tool Analyzer":
+                elif page == "🔧 5-Tool Analyzer":
         st.title("🔧 5-Tool Employee Framework Analyzer")
+        st.markdown("### 📘 Reference: Introduction into the 5 Tool Employee Framework")
+        st.markdown(\"\"\"
+        **5 Tool Baseball Player**
+        1. Hitting for Average – Consistently making contact and getting on base.
+        2. Hitting for Power – Ability to drive the ball for extra bases or home runs.
+        3. Speed – Quickness on the bases and in the field.
+        4. Fielding – Defensive ability, including range and reaction time.
+        5. Arm Strength – Throwing ability, especially for outfielders and infielders.
+
+        **Baseball Tools vs. Professional Skills**
+        1. ⚾ Hitting → Technical Competence
+        2. 🧤 Fielding → Problem-Solving Ability
+        3. ⚡ Speed → Adaptability & Continuous Learning
+        4. 💪 Arm Strength → Communication & Leadership
+        5. 🚀 Power → Strategic Decision-Making
+        \"\"\")
+
         main_input = st.text_area("📄 Role or Resume Context", height=200)
         notes_input = st.text_area("📝 Additional Notes or Updates", height=150)
         if st.button("🚀 Generate Profile"):
@@ -136,7 +144,7 @@ else:
                 st.warning("Please enter role or resume context.")
             else:
                 full_context = f"{main_input}\n\nAdditional Notes:\n{notes_input}"
-                prompt = f"""
+                prompt = f\"\"\"
                 You are an AI in HR Consultant using the 5-Tool Framework. Score the individual from 1–5 on:
                 - Speed
                 - Ownership
@@ -145,7 +153,7 @@ else:
                 - Arm Strength
 
                 Then interpret the profile using Bryan Barrera’s leadership criteria. Input: {full_context}
-                """
+                \"\"\"
                 completion = client.chat.completions.create(
                     model="gpt-4",
                     messages=[{"role": "user", "content": prompt}]
@@ -158,9 +166,7 @@ else:
             st.markdown("---")
             st.markdown("### 🗂️ Last Generated Profile")
             st.markdown(st.session_state.last_analysis)
-
-    # Module 3: 360 Feedback
-    elif page == "🔄 360 Feedback":
+            elif page == "🔄 360 Feedback":
         st.title("🔄 360 Degree Feedback (5-Tool Style)")
 
         # Section 1: Scale Reference
