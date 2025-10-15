@@ -81,12 +81,31 @@ def login():
                     st.sidebar.success("Registered! Please log in.")
         if st.sidebar.button("Reset Password"):
             st.session_state.reset_mode = True
+
 # Main app logic
 if not st.session_state.logged_in:
     login()
 else:
     st.sidebar.title("5-Tool Dashboard")
-    page = st.sidebar.selectbox("Select Feature", ["🔄 360 Feedback"])
+    pages = [
+        "🧠 Behavioral Strategist Chat",
+        "🔧 5-Tool Analyzer",
+        "📂 Repository ($9.99)",
+        "🔄 360 Feedback",
+        "😓 Behavior Under Pressure",
+        "⚖️ Behavioral Calibration",
+        "⚠️ Toxicity Grid",
+        "📋 Hiring Rubric",
+        "👑 Leadership Calibration",
+        "✅ Leadership Eligibility",
+        "🎯 Risk-Sensitive Roles",
+        "🚨 SME Derailment",
+        "🧰 Deep-Research Framework",
+        "📊 SWOT 2.0 ($3.99)",
+        "📚 Book Reader ($5.99)",
+        "📰 Articles Uploader ($5.99)"
+    ]
+    page = st.sidebar.selectbox("Select Feature", pages)
 
     if page == "🔄 360 Feedback":
         st.title("🔄 360 Degree Feedback (5-Tool Style)")
@@ -181,3 +200,7 @@ else:
             )
             st.markdown("### 📊 Scorecard")
             st.markdown(score_response.choices[0].message.content)
+
+    else:
+        st.title(page)
+        st.info("This module is coming soon. Stay tuned.")
