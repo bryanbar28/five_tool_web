@@ -81,147 +81,40 @@ def login():
                     st.sidebar.success("Registered! Please log in.")
         if st.sidebar.button("Reset Password"):
             st.session_state.reset_mode = True
-
-# Strategist modes
-SYSTEM_PROMPTS = {
-    "diagnostic": "You are a behavioral strategist trained in the 5-Tool Framework...",
-    "coaching": "You are a performance coach using the 5-Tool Framework...",
-    "hiring": "You are a hiring strategist using the 5-Tool Framework...",
-    "mna": "You are a behavioral strategist specializing in Mergers & Acquisitions..."
-}
-
 # Main app logic
 if not st.session_state.logged_in:
     login()
 else:
     st.sidebar.title("5-Tool Dashboard")
-    pages = [
-        "🧠 Behavioral Strategist Chat",
-        "🔧 5-Tool Analyzer",
-        "📂 Repository ($9.99)",
-        "🔄 360 Feedback",
-        "😓 Behavior Under Pressure",
-        "⚖️ Behavioral Calibration",
-        "⚠️ Toxicity Grid",
-        "📋 Hiring Rubric",
-        "👑 Leadership Calibration",
-        "✅ Leadership Eligibility",
-        "🎯 Risk-Sensitive Roles",
-        "🚨 SME Derailment",
-        "🧰 Deep-Research Framework",
-        "📊 SWOT 2.0 ($3.99)",
-        "📚 Book Reader ($5.99)",
-        "📰 Articles Uploader ($5.99)"
-    ]
-    page = st.sidebar.selectbox("Select Feature", pages)
+    page = st.sidebar.selectbox("Select Feature", ["🔄 360 Feedback"])
 
-    if page == "🧠 Behavioral Strategist Chat":
-        st.title("🧠 5-Tool Behavioral Intelligence Chat")
-        st.caption("Talk to your behavioral strategist. Diagnose, recalibrate, and strategize.")
-        mode = st.selectbox("Choose your strategic lens:", list(SYSTEM_PROMPTS.keys()))
-        st.session_state["mode"] = mode
-
-        for msg in st.session_state.messages:
-            with st.chat_message(msg["role"]):
-                st.markdown(msg["content"])
-
-        user_input = st.chat_input("Ask your strategist anything...")
-        if user_input:
-            st.session_state.messages.append({"role": "user", "content": user_input})
-            messages = [{"role": "system", "content": SYSTEM_PROMPTS[mode]}] + st.session_state.messages
-            response = client.chat.completions.create(
-                model="gpt-4",
-                messages=messages,
-                temperature=0.7
-            )
-            assistant_reply = response.choices[0].message.content
-            st.session_state.messages.append({"role": "assistant", "content": assistant_reply})
-            with st.chat_message("assistant"):
-                st.markdown(assistant_reply)
-
-    elif page == "🔧 5-Tool Analyzer":
-        st.title("🔧 5-Tool Employee Framework Analyzer")
-        main_input = st.text_area("📄 Role or Resume Context", height=200)
-        notes_input = st.text_area("📝 Additional Notes or Updates", height=150)
-        if st.button("🚀 Generate Profile"):
-            if not main_input:
-                st.warning("Please enter role or resume context.")
-            else:
-                full_context = f"{main_input}\n\nAdditional Notes:\n{notes_input}"
-                prompt = f"""
-                You are a behavioral strategist using the 5-Tool Framework. Score the individual from 1–5 on:
-                - Speed
-                - Ownership
-                - Fielding
-                - Hitting for Average
-                - Arm Strength
-
-                Then interpret the profile using Bryan Barrera’s leadership criteria. Input: {full_context}
-                """
-                completion = client.chat.completions.create(
-                    model="gpt-4",
-                    messages=[{"role": "user", "content": prompt}]
-                )
-                result = completion.choices[0].message.content
-                st.session_state.last_analysis = result
-                st.markdown("### 🧠 Ideal 5-Tool Profile")
-                st.markdown(result)
-        if 'last_analysis' in st.session_state:
-            st.markdown("---")
-            st.markdown("### 🗂️ Last Generated Profile")
-            st.markdown(st.session_state.last_analysis)
-
-    elif page == "📂 Repository ($9.99)":
-        st.title("📂 Repository")
-        if st.text_input("Enter access code ($9.99)", type="password") == "PAID999":
-            dept = st.text_input("Department")
-            pos = st.text_input("Position")
-            data_type = st.selectbox("Data Type", ["Job Desc", "Resume", "Review", "Interview", "Notes"])
-            content = st.text_area("Content")
-            if st.button("Save"):
-                supabase.table('repo').insert({
-                    'user_id': st.session_state.user_id,
-                    'department': dept,
-                    'position': pos,
-                    'data_type': data_type,
-                    'content': content,
-                    'timestamp': datetime.now().isoformat()
-                }).execute()
-                st.success("Saved!")
-            data = supabase.table('repo').select('*').eq('user_id', st.session_state.user_id).execute().data
-            for item in data:
-                st.markdown(f"**{item['department']} – {item['position']} ({item['data_type']})**")
-                st.markdown(item['content'])
-                st.markdown("---")
-
-    elif page == "🔄 360 Feedback":
+    if page == "🔄 360 Feedback":
         st.title("🔄 360 Degree Feedback (5-Tool Style)")
 
-        # Section 1: Scoring Scale Reference
-        st.markdown("### 1️⃣ Scoring Scale Reference")
-        st.markdown("""...""")  # You can paste your full markdown table here
+        # Section 1: 360 Scale Reference
+        st.markdown("### 1️⃣ 360 Scale Reference")
+        st.markdown("""
+        | **Tool** | **Needs Development (1–2)** | **Effective (3–4)** | **Exceptional (5)** | **Behavioral Drift Triggers** |
+        |---------|------------------------------|---------------------|---------------------|-------------------------------|
+        | Speed | Reacts impulsively or freezes under pressure | Adjusts quickly to changes with clarity | Seamlessly adapts mid-motion with grace | Tardiness, distraction, disengagement |
+        | Power | Hesitates to own outcomes | Takes initiative and makes decisive calls | Owns the mission fully | Blame-shifting, absence |
+        | Fielding | Misses risks or becomes rigid | Spots risks early and builds guardrails | Anticipates consequences | Neglecting morale, pushing untested changes |
+        | Hitting for Average | Avoids ambiguity or sticks to routine | Delivers consistently under pressure | Anchors team rhythm quietly | Inconsistent delivery, disengagement |
+        | Arm Strength | Isolated or lacks influence | Builds trust and influence | Inspires and aligns teams | Withdrawal, lack of collaboration |
+        """)
 
         # Section 2: Scoring Breakdown
         st.markdown("### 2️⃣ Scoring Breakdown Rubric")
-        st.markdown("""...""")  # Same here
+        st.markdown("""
+        | **Total Score** | **Interpretation** | **Action** |
+        |----------------|--------------------|------------|
+        | **21–25** | Leadership-Ready: Reliable “5-tool player” | Promote or retain; monitor minor drift |
+        | **15–20** | Stretch-Capable: Solid but shows gaps | Coach low scores; reassess in 3–6 months |
+        | **Below 15** | High-Risk: Likely showing behavioral drift | Address drift; consider role change or exit |
+        """)
 
-        # Section 3: Ask About Other Models
-        chat_query = st.text_input("Ask your strategist about other feedback models...")
-        if chat_query:
-            chat_prompt = f"""
-            A user asked: "{chat_query}"
-            Recommend other 360-degree feedback models (e.g., Bracken, Church, Korn Ferry) and explain how they compare to the 5-Tool approach.
-            """
-            chat_response = client.chat.completions.create(
-                model="gpt-4",
-                messages=[{"role": "user", "content": chat_prompt}],
-                temperature=0.7
-            )
-            st.markdown("#### 🧠 Strategist Response")
-            st.markdown(chat_response.choices[0].message.content)
-
-        # Generate Button
-        st.markdown("### 🚀 Generate Feedback Profile")
+        # Section 3: Generate Feedback Profile
+        st.markdown("### 3️⃣ Generate Feedback Profile")
         role_context = st.text_area("📄 Role or Resume Context", height=200)
         notes_context = st.text_area("📝 Additional Notes or Updates", height=150)
         if st.button("Generate Feedback Profile"):
@@ -230,7 +123,16 @@ else:
             else:
                 full_input = f"{role_context}\n\nAdditional Notes:\n{notes_context}"
                 scoring_prompt = f"""
-                You are a behavioral strategist using the 5-Tool Framework to assess 360-degree feedback...
+                You are a behavioral strategist using the 5-Tool Framework to assess 360-degree feedback.
+                Score the individual from 1–5 on:
+                - Speed
+                - Power
+                - Fielding
+                - Hitting for Average
+                - Arm Strength
+
+                Then calculate the total score (out of 25) and interpret it using Bryan Barrera's rubric.
+                Include behavioral drift triggers if relevant. Use markdown formatting.
                 Input context: {full_input}
                 """
                 feedback = client.chat.completions.create(
@@ -248,19 +150,34 @@ else:
             st.markdown("### 🗂️ Last Generated Feedback")
             st.markdown(st.session_state.last_feedback)
 
-    elif page in [
-        "😓 Behavior Under Pressure",
-        "⚖️ Behavioral Calibration",
-        "⚠️ Toxicity Grid",
-        "📋 Hiring Rubric",
-        "👑 Leadership Calibration",
-        "✅ Leadership Eligibility",
-        "🎯 Risk-Sensitive Roles",
-        "🚨 SME Derailment",
-        "🧰 Deep-Research Framework",
-        "📊 SWOT 2.0 ($3.99)",
-        "📚 Book Reader ($5.99)",
-        "📰 Articles Uploader ($5.99)"
-    ]:
-        st.title(page)
-        st.info("This module is coming soon. Stay tuned.")
+        # Section 4: AI Chat on Other 360 Models
+        st.markdown("### 4️⃣ Ask About Other 360 Models")
+        chat_query = st.text_input("Ask your strategist about other feedback models...")
+        if chat_query:
+            chat_prompt = f"""
+            A user asked: "{chat_query}"
+            Recommend other 360-degree feedback models (e.g., Bracken, Church, Korn Ferry) and explain how they compare to the 5-Tool approach.
+            """
+            chat_response = client.chat.completions.create(
+                model="gpt-4",
+                messages=[{"role": "user", "content": chat_prompt}],
+                temperature=0.7
+            )
+            st.markdown("#### 🧠 Strategist Response")
+            st.markdown(chat_response.choices[0].message.content)
+
+        # Section 5: Scorecard Generator
+        st.markdown("### 5️⃣ Generate Scorecard")
+        score_input = st.text_area("Paste the feedback profile here to generate a scorecard")
+        if st.button("Generate Scorecard"):
+            score_prompt = f"""
+            Based on the following feedback profile, generate a scorecard using Bryan Barrera's 5-Tool rubric:
+            {score_input}
+            """
+            score_response = client.chat.completions.create(
+                model="gpt-4",
+                messages=[{"role": "user", "content": score_prompt}],
+                temperature=0.7
+            )
+            st.markdown("### 📊 Scorecard")
+            st.markdown(score_response.choices[0].message.content)
