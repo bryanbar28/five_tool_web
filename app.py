@@ -197,11 +197,5 @@ else:
                 supabase.table('repo').insert({
                     'user_id': st.session_state.user_id,
                     'department': dept,
-                    'position': pos,
-                    'data_type': data_type,
-                    'content': content,
-                    'timestamp': datetime.now().isoformat()
-                }).execute()
-                st.success("Saved!")
-            data = supabase.table('repo').select('*').eq('user_id', st.session_state.user_id).execute().data
+                    '
             
