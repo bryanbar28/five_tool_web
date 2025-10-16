@@ -122,11 +122,11 @@ else:
         st.markdown("### 📘 Reference: Introduction into the 5 Tool Employee Framework")
         st.markdown("""
         **5 Tool Baseball Player**
-        1. Hitting for Average – Consistently making contact and getting on base.
-        2. Hitting for Power – Ability to drive the ball for extra bases or home runs.
-        3. Speed – Quickness on the bases and in the field.
-        4. Fielding – Defensive ability, including range and reaction time.
-        5. Arm Strength – Throwing ability, especially for outfielders and infielders.
+        1. Hitting for Average - Consistently making contact and getting on base.
+        2. Hitting for Power - Ability to drive the ball for extra bases or home runs.
+        3. Speed - Quickness on the bases and in the field.
+        4. Fielding - Defensive ability, including range and reaction time.
+        5. Arm Strength - Throwing ability, especially for outfielders and infielders.
 
         **Baseball Tools vs. Professional Skills**
         1. ⚾ Hitting → Technical Competence
@@ -134,7 +134,7 @@ else:
         3. ⚡ Speed → Adaptability & Continuous Learning
         4. 💪 Arm Strength → Communication & Leadership
         5. 🚀 Power → Strategic Decision-Making
-        \"\"\")
+        """)
 
         main_input = st.text_area("📄 Role or Resume Context", height=200)
         notes_input = st.text_area("📝 Additional Notes or Updates", height=150)
@@ -143,7 +143,7 @@ else:
                 st.warning("Please enter role or resume context.")
             else:
                 full_context = f"{main_input}\n\nAdditional Notes:\n{notes_input}"
-                prompt = f\"\"\"
+                prompt = f"""
                 You are an AI in HR Consultant using the 5-Tool Framework. Score the individual from 1–5 on:
                 - Speed
                 - Ownership
@@ -152,7 +152,7 @@ else:
                 - Arm Strength
 
                 Then interpret the profile using Bryan Barrera’s leadership criteria. Input: {full_context}
-                \"\"\"
+                """
                 completion = client.chat.completions.create(
                     model="gpt-4",
                     messages=[{"role": "user", "content": prompt}]
@@ -171,7 +171,7 @@ else:
         st.title("🔄 360 Degree Feedback (5-Tool Style)")
         st.markdown("### 1️⃣ 360 Scale Reference")
         st.markdown("""
-        | **Tool** | **Needs Development (1–2)** | **Effective (3–4)** | **Exceptional (5)** | **Behavioral Drift Triggers** |
+        | **Tool** | **Needs Development (1-2)** | **Effective (3-4)** | **Exceptional (5)** | **Behavioral Drift Triggers** |
         |---------|------------------------------|---------------------|---------------------|-------------------------------|
         | Speed | Reacts impulsively or freezes under pressure | Adjusts quickly to changes with clarity | Seamlessly adapts mid-motion with grace | Tardiness, distraction, disengagement |
         | Power | Hesitates to own outcomes | Takes initiative and makes decisive calls | Owns the mission fully | Blame-shifting, absence |
@@ -184,73 +184,10 @@ else:
         st.markdown("""
         | **Total Score** | **Interpretation** | **Action** |
         |----------------|--------------------|------------|
-        | **21–25** | Leadership-Ready: Reliable “5-tool player” | Promote or retain; monitor minor drift |
-        | **15–20** | Stretch-Capable: Solid but shows gaps | Coach low scores; reassess in 3–6 months |
+        | **21-25** | Leadership-Ready: Reliable “5-tool player” | Promote or retain; monitor minor drift |
+        | **15-20** | Stretch-Capable: Solid but shows gaps | Coach low scores; reassess in 3–6 months |
         | **Below 15** | High-Risk: Likely showing behavioral drift | Address drift; consider role change or exit |
         """)
 
         st.markdown("### 3️⃣ Generate Feedback Profile")
         role_context = st.text_area("📄 Role or Resume Context", height=200)
-        notes_context = st.text_area("📝 Additional Notes or Updates", height=150)
-        if st.button("Generate Feedback Profile"):
-            if not role_context:
-                st.warning("Please enter role or resume context.")
-            else:
-                full_input = f"{role_context}\n\nAdditional Notes:\n{notes_context}"
-                scoring_prompt = f"""
-                You are an AI in HR Consultant using the 5-Tool Framework to assess 360-degree feedback.
-                Score the individual from 1–5 on:
-                - Speed
-                - Power
-                - Fielding
-                - Hitting for Average
-                - Arm Strength
-
-                Then calculate the total score (out of 25) and interpret it using Bryan Barrera's rubric.
-                Include behavioral drift triggers if relevant. Use markdown formatting.
-                Input context: {full_input}
-                """
-                feedback = client.chat.completions.create(
-                    model="gpt-4",
-                    messages=[{"role": "user", "content": scoring_prompt}],
-                    temperature=0.7
-                )
-                result = feedback.choices[0].message.content
-                st.session_state.last_feedback = result
-                st.markdown("### 🧠 Feedback Profile")
-                st.markdown(result)
-
-        if 'last_feedback' in st.session_state:
-            st.markdown("---")
-            st.markdown("### 🗂️ Last Generated Feedback")
-            st.markdown(st.session_state.last_feedback)
-
-        st.markdown("### 4️⃣ Ask About Other 360 Models")
-        chat_query = st.text_input("Ask your consultant about other feedback models...")
-        if chat_query:
-            chat_prompt = f"""
-            A user asked: "{chat_query}"
-            Recommend other 360-degree feedback models (e.g., Bracken, Church, Korn Ferry) and explain how they compare to the 5-Tool approach.
-            """
-            chat_response = client.chat.completions.create(
-                model="gpt-4",
-                messages=[{"role": "user", "content": chat_prompt}],
-                temperature=0.7
-            )
-            st.markdown("#### 🧠 Consultant Response")
-            st.markdown(chat_response.choices[0].message.content)
-
-        st.markdown("### 5️⃣ Generate Scorecard")
-        score_input = st.text_area("Paste the feedback profile here to generate a scorecard")
-        if st.button("Generate Scorecard"):
-            score_prompt = f"""
-            Based on the following feedback profile, generate a scorecard using Bryan Barrera's 5-Tool rubric:
-            {score_input}
-            """
-            score_response = client.chat.completions.create(
-                model="gpt-4",
-                messages=[{"role": "user", "content": score_prompt}],
-                temperature=0.7
-            )
-            st.markdown("### 📊 Scorecard")
-            st.markdown(score_response.choices[0].message.content)
