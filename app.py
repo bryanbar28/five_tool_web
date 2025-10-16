@@ -1,193 +1,161 @@
 import streamlit as st
-from openai import OpenAI
-from supabase import create_client, Client
-import hashlib
-from datetime import datetime
+import os
 
-# Load secrets
-OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
-SUPABASE_URL = st.secrets["SUPABASE_URL"]
-SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
+# -------------------------------
+# 🌐 Language Selector
+# -------------------------------
+st.set_page_config(page_title="LC Innovation Platform", layout="wide")
 
-client = OpenAI(api_key=OPENAI_API_KEY)
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+LANGUAGES = {
+    "English": "en",
+    "Español": "es",
+    "Deutsch": "de",
+    "日本語": "ja",
+    "हिन्दी": "hi",
+    "Français": "fr",
+    "العربية": "ar"
+}
+language = st.selectbox("🌍 Select Language", options=list(LANGUAGES.keys()), index=0)
+st.session_state["language"] = LANGUAGES[language]
 
-def hash_password(pw):
-    return hashlib.sha256(pw.encode()).hexdigest()
-
-st.markdown("""
-    <style>
-    div[data-testid="stMarkdownContainer"] {
-        user-select: none;
-    }
-    textarea, input {
-        user-select: text;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-if 'reset_mode' not in st.session_state:
-    st.session_state.reset_mode = False
-if 'logged_in' not in st.session_state:
-    st.session_state.logged_in = False
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-def login():
-    st.sidebar.title("Login")
-    if st.session_state.reset_mode:
-        st.sidebar.subheader("Reset Password")
-        reset_email = st.sidebar.text_input("Registered Email", key="reset_email")
-        new_password = st.sidebar.text_input("New Password", type="password", key="reset_pw")
-        if st.sidebar.button("Confirm Reset"):
-            user = supabase.table('users').select('id').eq('email', reset_email).execute().data
-            if user:
-                supabase.table('users').update({'password_hash': hash_password(new_password)}).eq('email', reset_email).execute()
-                st.sidebar.success("Password reset successful. Please log in.")
-                st.session_state.reset_mode = False
-            else:
-                st.sidebar.error("Email not found.")
-        if st.sidebar.button("Back to Login"):
-            st.session_state.reset_mode = False
-    else:
-        email = st.sidebar.text_input("Email")
-        password = st.sidebar.text_input("Password", type="password")
-        if st.sidebar.button("Login"):
-            user = supabase.table('users').select('id, password_hash').eq('email', email).execute().data
-            if user and user[0]['password_hash'] == hash_password(password):
-                st.session_state.user_id = user[0]['id']
-                st.session_state.logged_in = True
-                st.sidebar.success("Logged in!")
-            else:
-                st.sidebar.error("Invalid email or password")
-        if st.sidebar.button("Register"):
-            if not email or not password:
-                st.sidebar.error("Email and password cannot be empty")
-            else:
-                existing = supabase.table('users').select('id').eq('email', email).execute().data
-                if existing:
-                    st.sidebar.error("Email already registered")
-                else:
-                    supabase.table('users').insert({'email': email, 'password_hash': hash_password(password)}).execute()
-                    st.sidebar.success("Registered! Please log in.")
-        if st.sidebar.button("Reset Password"):
-            st.session_state.reset_mode = True
-
-SYSTEM_PROMPTS = {
-    "diagnostic": "You are an AI in HR Consultant trained in the 5-Tool Framework...",
-    "coaching": "You are an AI in HR Consultant helping users unlock strengths...",
-    "hiring": "You are an AI in HR Consultant assessing candidates...",
-    "mna": "You are an AI in HR Consultant specializing in M&A..."
+# -------------------------------
+# 🔐 Pricing Access Control
+# -------------------------------
+PAID_MODULES = {
+    "Module 9: M&A Intelligence": 3.99,
+    "Module 10: Finding the Right Fit": 3.99,
+    "Module 11: Your Ego": 3.99,
+    "Module 12: Repository": 9.99
 }
 
-if not st.session_state.logged_in:
-    login()
+def is_unlocked(module_name):
+    return st.session_state.get(f"unlocked_{module_name}", False)
+
+def unlock_module(module_name, price):
+    if st.button(f"🔓 Unlock {module_name} (${price}/mo)"):
+        st.session_state[f"unlocked_{module_name}"] = True
+        st.success(f"{module_name} unlocked!")
+
+# -------------------------------
+# 📚 Module Navigation
+# -------------------------------
+MODULES = [
+    "Module 1: Behavioral Intelligence",
+    "Module 2: Job Description Generator",
+    "Module 3: Performance Review Generator",
+    "Module 4: Behavior Under Pressure Grid",
+    "Module 5: Behavioral Calibration Grid",
+    "Module 6: Toxicity in the Workplace",
+    "Module 7: Leadership Eligibility",
+    "Module 8: SWOT 2.0",
+    "Module 9: M&A Intelligence",
+    "Module 10: Finding the Right Fit",
+    "Module 11: Your Ego",
+    "Module 12: Repository"
+]
+
+selected_module = st.sidebar.selectbox("📂 Choose a Module", MODULES)
+
+# -------------------------------
+# 🧩 Module Logic
+# -------------------------------
+def render_module_1():
+    st.title("🧠 Behavioral Intelligence App")
+    st.text_input("e.g. Find job review for certain industries")
+    st.text_input("i.e. Generate generic performance review for certain industry")
+
+def render_module_2():
+    st.title("📄 Job Description Generator")
+    st.text_area("Paste job description or request one by role")
+
+def render_module_3():
+    st.title("📋 Performance Review Generator")
+    st.text_area("Paste review or request one by role")
+
+def render_module_4():
+    st.title("⚾ Behavior Under Pressure Grid")
+    st.image("images/module4_behavior_grid.png")
+    st.text_area("📝 Additional Notes")
+    st.button("🎯 Generate Profile")
+
+def render_module_5():
+    st.title("🧠 Behavioral Calibration Grid")
+    st.image("images/module5_calibration_grid.png")
+    st.text_area("📝 Additional Notes")
+    st.button("🎯 Generate Profile")
+
+def render_module_6():
+    st.title("☢️ Toxicity in the Workplace")
+    st.image("images/module6_toxicity_scale.png")
+    st.image("images/module6_toxicity_scoring.png")
+    st.text_area("🧠 AI Chat: Ask about Padilla, Hogan, Kaiser, Machiavellianism")
+    st.text_area("📝 Additional Notes")
+    st.button("🎯 Generate Profile")
+
+def render_module_7():
+    st.title("🏆 Leadership Eligibility")
+    st.image("images/module7_calibration_grid.png")
+    st.image("images/module7_eligibility_filter.png")
+    st.image("images/module7_scoring_scale.png")
+    st.image("images/module7_diagnostic_rubric.png")
+    st.image("images/module7_outcomes.png")
+
+def render_module_8():
+    st.title("📊 SWOT 2.0 Strategic Framework")
+    st.markdown("Designed by Bryan Barrera & Microsoft Copilot")
+    st.text_area("📝 Additional Notes and Input")
+    st.text_area("🧠 AI Chat: Ask for SWOT templates, Lean tools, Fishbone diagrams")
+    st.button("🎯 Generate SWOT")
+
+def render_module_9():
+    st.title("🏢 M&A Intelligence (Premium)")
+    st.warning("This module requires a $3.99/mo subscription.")
+    st.file_uploader("📁 Upload Resumes", accept_multiple_files=True)
+    st.file_uploader("📄 Upload Job Descriptions", accept_multiple_files=True)
+    st.file_uploader("📋 Upload Performance Reviews", accept_multiple_files=True)
+    st.file_uploader("📁 Upload Training & Education Records", accept_multiple_files=True)
+    st.text_area("🏢 Branch Data: Name, Location, Benefits")
+    st.button("📊 Generate Analysis")
+
+def render_module_10():
+    st.title("📘 Finding the Right Fit (Book)")
+    st.warning("This book requires a $3.99/mo subscription.")
+    st.markdown("Coming Soon: AI-assisted workbook experience")
+
+def render_module_11():
+    st.title("📕 Your Ego: The Real Reason Your Business is Failing")
+    st.warning("This book requires a $3.99/mo subscription.")
+    st.markdown("Coming Soon: Interactive reading experience")
+
+def render_module_12():
+    st.title("🗂️ Repository (Premium)")
+    st.warning("This module requires a $9.99/mo subscription.")
+    st.file_uploader("📁 Upload any file to store")
+    st.text_area("📝 Save generated profiles or notes")
+    st.button("💾 Save to Repository")
+
+# -------------------------------
+# 🚀 Module Execution
+# -------------------------------
+MODULE_RENDERERS = {
+    MODULES[0]: render_module_1,
+    MODULES[1]: render_module_2,
+    MODULES[2]: render_module_3,
+    MODULES[3]: render_module_4,
+    MODULES[4]: render_module_5,
+    MODULES[5]: render_module_6,
+    MODULES[6]: render_module_7,
+    MODULES[7]: render_module_8,
+    MODULES[8]: render_module_9,
+    MODULES[9]: render_module_10,
+    MODULES[10]: render_module_11,
+    MODULES[11]: render_module_12
+}
+
+if selected_module in PAID_MODULES:
+    if is_unlocked(selected_module):
+        MODULE_RENDERERS[selected_module]()
+    else:
+        unlock_module(selected_module, PAID_MODULES[selected_module])
 else:
-    st.sidebar.title("5-Tool Dashboard")
-    pages = [
-        "🤖 AI in HR Consultant",
-        "🔧 5-Tool Analyzer",
-        "🔄 360 Feedback"
-    ]
-    page = st.sidebar.selectbox("Select Feature", pages)
-
-    # AI in HR Consultant
-    if page == "🤖 AI in HR Consultant":
-        st.title("🤖 AI in HR Consultant Chat")
-        st.caption("Talk to your AI HR consultant. Diagnose, recalibrate, and strategize.")
-        mode = st.selectbox("Choose your strategic lens:", list(SYSTEM_PROMPTS.keys()))
-        st.session_state["mode"] = mode
-
-        for msg in st.session_state.messages:
-            with st.chat_message(msg["role"]):
-                st.markdown(msg["content"])
-
-        user_input = st.chat_input("Ask your consultant anything...")
-        if user_input:
-            st.session_state.messages.append({"role": "user", "content": user_input})
-            messages = [{"role": "system", "content": SYSTEM_PROMPTS[mode]}] + st.session_state.messages
-            response = client.chat.completions.create(
-                model="gpt-4",
-                messages=messages,
-                temperature=0.7
-            )
-            assistant_reply = response.choices[0].message.content
-            st.session_state.messages.append({"role": "assistant", "content": assistant_reply})
-            with st.chat_message("assistant"):
-                st.markdown(assistant_reply)
-
-    # 5-Tool Analyzer
-    elif page == "🔧 5-Tool Analyzer":
-        st.title("🔧 5-Tool Employee Framework Analyzer")
-        st.markdown("### 📘 Reference: Introduction into the 5 Tool Employee Framework")
-        st.markdown("""
-        **5 Tool Baseball Player**
-        1. Hitting for Average - Consistently making contact and getting on base.
-        2. Hitting for Power - Ability to drive the ball for extra bases or home runs.
-        3. Speed - Quickness on the bases and in the field.
-        4. Fielding - Defensive ability, including range and reaction time.
-        5. Arm Strength - Throwing ability, especially for outfielders and infielders.
-
-        **Baseball Tools vs. Professional Skills**
-        1. ⚾ Hitting → Technical Competence
-        2. 🧤 Fielding → Problem-Solving Ability
-        3. ⚡ Speed → Adaptability & Continuous Learning
-        4. 💪 Arm Strength → Communication & Leadership
-        5. 🚀 Power → Strategic Decision-Making
-        """)
-
-        main_input = st.text_area("📄 Role or Resume Context", height=200)
-        notes_input = st.text_area("📝 Additional Notes or Updates", height=150)
-        if st.button("🚀 Generate Profile"):
-            if not main_input:
-                st.warning("Please enter role or resume context.")
-            else:
-                full_context = f"{main_input}\n\nAdditional Notes:\n{notes_input}"
-                prompt = f"""
-                You are an AI in HR Consultant using the 5-Tool Framework. Score the individual from 1–5 on:
-                - Speed
-                - Ownership
-                - Fielding
-                - Hitting for Average
-                - Arm Strength
-
-                Then interpret the profile using Bryan Barrera’s leadership criteria. Input: {full_context}
-                """
-                completion = client.chat.completions.create(
-                    model="gpt-4",
-                    messages=[{"role": "user", "content": prompt}]
-                )
-                result = completion.choices[0].message.content
-                st.session_state.last_analysis = result
-                st.markdown("### 🧠 Ideal 5-Tool Profile")
-                st.markdown(result)
-        if 'last_analysis' in st.session_state:
-            st.markdown("---")
-            st.markdown("### 🗂️ Last Generated Profile")
-            st.markdown(st.session_state.last_analysis)
-
-    # 360 Feedback
-    elif page == "🔄 360 Feedback":
-        st.title("🔄 360 Degree Feedback (5-Tool Style)")
-        st.markdown("### 1️⃣ 360 Scale Reference")
-        st.markdown("""
-        | **Tool** | **Needs Development (1-2)** | **Effective (3-4)** | **Exceptional (5)** | **Behavioral Drift Triggers** |
-        |---------|------------------------------|---------------------|---------------------|-------------------------------|
-        | Speed | Reacts impulsively or freezes under pressure | Adjusts quickly to changes with clarity | Seamlessly adapts mid-motion with grace | Tardiness, distraction, disengagement |
-        | Power | Hesitates to own outcomes | Takes initiative and makes decisive calls | Owns the mission fully | Blame-shifting, absence |
-        | Fielding | Misses risks or becomes rigid | Spots risks early and builds guardrails | Anticipates consequences | Neglecting morale, pushing untested changes |
-        | Hitting for Average | Avoids ambiguity or sticks to routine | Delivers consistently under pressure | Anchors team rhythm quietly | Inconsistent delivery, disengagement |
-        | Arm Strength | Isolated or lacks influence | Builds trust and influence | Inspires and aligns teams | Withdrawal, lack of collaboration |
-        """)
-
-        st.markdown("### 2️⃣ Scoring Breakdown Rubric")
-        st.markdown("""
-        | **Total Score** | **Interpretation** | **Action** |
-        |----------------|--------------------|------------|
-        | **21-25** | Leadership-Ready: Reliable “5-tool player” | Promote or retain; monitor minor drift |
-        | **15-20** | Stretch-Capable: Solid but shows gaps | Coach low scores; reassess in 3–6 months |
-        | **Below 15** | High-Risk: Likely showing behavioral drift | Address drift; consider role change or exit |
-        """)
-
-        st.markdown("### 3️⃣ Generate Feedback Profile")
-        role_context = st.text_area("📄 Role or Resume Context", height=200)
+    MODULE_RENDERERS[selected_module]()
