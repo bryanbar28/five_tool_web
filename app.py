@@ -54,8 +54,7 @@ PAGES = [
     "Page 12: Repository"
 ]
 
-
-selected_module = st.sidebar.selectbox("📂 Choose a Module", MODULES)
+selected_page = st.sidebar.selectbox("📂 Choose a Page", PAGES)
 
 # -------------------------------
 # 🧩 Module Logic
