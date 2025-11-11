@@ -152,11 +152,12 @@ PAGE_RENDERERS = {
     PAGES[11]: render_module_12
 }
 
-
-if selected_module in PAID_MODULES:
-    if is_unlocked(selected_module):
-        MODULE_RENDERERS[selected_module]()
+if selected_page in PAID_PAGES:
+    if is_unlocked(selected_page):
+        PAGE_RENDERERS[selected_page]()
     else:
-        unlock_module(selected_module, PAID_MODULES[selected_module])
+        unlock_page(selected_page, PAID_PAGES[selected_page])
 else:
-    MODULE_RENDERERS[selected_module]()
+    PAGE_RENDERERS[selected_page]()
+
+
