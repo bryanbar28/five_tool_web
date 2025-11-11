@@ -39,20 +39,21 @@ def unlock_module(module_name, price):
 # -------------------------------
 # 📚 Module Navigation
 # -------------------------------
-MODULES = [
-    "Module 1: Behavioral Intelligence",
-    "Module 2: Job Description Generator",
-    "Module 3: Performance Review Generator",
-    "Module 4: Behavior Under Pressure Grid",
-    "Module 5: Behavioral Calibration Grid",
-    "Module 6: Toxicity in the Workplace",
-    "Module 7: Leadership Eligibility",
-    "Module 8: SWOT 2.0",
-    "Module 9: M&A Intelligence",
-    "Module 10: Finding the Right Fit",
-    "Module 11: Your Ego",
-    "Module 12: Repository"
+PAGES = [
+    "Page 1: Behavioral Intelligence",
+    "Page 2: Job Description Generator",
+    "Page 3: Performance Review Generator",
+    "Page 4: Behavior Under Pressure Grid",
+    "Page 5: Behavioral Calibration Grid",
+    "Page 6: Toxicity in the Workplace",
+    "Page 7: Leadership Eligibility",
+    "Page 8: SWOT 2.0",
+    "Page 9: M&A Intelligence",
+    "Page 10: Finding the Right Fit",
+    "Page 11: Your Ego",
+    "Page 12: Repository"
 ]
+
 
 selected_module = st.sidebar.selectbox("📂 Choose a Module", MODULES)
 
