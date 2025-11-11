@@ -21,12 +21,13 @@ st.session_state["language"] = LANGUAGES[language]
 # -------------------------------
 # 🔐 Pricing Access Control
 # -------------------------------
-PAID_MODULES = {
-    "Module 9: M&A Intelligence": 3.99,
-    "Module 10: Finding the Right Fit": 3.99,
-    "Module 11: Your Ego": 3.99,
-    "Module 12: Repository": 9.99
+PAID_PAGES = {
+    "Page 9: M&A Intelligence": 3.99,
+    "Page 10: Finding the Right Fit": 3.99,
+    "Page 11: Your Ego": 3.99,
+    "Page 12: Repository": 9.99
 }
+
 
 def is_unlocked(module_name):
     return st.session_state.get(f"unlocked_{module_name}", False)
