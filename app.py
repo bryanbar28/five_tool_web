@@ -137,20 +137,21 @@ def render_module_12():
 # -------------------------------
 # 🚀 Module Execution
 # -------------------------------
-MODULE_RENDERERS = {
-    MODULES[0]: render_module_1,
-    MODULES[1]: render_module_2,
-    MODULES[2]: render_module_3,
-    MODULES[3]: render_module_4,
-    MODULES[4]: render_module_5,
-    MODULES[5]: render_module_6,
-    MODULES[6]: render_module_7,
-    MODULES[7]: render_module_8,
-    MODULES[8]: render_module_9,
-    MODULES[9]: render_module_10,
-    MODULES[10]: render_module_11,
-    MODULES[11]: render_module_12
+PAGE_RENDERERS = {
+    PAGES[0]: render_module_1,
+    PAGES[1]: render_module_2,
+    PAGES[2]: render_module_3,
+    PAGES[3]: render_module_4,
+    PAGES[4]: render_module_5,
+    PAGES[5]: render_module_6,
+    PAGES[6]: render_module_7,
+    PAGES[7]: render_module_8,
+    PAGES[8]: render_module_9,
+    PAGES[9]: render_module_10,
+    PAGES[10]: render_module_11,
+    PAGES[11]: render_module_12
 }
+
 
 if selected_module in PAID_MODULES:
     if is_unlocked(selected_module):
