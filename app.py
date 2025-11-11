@@ -15,7 +15,8 @@ LANGUAGES = {
     "Français": "fr",
     "العربية": "ar"
 }
-language = st.selectbox("🌍 Select Language", options=list(LANGUAGES.keys()), index=0)
+language = st.selectbox(t("select_language"), options=list(LANGUAGES.keys()), index=0)
+
 st.session_state["language"] = LANGUAGES[language]
 # -------------------------------
 # 🗣️ Translation System
@@ -80,7 +81,7 @@ PAGES = [
     "Page 12: Repository"
 ]
 
-selected_page = st.sidebar.selectbox("📂 Choose a Page", PAGES)
+selected_page = st.sidebar.selectbox(t("choose_page"), PAGES)
 
 # -------------------------------
 # 🧩 Module Logic
