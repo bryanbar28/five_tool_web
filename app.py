@@ -41,7 +41,57 @@ LANGUAGES = {
 language = st.selectbox(t("select_language"), options=list(LANGUAGES.keys()), index=0)
 st.session_state["language"] = LANGUAGES[language]
 
-
+TRANSLATIONS = {
+    "en": {
+        "select_language": "🌍 Select Language",
+        "choose_page": "📂 Choose a Page",
+        "subscription_required": "This page requires a subscription.",
+        "generate_profile": "🎯 Generate Profile",
+        "additional_notes": "📝 Additional Notes"
+    },
+    "es": {
+        "select_language": "🌍 Seleccionar idioma",
+        "choose_page": "📂 Elegir página",
+        "subscription_required": "Esta página requiere una suscripción.",
+        "generate_profile": "🎯 Generar perfil",
+        "additional_notes": "📝 Notas adicionales"
+    },
+    "de": {
+        "select_language": "🌍 Sprache auswählen",
+        "choose_page": "📂 Seite auswählen",
+        "subscription_required": "Diese Seite erfordert ein Abonnement.",
+        "generate_profile": "🎯 Profil erstellen",
+        "additional_notes": "📝 Zusätzliche Notizen"
+    },
+    "ja": {
+        "select_language": "🌍 言語を選択",
+        "choose_page": "📂 ページを選択",
+        "subscription_required": "このページにはサブスクリプションが必要です。",
+        "generate_profile": "🎯 プロファイルを生成",
+        "additional_notes": "📝 追加メモ"
+    },
+    "hi": {
+        "select_language": "🌍 भाषा चुनें",
+        "choose_page": "📂 पृष्ठ चुनें",
+        "subscription_required": "इस पृष्ठ के लिए सदस्यता आवश्यक है।",
+        "generate_profile": "🎯 प्रोफ़ाइल बनाएं",
+        "additional_notes": "📝 अतिरिक्त नोट्स"
+    },
+    "fr": {
+        "select_language": "🌍 Choisir la langue",
+        "choose_page": "📂 Choisir une page",
+        "subscription_required": "Cette page nécessite un abonnement.",
+        "generate_profile": "🎯 Générer un profil",
+        "additional_notes": "📝 Notes supplémentaires"
+    },
+    "ar": {
+        "select_language": "🌍 اختر اللغة",
+        "choose_page": "📂 اختر صفحة",
+        "subscription_required": "هذه الصفحة تتطلب اشتراكًا.",
+        "generate_profile": "🎯 إنشاء ملف",
+        "additional_notes": "📝 ملاحظات إضافية"
+    }
+}
 
 # -------------------------------
 # 🔐 Pricing Access Control
