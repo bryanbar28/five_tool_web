@@ -39,7 +39,6 @@ LANGUAGES = {
     "العربية": "ar"
 }
 language = st.selectbox(t("select_language"), options=list(LANGUAGES.keys()), index=0)
-
 st.session_state["language"] = LANGUAGES[language]
 
 
@@ -102,22 +101,24 @@ def render_module_3():
 def render_module_4():
     st.title("⚾ Behavior Under Pressure Grid")
     st.image("images/module4_behavior_grid.png")
-    st.text_area("📝 Additional Notes")
-    st.button("🎯 Generate Profile")
+    st.text_area(t("additional_notes"))
+    st.button(t("generate_profile"))
 
 def render_module_5():
     st.title("🧠 Behavioral Calibration Grid")
     st.image("images/module5_calibration_grid.png")
-    st.text_area("📝 Additional Notes")
-    st.button("🎯 Generate Profile")
+    st.text_area(t("additional_notes"))
+    st.button(t("generate_profile"))
+
 
 def render_module_6():
     st.title("☢️ Toxicity in the Workplace")
     st.image("images/module6_toxicity_scale.png")
     st.image("images/module6_toxicity_scoring.png")
-    st.text_area("🧠 AI Chat: Ask about Padilla, Hogan, Kaiser, Machiavellianism")
-    st.text_area("📝 Additional Notes")
-    st.button("🎯 Generate Profile")
+    st.text_area("🧠 AI Chat: Ask about Padilla, Hogan, Kaiser, Machiavellianism")  # keep this as-is for now
+    st.text_area(t("additional_notes"))
+    st.button(t("generate_profile"))
+
 
 def render_module_7():
     st.title("🏆 Leadership Eligibility")
@@ -136,17 +137,17 @@ def render_module_8():
 
 def render_module_9():
     st.title("🏢 M&A Intelligence (Premium)")
-    st.warning("This module requires a $3.99/mo subscription.")
+    st.warning(t("subscription_required"))
     st.file_uploader("📁 Upload Resumes", accept_multiple_files=True)
     st.file_uploader("📄 Upload Job Descriptions", accept_multiple_files=True)
     st.file_uploader("📋 Upload Performance Reviews", accept_multiple_files=True)
     st.file_uploader("📁 Upload Training & Education Records", accept_multiple_files=True)
     st.text_area("🏢 Branch Data: Name, Location, Benefits")
-    st.button("📊 Generate Analysis")
+    st.button("📊 Generate Analysis")  # optional to translate later
 
 def render_module_10():
     st.title("📘 Finding the Right Fit (Book)")
-    st.warning("This book requires a $3.99/mo subscription.")
+    st.warning(t("subscription_required"))
     st.markdown("Coming Soon: AI-assisted workbook experience")
 
 def render_module_11():
