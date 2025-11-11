@@ -1,23 +1,5 @@
 import streamlit as st
 import os
-
-# -------------------------------
-# 🌐 Language Selector
-# -------------------------------
-st.set_page_config(page_title="LC Innovation Platform", layout="wide")
-
-LANGUAGES = {
-    "English": "en",
-    "Español": "es",
-    "Deutsch": "de",
-    "日本語": "ja",
-    "हिन्दी": "hi",
-    "Français": "fr",
-    "العربية": "ar"
-}
-language = st.selectbox(t("select_language"), options=list(LANGUAGES.keys()), index=0)
-
-st.session_state["language"] = LANGUAGES[language]
 # -------------------------------
 # 🗣️ Translation System
 # -------------------------------
@@ -42,6 +24,24 @@ TRANSLATIONS = {
 def t(key):
     lang = st.session_state.get("language", "en")
     return TRANSLATIONS.get(lang, TRANSLATIONS["en"]).get(key, key)
+# -------------------------------
+# 🌐 Language Selector
+# -------------------------------
+st.set_page_config(page_title="LC Innovation Platform", layout="wide")
+
+LANGUAGES = {
+    "English": "en",
+    "Español": "es",
+    "Deutsch": "de",
+    "日本語": "ja",
+    "हिन्दी": "hi",
+    "Français": "fr",
+    "العربية": "ar"
+}
+language = st.selectbox(t("select_language"), options=list(LANGUAGES.keys()), index=0)
+
+st.session_state["language"] = LANGUAGES[language]
+
 
 
 # -------------------------------
