@@ -17,6 +17,31 @@ LANGUAGES = {
 }
 language = st.selectbox("🌍 Select Language", options=list(LANGUAGES.keys()), index=0)
 st.session_state["language"] = LANGUAGES[language]
+# -------------------------------
+# 🗣️ Translation System
+# -------------------------------
+TRANSLATIONS = {
+    "en": {
+        "select_language": "🌍 Select Language",
+        "choose_page": "📂 Choose a Page",
+        "subscription_required": "This page requires a subscription.",
+        "generate_profile": "🎯 Generate Profile",
+        "additional_notes": "📝 Additional Notes"
+    },
+    "es": {
+        "select_language": "🌍 Seleccionar idioma",
+        "choose_page": "📂 Elegir página",
+        "subscription_required": "Esta página requiere una suscripción.",
+        "generate_profile": "🎯 Generar perfil",
+        "additional_notes": "📝 Notas adicionales"
+    }
+    # You can expand this with more languages later
+}
+
+def t(key):
+    lang = st.session_state.get("language", "en")
+    return TRANSLATIONS.get(lang, TRANSLATIONS["en"]).get(key, key)
+
 
 # -------------------------------
 # 🔐 Pricing Access Control
