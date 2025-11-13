@@ -36,7 +36,7 @@ def unlock_page(page, price):
 # 📚 Module Navigation
 # -------------------------------
 PAGES = [
-    "Page 1: Behavioral Intelligence",
+    "Page 1: AI HR Assistant - Job Reviews",
     "Page 2: Job Description Generator",
     "Page 3: Performance Review Generator",
     "Page 4: Behavior Under Pressure Grid",
