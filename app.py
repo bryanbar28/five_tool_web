@@ -159,7 +159,7 @@ def render_module_1():
     st.markdown("---")
     st.subheader("🧾 Generate a Custom Job Review")
 
-    review_input = st.text_input("Enter a role to generate a custom review", placeholder="e.g., diesel mechanic, tribal grant writer")
+    review_input = st.text_input("Enter a role to generate a custom review", placeholder="e.g., steel machinist, processor, engineer, project manager, executive")
 
     if st.button("Generate Review"):
         if review_input:
