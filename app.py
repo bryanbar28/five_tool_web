@@ -51,7 +51,44 @@ client = OpenAI()
 # 🧠 Template Discovery Module
 # -------------------------------
 def render_template_discovery():
-    pass  # placeholder until you add your logic
+    st.title("🧠 Behavioral Intelligence App — Template Discovery")
+
+    role_query = st.text_input(
+        "Ask me anything about job reviews, templates, or phrases",
+        placeholder="e.g., steel machinist, mechanic, I need help writing a review"
+    )
+
+    if role_query:
+        st.markdown(f"🔍 You asked: **{role_query}**")
+        role = role_query.lower()
+
+        # ✅ Conversational explanation for open-ended questions
+        if "what is a job review" in role or "define job review" in role:
+            st.markdown("### 📘 What Is a Job Review?")
+            st.markdown("""
+            A **job review** is a structured evaluation of an employee's performance, responsibilities, and contributions in a specific role. It often includes:
+            - A summary of duties and expectations  
+            - Feedback on strengths and areas for improvement  
+            - Discussion of goals, compensation, or promotion potential  
+            - A record for HR and future reference  
+
+            Job reviews can be formal (annual performance reviews) or informal (feedback sessions), and they vary by industry and company culture.
+            """)
+            return
+
+        # ✅ Conversational fallback for vague help requests
+        if "help" in role or "phrases" in role or "statements" in role:
+            st.markdown("### 💬 Helpful Job Review Phrases & Comments")
+            st.markdown("- [Status.net: Job Knowledge Phrases](https://status.net/articles/job-knowledge-performance-review-phrases-paragraphs-examples/)")
+            st.markdown("- [BuddiesHR: 75 Review Phrases](https://blog.buddieshr.com/75-effective-performance-review-phrases-examples/)")
+            st.markdown("- [Engage & Manage: 120 Review Comments](https://engageandmanage.com/blog/performance-review-example-phrases-comments/)")
+            return
+
+        # ✅ Role-specific or general template links
+        st.markdown("### 🌐 General Review Templates and Examples")
+        st.markdown("- [Native Teams: 30 Role-Based Review Examples](https://nativeteams.com/blog/performance-review-examples)")
+        st.markdown("- [BetterUp: 53 Performance Review Examples](https://www.betterup.com/blog/performance-review-examples)")
+        st.markdown("- [Indeed: Review Template Library](https://www.indeed.com/career-advice/career-development/performance-review-template)")
 # -------------------------------
 # 🎬 Gritty Job Review Generator
 # -------------------------------
