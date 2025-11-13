@@ -62,40 +62,33 @@ def render_module_1():
 # 🔍 Job Review Generator Logic
 # -------------------------------
 def generate_job_review(query):
-    st.info(f"Searching for job review related to: **{query}**")
+    st.info(f"🔍 Generating AI-powered job review for: **{query}**")
 
-    role = query.lower()
+    prompt = f"""
+    You are an HR expert writing performance reviews. Based on the following role and industry, generate a professional review that includes strengths, areas for improvement, and a constructive tone.
 
-    if "project manager" in role:
-        st.markdown("### 🧾 Sample Job Review for Project Manager")
-        st.write("""
-        **Role**: Project Manager  
-        **Industry**: Business / Operations  
-        **Review Summary**:  
-        The project manager demonstrates strong leadership in cross-functional teams, maintains timelines and budgets, and communicates effectively with stakeholders. Areas for improvement include risk mitigation planning and post-project evaluation.
-        """)
-    elif "business analyst" in role:
-        st.markdown("### 🧾 Sample Job Review for Business Analyst")
-        st.write("""
-        **Role**: Business Analyst  
-        **Industry**: Strategy / Finance  
-        **Review Summary**:  
-        The analyst excels at data interpretation, stakeholder interviews, and translating business needs into actionable insights. Opportunities for growth include visualization tools and agile methodology fluency.
-        """)
-    elif "executive assistant" in role:
-        st.markdown("### 🧾 Sample Job Review for Executive Assistant")
-        st.write("""
-        **Role**: Executive Assistant  
-        **Industry**: Corporate / Administrative  
-        **Review Summary**:  
-        The assistant manages schedules, correspondence, and logistics with precision. Strengths include discretion, multitasking, and proactive problem-solving. Development areas include delegation and digital workflow optimization.
-        """)
-    else:
-        st.warning("No specific review found for that role. Try a more common title or industry.")
-        st.markdown("#### 🔗 General Performance Review Resources")
-        st.markdown("- [100 Performance Review Phrases for Business Roles](https://status.net/articles/job-knowledge-performance-review-phrases-paragraphs-examples/)")
-        st.markdown("- [20 Essential Business Roles Within an Organization](https://www.indeed.com/career-advice/starting-new-job/business-roles)")
-        st.markdown("- [How to Perform a Job Analysis – Forbes](https://www.forbes.com/advisor/business/job-analysis/)")
+    Role and Industry: {query}
+
+    Format the output with clear headings and bullet points if appropriate.
+    """
+
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are an HR expert who writes performance reviews."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+            max_tokens=500
+        )
+
+        review_text = response['choices'][0]['message']['content']
+        st.markdown("### 🧾 AI-Generated Job Review")
+        st.write(review_text)
+
+    except Exception as e:
+        st.error(f"❌ Error generating review: {e}")
     # -------------------------------
 # 🧠 Behavioral Intelligence App
 # -------------------------------
