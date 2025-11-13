@@ -1,5 +1,14 @@
 import streamlit as st
-from openai import OpenAI
+from openai import OpenAI  # ✅ OpenAI client import
+
+st.set_page_config(page_title="Five-Tool App", layout="wide")
+
+# ✅ Session state setup
+if "initial_review" not in st.session_state:
+    st.session_state.initial_review = ""
+
+# ✅ OpenAI client setup
+client = OpenAI(api_key="your-openai-api-key")  # or use os.getenv("OPENAI_API_KEY")
 
 # =============================================
 # ✅ Unified Streamlit App with AI-Powered SWOT
@@ -92,24 +101,26 @@ def render_template_discovery():
 # -------------------------------
 # 🎬 Gritty Job Review Generator
 # -------------------------------
-def generate_job_review(query):
-    st.info(f"🔍 Generating realistic job review for: **{query}**")
+def generate_job_review(role, notes=None):
+    st.info(f"🔍 Generating realistic job review for: **{role}**")
 
     prompt = f"""
-    Write a realistic, role-specific job review for the position: {query}.
+    Write a realistic, role-specific job review for the position: {role}.
     Use a clear, professional tone with practical insights. Include:
 
-    - Job Summary: What the role typically involves
-    - Key Responsibilities: 3–5 bullet points
+    - Job Summary
+    - Key Responsibilities
     - Required Skills and Tools
-    - Compensation and Schedule (typical ranges)
-    - Pros: What employees tend to appreciate
-    - Cons: Common challenges or frustrations
-    - Interview Tips: Questions to ask or red flags to watch for
-    - Career Path: Typical progression in this role
+    - Compensation and Schedule
+    - Pros and Cons
+    - Interview Tips
+    - Career Path
 
     Avoid generic corporate language. Make it useful for someone considering this job.
     """
+
+    if notes:
+        prompt += f"\n\nIncorporate these user-provided notes into the review:\n{notes}"
 
     try:
         response = client.chat.completions.create(
@@ -134,14 +145,23 @@ def generate_job_review(query):
 def render_module_1():
     st.title("🧠 Behavioral Intelligence App — Job Review Explorer")
 
-    # Section 1: Ask me anything
+    # 1️⃣ Conversational Discovery
     role_query = st.text_input("Ask me anything about job reviews, templates, or phrases", placeholder="e.g., steel machinist, mechanic, I need help writing a review")
-
     if role_query:
-        st.markdown(f"🔍 Searching for job review resources related to: **{role_query}**")
+        st.markdown(f"🔍 You asked: **{role_query}**")
         role = role_query.lower()
 
-        # Conversational fallback
+        if "what is a job review" in role or "define job review" in role:
+            st.markdown("### 📘 What Is a Job Review?")
+            st.markdown("""
+            A **job review** is a structured evaluation of an employee's performance, responsibilities, and contributions in a specific role. It often includes:
+            - A summary of duties and expectations  
+            - Feedback on strengths and areas for improvement  
+            - Discussion of goals, compensation, or promotion potential  
+            - A record for HR and future reference  
+            """)
+            return
+
         if "help" in role or "phrases" in role or "statements" in role:
             st.markdown("### 💬 Helpful Job Review Phrases & Comments")
             st.markdown("- [Status.net: Job Knowledge Phrases](https://status.net/articles/job-knowledge-performance-review-phrases-paragraphs-examples/)")
@@ -149,23 +169,32 @@ def render_module_1():
             st.markdown("- [Engage & Manage: 120 Review Comments](https://engageandmanage.com/blog/performance-review-example-phrases-comments/)")
             return
 
-        # Role-specific examples
         st.markdown("### 🌐 General Review Templates and Examples")
         st.markdown("- [Native Teams: 30 Role-Based Review Examples](https://nativeteams.com/blog/performance-review-examples)")
         st.markdown("- [BetterUp: 53 Performance Review Examples](https://www.betterup.com/blog/performance-review-examples)")
         st.markdown("- [Indeed: Review Template Library](https://www.indeed.com/career-advice/career-development/performance-review-template)")
 
-    # Section 2: Generate custom review
+    # 2️⃣ Role Input for Review Generation
     st.markdown("---")
     st.subheader("🧾 Generate a Custom Job Review")
 
-    review_input = st.text_input("Enter a role to generate a custom review", placeholder="e.g., steel machinist, processor, engineer, project manager, executive")
+    review_input = st.text_input("Enter a role to generate a custom review", placeholder="e.g., diesel mechanic, federal grant writer")
 
+    # 3️⃣ Notes Input
+    notes_input = st.text_area("Notes to add (optional)", placeholder="e.g., I work second shift, handle QA reports, and train new hires")
+
+    # 4️⃣ Buttons
     if st.button("Generate Review"):
         if review_input:
-            generate_job_review(review_input)
+            generate_job_review(review_input, notes_input)
         else:
             st.warning("Please enter a role to generate a review.")
+
+    if st.button("Regenerate Review"):
+        if review_input:
+            generate_job_review(review_input, notes_input)
+        else:
+            st.warning("Please enter a role to regenerate the review.")
     
 def render_module_2():
     st.title("📄 Job Description Generator")
