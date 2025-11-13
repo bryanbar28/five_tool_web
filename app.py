@@ -46,38 +46,33 @@ selected_page = st.sidebar.selectbox("Choose a page", PAGES)
 # -------------------------------
 # 🧩 Module Logic
 # -------------------------------
-def render_module_1():
-    st.title("🧠 Behavioral Intelligence App")
+def render_template_discovery():
+    st.title("🧠 Behavioral Intelligence App — Template Discovery")
 
-    role_query = st.text_input("Ask me: What does a generic job review look like for a...", placeholder="e.g., project manager, chef, frontline inspector")
+    role_query = st.text_input("Ask me anything about job reviews, templates, or phrases", placeholder="e.g., teacher, chef, I need help writing a review")
 
     if role_query:
-        st.markdown(f"🔍 Looking for generic job review templates for: **{role_query}**")
+        st.markdown(f"🔍 Searching for job review resources related to: **{role_query}**")
 
-        role = role_query.lower()
+        # Conversational fallback for vague questions
+        if "phrases" in role_query.lower() or "statements" in role_query.lower() or "help me" in role_query.lower():
+            st.markdown("### 💬 Helpful Job Review Phrases & Statements")
+            st.markdown("- [240 Performance Review Phrases](https://peoplemanagingpeople.com/performance-management/performance-review-phrases/)")
+            st.markdown("- [120 Example Comments for Reviews](https://engageandmanage.com/blog/performance-review-example-phrases-comments/)")
+            st.markdown("- [Job Knowledge Phrases](https://status.net/articles/job-knowledge-performance-review-phrases-paragraphs-examples/)")
+            return
 
-        if "project manager" in role:
-            st.markdown("### 📄 Templates for Project Managers")
-            st.markdown("- [ScaleTime Project Manager Review Examples](https://scaletime.co/blog/project-manager-performance-review-examples)")
-            st.markdown("- [WorkStory Project Manager Template](https://www.workstory.team/review-example/project-manager)")
-            st.markdown("- [Status.net Performance Review Templates](https://status.net/articles/performance-review-templates-and-examples/)")
-
-        elif "chef" in role:
-            st.markdown("### 🍳 Templates for Chefs")
-            st.markdown("- [Oysterlink Chef Review Template with KPIs](https://oysterlink.com/spotlight/performance-review-template-chef-kpis-goal-setting/)")
-            st.markdown("- [Chef Evaluation Forms – SampleForms](https://www.sampleforms.com/chef-evaluation-form.html)")
-            st.markdown("- [Performance Reviewer Chef Template](https://performancereviewer.com/download/chef-performance-review-template/)")
-
-        elif "frontline inspector" in role or "medical device" in role:
-            st.markdown("### 🏥 Templates for Medical Device Inspectors")
-            st.markdown("- [Greenlight Guru Medical Device Templates](https://www.greenlight.guru/free-medical-device-templates-checklists)")
-            st.markdown("- [FDA Today Medical Device Templates](https://fdatoday.com/medical-device-templates/)")
-            st.markdown("- [Medical Device HQ Templates](https://medicaldevicehq.com/templates/)")
-
+        # Dynamic results for any role
+        if "teacher" in role_query.lower():
+            st.markdown("### 🧑‍🏫 Templates for Teachers")
+            st.markdown("- [TemplateLab Teacher Evaluation Forms](https://templatelab.com/teacher-evaluation-forms/)")
+            st.markdown("- [WordLayouts Editable Teacher Form](https://www.wordlayouts.com/teacher-evaluation-form/)")
+            st.markdown("- [Performance Reviewer Template](https://performancereviewer.com/download/teacher-performance-review-template/)")
         else:
-            st.warning("No specific templates found for that role. Try a more common title or explore general resources:")
-            st.markdown("- [Indeed Performance Review Templates](https://www.indeed.com/career-advice/career-development/performance-review-template)")
+            st.markdown("### 🌐 General Resources You Can Use for Any Role")
+            st.markdown("- [Indeed Review Templates](https://www.indeed.com/career-advice/career-development/performance-review-template)")
             st.markdown("- [Teamflect Manager Review Examples](https://teamflect.com/blog/performance-management/manager-performance-review-examples)")
+            st.markdown("- [Template.net Performance Review Forms](https://www.template.net/business/teacher-performance-evaluation/)")
             
 def render_module_2():
     st.title("📄 Job Description Generator")
