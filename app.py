@@ -58,32 +58,49 @@ def render_module_1():
             generate_job_review(job_query)
         else:
             st.warning("Please enter a query to generate a review.")
-    def generate_job_review(query):
-        st.info(f"Searching for job review related to: **{query}**")
+    # -------------------------------
+# 🔍 Job Review Generator Logic
+# -------------------------------
+def generate_job_review(query):
+    st.info(f"Searching for job review related to: **{query}**")
 
-        # Basic keyword matching for demo purposes
-        if "chef" in query.lower():
-            st.markdown("### 🧾 Sample Job Review for Chef")
-            st.write("""
-            **Role**: Chef  
-            **Industry**: Kitchen / Restaurant  
-            **Review Summary**:  
-            The chef consistently demonstrates exceptional culinary skills, maintains high hygiene standards, and leads the kitchen team with professionalism. Areas for improvement include menu innovation and cost control strategies.
-            """)
-        elif "event planner" in query.lower():
-            st.markdown("### 🧾 Sample Job Review for Event Planner")
-            st.write("""
-            **Role**: Event Planner  
-            **Industry**: Public Sector / Economic Development  
-            **Review Summary**:  
-            The event planner excels at coordinating logistics, managing vendor relationships, and executing high-impact community events. Strengths include stakeholder communication and budget adherence. Opportunities for growth include digital engagement and post-event analytics.
-            """)
+    if "chef" in query.lower():
+        st.markdown("### 🧾 Sample Job Review for Chef")
+        st.write("""
+        **Role**: Chef  
+        **Industry**: Kitchen / Restaurant  
+        **Review Summary**:  
+        The chef consistently demonstrates exceptional culinary skills, maintains high hygiene standards, and leads the kitchen team with professionalism. Areas for improvement include menu innovation and cost control strategies.
+        """)
+    elif "event planner" in query.lower():
+        st.markdown("### 🧾 Sample Job Review for Event Planner")
+        st.write("""
+        **Role**: Event Planner  
+        **Industry**: Public Sector / Economic Development  
+        **Review Summary**:  
+        The event planner excels at coordinating logistics, managing vendor relationships, and executing high-impact community events. Strengths include stakeholder communication and budget adherence. Opportunities for growth include digital engagement and post-event analytics.
+        """)
+    else:
+        st.warning("No specific review found for that role. Try a more common title or industry.")
+        st.markdown("#### 🔗 General Performance Review Resources")
+        st.markdown("- [120 Performance Review Phrases](https://engageandmanage.com/blog/performance-review-example-phrases-comments/)")
+        st.markdown("- [Job Knowledge Review Examples](https://status.net/articles/job-knowledge-performance-review-phrases-paragraphs-examples/)")
+        st.markdown("- [53 Performance Review Templates](https://www.betterup.com/blog/performance-review-examples)")
+    # -------------------------------
+# 🧠 Behavioral Intelligence App
+# -------------------------------
+def render_module_1():
+    st.title("🧠 Behavioral Intelligence App")
+
+    job_query = st.text_input("Example: Find job review for certain industries", placeholder="e.g., A project manager in the aerospace industry")
+    review_query = st.text_input("Example: Generate generic performance review for certain industry", placeholder="e.g., chef for kitchen")
+
+    if st.button("🔍 Generate Review"):
+        query = review_query or job_query
+        if query:
+            generate_job_review(query)
         else:
-            st.warning("No specific review found for that role. Try a more common title or industry.")
-            st.markdown("#### 🔗 General Performance Review Resources")
-            st.markdown("- [120 Performance Review Phrases](https://engageandmanage.com/blog/performance-review-example-phrases-comments/)")
-            st.markdown("- [Job Knowledge Review Examples](https://status.net/articles/job-knowledge-performance-review-phrases-paragraphs-examples/)")
-            st.markdown("- [53 Performance Review Templates](https://www.betterup.com/blog/performance-review-examples)")
+            st.warning("Please enter a query to generate a review.")
             
 def render_module_2():
     st.title("📄 Job Description Generator")
