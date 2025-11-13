@@ -247,12 +247,14 @@ def render_module_2():
     st.title("📄 Job Description Generator")
     st.markdown("⚠️ **Disclaimer:** All work generated on this page will not be saved unless you subscribe to Repository Access.")
 
-    # 1️⃣ Conversational Discovery
-    query = st.text_input("Ask me anything about creating a job description", placeholder="e.g., how to write a job description for a project manager")
-    if query:
+# 1️⃣ Conversational Discovery
+query = st.text_input("Ask me anything about creating a job description", placeholder="e.g., how to write a job description for a project manager")
+
+if query:
     st.markdown(f"🔍 You asked: **{query}**")
     q_lower = query.lower()
 
+    # ✅ Static responses for common queries
     if "what is a job description" in q_lower or "define job description" in q_lower:
         st.markdown("### 📘 What Is a Job Description?")
         st.markdown("""
