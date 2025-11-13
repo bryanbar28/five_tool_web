@@ -47,8 +47,37 @@ selected_page = st.sidebar.selectbox("Choose a page", PAGES)
 # -------------------------------
 def render_module_1():
     st.title("🧠 Behavioral Intelligence App")
-    st.text_input("Example: Find job review for certain industries")
-    st.text_input("Example: Generate generic performance review for certain industry")
+
+    job_query = st.text_input("Example: Find job review for certain industries", placeholder="e.g., I need a chef for a mom and pop restaurant")
+    review_query = st.text_input("Example: Generate generic performance review for certain industry", placeholder="e.g., chef for kitchen")
+
+    if st.button("🔍 Generate Review"):
+        if review_query:
+            generate_job_review(review_query)
+        elif job_query:
+            generate_job_review(job_query)
+        else:
+            st.warning("Please enter a query to generate a review.")
+            def generate_job_review(query):
+    st.info(f"Searching for job review related to: **{query}**")
+
+    # Simulated AI response (replace with actual API or search logic)
+    st.markdown("### 🧾 Sample Job Review for Chef")
+    st.write("""
+    **Role**: Chef  
+    **Industry**: Kitchen / Restaurant  
+    **Review Summary**:  
+    The chef consistently demonstrates exceptional culinary skills, maintains high hygiene standards, and leads the kitchen team with professionalism. Areas for improvement include menu innovation and cost control strategies.
+    """)
+
+    st.markdown("🔗 [Detailed Chef Performance Review Template](https://oysterlink.com/spotlight/performance-review-template-chef-kpis-goal-setting/)")  # Source 
+
+    st.markdown("#### 🔗 Useful Templates & Examples")
+    st.markdown("- [Chef Performance Review Template with KPIs](https://oysterlink.com/spotlight/performance-review-template-chef-kpis-goal-setting/)")
+    st.markdown("- [51+ Restaurant Worker Review Examples](https://foodtruckempire.com/jobs/performance-review-for-restaurant-workers/)")
+    st.markdown("- [Chef Evaluation Form Samples](https://www.sampleforms.com/chef-evaluation-form.html)")
+    st.markdown("- [Chef Cook Performance Review Template](https://performancereviewer.com/download/chef-cook-performance-review-template/)")
+
 
 def render_module_2():
     st.title("📄 Job Description Generator")
