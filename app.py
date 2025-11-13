@@ -1,7 +1,7 @@
 import streamlit as st
 
 # =============================================
-# ✅ Unified Streamlit App Code (English Only)
+# ✅ Unified Streamlit App with AI-Powered SWOT
 # =============================================
 
 # -------------------------------
@@ -47,22 +47,16 @@ selected_page = st.sidebar.selectbox("Choose a page", PAGES)
 # -------------------------------
 def render_module_1():
     st.title("🧠 Behavioral Intelligence App")
-    query = st.text_input("Enter your query (e.g., Find job review for certain industries)")
-    if st.button("Generate Insights"):
-        st.write(f"AI Response for: {query}")
-        # Placeholder for AI-powered logic
+    st.text_input("Example: Find job review for certain industries")
+    st.text_input("Example: Generate generic performance review for certain industry")
 
 def render_module_2():
     st.title("📄 Job Description Generator")
-    jd_input = st.text_area("Paste job description or request one by role")
-    if st.button("Generate Job Description"):
-        st.write(f"AI-generated job description for: {jd_input}")
+    st.text_area("Paste job description or request one by role")
 
 def render_module_3():
     st.title("📋 Performance Review Generator")
-    review_input = st.text_area("Paste review or request one by role")
-    if st.button("Generate Performance Review"):
-        st.write(f"AI-generated performance review for: {review_input}")
+    st.text_area("Paste review or request one by role")
 
 def render_module_4():
     st.title("⚾ Behavior Under Pressure Grid")
@@ -95,9 +89,22 @@ def render_module_7():
 def render_module_8():
     st.title("📊 SWOT 2.0 Strategic Framework")
     st.markdown("Designed by Bryan Barrera & Microsoft Copilot")
-    st.text_area("Additional Notes and Input")
-    st.text_area("AI Chat: Ask for SWOT templates, Lean tools, Fishbone diagrams")
-    st.button("Generate SWOT")
+
+    notes = st.text_area("Additional Notes and Input")
+    ai_chat = st.text_area("AI Chat: Ask for SWOT templates, Lean tools, Fishbone diagrams")
+
+    if st.button("🎯 Generate AI-Powered SWOT"):
+        # Placeholder AI logic (replace with OpenAI API later)
+        strengths = f"Strengths based on input: {notes[:50]}..."
+        weaknesses = f"Weaknesses based on input: {notes[:50]}..."
+        opportunities = f"Opportunities based on input: {ai_chat[:50]}..."
+        threats = f"Threats based on input: {ai_chat[:50]}..."
+
+        st.subheader("✅ Generated SWOT Analysis")
+        st.write("**Strengths:**", strengths)
+        st.write("**Weaknesses:**", weaknesses)
+        st.write("**Opportunities:**", opportunities)
+        st.write("**Threats:**", threats)
 
 def render_module_9():
     st.title("🏢 M&A Intelligence (Premium)")
@@ -146,7 +153,7 @@ PAGE_RENDERERS = {
 
 if selected_page in PAID_PAGES:
     if is_unlocked(selected_page):
-        PAGE_RENDERERS[selected_page]()
+        PAGE_RENDERERSselected_page
     else:
         unlock_page(selected_page, PAID_PAGES[selected_page])
 else:
