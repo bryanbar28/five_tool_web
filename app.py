@@ -147,6 +147,22 @@ def generate_job_review(role, notes=None):
 # -------------------------------
 def render_module_1():
     st.title("🤖 AI HR Assistant — Job Reviews")
+    # 🔐 Access Control Logic
+def is_subscribed():
+    # Placeholder logic — replace with real subscription check later
+    return False
+
+# 🔘 Save Review Button
+if is_subscribed():
+    st.button("💾 Save Review to Repository")
+else:
+    st.button("💾 Save Review to Repository", disabled=True, help="Requires Repository Access")
+
+# 🔘 Create Folder Button
+if is_subscribed():
+    st.button("📂 Create New Folder")
+else:
+    st.button("📂 Create New Folder", disabled=True, help="Requires Repository Access")
 
     # 🔐 Repository Access (Always visible at top)
     st.markdown("---")
