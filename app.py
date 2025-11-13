@@ -94,7 +94,6 @@ def render_module_8():
     ai_chat = st.text_area("AI Chat: Ask for SWOT templates, Lean tools, Fishbone diagrams")
 
     if st.button("🎯 Generate AI-Powered SWOT"):
-        # Placeholder AI logic (replace with OpenAI API later)
         strengths = f"Strengths based on input: {notes[:50]}..."
         weaknesses = f"Weaknesses based on input: {notes[:50]}..."
         opportunities = f"Opportunities based on input: {ai_chat[:50]}..."
@@ -151,10 +150,7 @@ PAGE_RENDERERS = {
     PAGES[11]: render_module_12
 }
 
-if selected_page in PAID_PAGES:
-    if is_unlocked(selected_page):
-        PAGE_RENDERERSselected_page
-    else:
-        unlock_page(selected_page, PAID_PAGES[selected_page])
+if selected_page in PAID_PAGES and not is_unlocked(selected_page):
+    unlock_page(selected_page, PAID_PAGES[selected_page])
 else:
-    PAGE_RENDERERSselected_page
+    PAGE_RENDERERS[selected_page]()
