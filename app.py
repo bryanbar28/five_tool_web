@@ -148,8 +148,27 @@ def generate_job_review(role, notes=None):
 def render_module_1():
     st.title("🤖 AI HR Assistant — Job Reviews")
 
+    # 🔐 Repository Access (Always visible at top)
+    st.markdown("---")
+    st.markdown("## 📁 Repository Access")
+
+    st.markdown("""
+    Everything on this page is free — explore job reviews, ask questions, and generate custom insights.
+
+    If you'd like to **store your work**, **save reviews**, or **create files and folders**, you'll need a repository subscription.
+
+    💼 **Repository Access**: $9.99/month  
+    Includes:
+    - Unlimited saved reviews  
+    - Folder creation and organization  
+    - Export to PDF, DOCX, or CSV  
+    - Private workspace with version history
+
+    🔐 [Upgrade to Repository Access](https://buy.stripe.com/14AcN5ghFapx7Jz5xM6oo00)
+    """)
+
     # 1️⃣ Conversational Discovery
-    role_query = st.text_input("Ask me anything about job reviews, templates, or phrases", key="role_query", placeholder="e.g., steel machinist, mechanic, I need help writing a review")
+    role_query = st.text_input("Ask me anything about job reviews, templates, or phrases", placeholder="e.g., steel machinist, mechanic, I need help writing a review")
     if role_query:
         st.markdown(f"🔍 You asked: **{role_query}**")
         role = role_query.lower()
@@ -178,12 +197,9 @@ def render_module_1():
         st.markdown("- [Indeed: Review Template Library](https://www.indeed.com/career-advice/career-development/performance-review-template)")
 
     # 2️⃣ Role Input
-    review_input = st.text_input("Enter a role to generate a custom review", key="review_input", placeholder="e.g., diesel mechanic, federal grant writer")
+    review_input = st.text_input("Enter a role to generate a custom review", placeholder="e.g., diesel mechanic, federal grant writer")
 
-    # 3️⃣ Notes Input
-    notes_input = st.text_area("Notes to add (optional)", key="notes_input", placeholder="e.g., I work second shift, handle QA reports, and train new hires")
-
-    # 4️⃣ Generate Review Button
+    # 3️⃣ Generate Review Button
     if st.button("Generate Review"):
         if review_input:
             review_text = generate_job_review(review_input)
@@ -191,6 +207,9 @@ def render_module_1():
             st.session_state.show_repository = True
         else:
             st.warning("Please enter a role to generate a review.")
+
+    # 4️⃣ Notes Input
+    notes_input = st.text_area("Notes to add (optional)", placeholder="e.g., I work second shift, handle QA reports, and train new hires")
 
     # 5️⃣ Regenerate Review Button
     if st.button("Regenerate Review"):
@@ -200,26 +219,6 @@ def render_module_1():
             st.session_state.show_repository = True
         else:
             st.warning("Please enter a role to regenerate the review.")
-
-    # 6️⃣ Repository Access (Bottom of Page)
-    if st.session_state.show_repository:
-        st.markdown("---")
-        st.markdown("## 6️⃣ Repository Access")
-
-        st.markdown("""
-        Everything on this page is free — explore job reviews, ask questions, and generate custom insights.
-
-        If you'd like to **store your work**, **save reviews**, or **create files and folders**, you'll need a repository subscription.
-
-        💼 **Repository Access**: $9.99/month  
-        Includes:
-        - Unlimited saved reviews  
-        - Folder creation and organization  
-        - Export to PDF, DOCX, or CSV  
-        - Private workspace with version history
-
-        🔐 [Upgrade to Repository Access](https://buy.stripe.com/14AcN5ghFapx7Jz5xM6oo00)
-        """)
         
 def render_module_2():
     st.title("📄 Job Description Generator")
