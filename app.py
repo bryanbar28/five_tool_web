@@ -205,6 +205,97 @@ def render_module_1():
 def render_module_2():
     st.title("📄 Job Description Generator")
     st.text_area("Paste job description or request one by role")
+    def generate_job_description(role, notes=None):
+    st.info(f"🔍 Generating job description for: **{role}**")
+
+    prompt = f"""
+    Write a detailed, professional job description for the role: {role}.
+    Include the following sections:
+    - Job Title
+    - Job Summary
+    - Key Responsibilities
+    - Required Skills & Qualifications
+    - Preferred Experience
+    - Compensation & Benefits
+    - Work Schedule
+    - Career Path
+
+    Make it clear, practical, and industry-relevant.
+    """
+
+    if notes:
+        prompt += f"\n\nIncorporate these user-provided notes:\n{notes}"
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are an HR specialist writing accurate and engaging job descriptions."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+            max_tokens=900
+        )
+
+        description_text = response.choices[0].message.content
+        st.markdown("### 🧾 Generated Job Description")
+        st.write(description_text)
+        return description_text
+
+    except Exception as e:
+        st.error(f"❌ Error generating job description: {e}")
+
+
+def render_module_2():
+    st.title("📄 Job Description Generator")
+    st.markdown("⚠️ **Disclaimer:** All work generated on this page will not be saved unless you subscribe to Repository Access.")
+
+    # 1️⃣ Conversational Discovery
+    query = st.text_input("Ask me anything about creating a job description", placeholder="e.g., how to write a job description for a project manager")
+    if query:
+        st.markdown(f"🔍 You asked: **{query}**")
+        q_lower = query.lower()
+
+        if "what is a job description" in q_lower or "define job description" in q_lower:
+            st.markdown("### 📘 What Is a Job Description?")
+            st.markdown("""
+            A **job description** is a formal document outlining the duties, responsibilities, qualifications, and expectations for a specific role. It helps:
+            - Attract qualified candidates
+            - Set clear performance standards
+            - Align hiring with organizational goals
+            """)
+            return
+
+        if "help" in q_lower or "examples" in q_lower or "templates" in q_lower:
+            st.markdown("### 🌐 Helpful Job Description Resources")
+            st.markdown("- Indeed: Job Description Samples")
+            st.markdown("- BetterTeam: Job Description Templates")
+            st.markdown("- SHRM: Writing Effective Job Descriptions")
+            return
+
+    # 2️⃣ Role Input
+    role_input = st.text_input("Enter a generic role to create a skeleton of the job description", placeholder="e.g., software engineer, HR manager")
+
+    # 3️⃣ Generate Job Description Button
+    if st.button("Generate Job Description"):
+        if role_input:
+            description_text = generate_job_description(role_input)
+            st.session_state.initial_description = description_text
+            st.session_state.show_repository = True
+        else:
+            st.warning("Please enter a role to generate a job description.")
+
+    # 4️⃣ Notes Input
+    notes_input = st.text_area("Notes to add (optional)", placeholder="e.g., remote work, bilingual preferred, experience with ERP systems")
+
+    # 5️⃣ Regenerate Button
+    if st.button("Regenerate Job Description"):
+        if role_input:
+            combined_notes = f"{st.session_state.initial_description}\n\nAdditional notes:\n{notes_input}"
+            generate_job_description(role_input, combined_notes)
+            st.session_state.show_repository = True
+        else:
+            st.warning("Please enter a role to regenerate the job description.")
 
 def render_module_3():
     st.title("📋 Performance Review Generator")
