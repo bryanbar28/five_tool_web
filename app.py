@@ -255,23 +255,21 @@ if query:
     q_lower = query.lower()
 
     # ✅ Static responses for common queries
-    if "what is a job description" in q_lower or "define job description" in q_lower:
-        st.markdown("### 📘 What Is a Job Description?")
-        st.markdown("""
-        A **job description** is a formal document outlining the duties, responsibilities, qualifications, and expectations for a specific role. It helps:
-        - Attract qualified candidates
-        - Set clear performance standards
-        - Align hiring with organizational goals
-        """)
-        st.stop()
+if "what is a job description" in q_lower or "define job description" in q_lower:
+    st.markdown("### 📘 What Is a Job Description?")
+    st.markdown("""
+    A **job description** is a formal document outlining the duties, responsibilities, qualifications, and expectations for a specific role. It helps:
+    - Attract qualified candidates
+    - Set clear performance standards
+    - Align hiring with organizational goals
+    """)
+    return  # ✅ instead of st.stop()
 
-    if "help" in q_lower or "examples" in q_lower or "templates" in q_lower:
-        st.markdown("### 🌐 Helpful Job Description Resources")
-        st.markdown("- Indeed: Job Description Samples")
-        st.markdown("- BetterTeam: Job Description Templates")
-        st.markdown("- SHRM: Writing Effective Job Descriptions")
-        st.stop()
-
+if "help" in q_lower or "examples" in q_lower or "templates" in q_lower:
+    st.markdown("### 🌐 Helpful Job Description Resources")
+    st.markdown("- [Indeed: Job Description Samples](https://www.indeed.com/hire/job-descriptionion Templates")
+    st.markdown("- SHRM: Writing Effective Job Descriptions")
+    return  # ✅ instead of st.stop()
     # ✅ AI-powered fallback for other queries
     try:
         response = client.chat.completions.create(
