@@ -184,6 +184,7 @@ def render_module_1():
         if review_input:
             review_text = generate_job_review(review_input)
             st.session_state.initial_review = review_text
+            st.session_state.show_repository = True
         else:
             st.warning("Please enter a role to generate a review.")
 
@@ -195,11 +196,14 @@ def render_module_1():
         if review_input:
             combined_notes = f"{st.session_state.initial_review}\n\nAdditional notes:\n{notes_input}"
             generate_job_review(review_input, combined_notes)
+            st.session_state.show_repository = True
         else:
             st.warning("Please enter a role to regenerate the review.")
         st.markdown("---")
-
-st.subheader("📁 Repository Access")
+    if st.session_state.show_repository:
+            st.markdown("---")
+            st.subheader("📁 Repository Access")
+            st.subheader("📁 Repository Access")
 
 st.markdown("""
 Everything on this page is free — explore job reviews, ask questions, and generate custom insights.
