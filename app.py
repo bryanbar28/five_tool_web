@@ -45,64 +45,65 @@ selected_page = st.sidebar.selectbox("Choose a page", PAGES)
 
 # -------------------------------
 # 🔍 OpenAI Setup
-# -------------------------------
 client = OpenAI()
 
 # -------------------------------
 # 🧠 Template Discovery Module
 # -------------------------------
 def render_template_discovery():
-    st.title("🧠 Behavioral Intelligence App — Template Discovery")
+    # your template discovery logic...
 
-    role_query = st.text_input(
-        "Ask me anything about job reviews, templates, or phrases",
-        placeholder="e.g., teacher, chef, I need help writing a review"
-    )
+# -------------------------------
+# 🎬 Gritty Job Review Generator
+# -------------------------------
+def generate_job_review(query):
+    st.info(f"🎥 Generating gritty, role-specific job review for: **{query}**")
 
-    if role_query:
-        st.markdown(f"🔍 Searching for job review resources related to: **{role_query}**")
-        role = role_query.lower()
+    prompt = f"""
+    Write a brutally honest, insider-style job review for the role: {query}.
+    Use the voice of a veteran in the field. Include:
+    - Overall rating (1–5)
+    - What the job actually involves (percent breakdown)
+    - Pay, hours, bonuses
+    - Pros and cons (real talk)
+    - Red flags to ask in interviews
+    - Career path
+    - A hot take to close it out
 
-        # Conversational fallback for vague questions
-        if "phrases" in role or "statements" in role or "help me" in role:
-            st.markdown("### 💬 Helpful Job Review Phrases & Statements")
-            st.markdown("- [240 Performance Review Phrases](https://peoplemanagingpeople.com/performance-management/performance-review-phrases/)")
-            st.markdown("- [120 Example Comments for Reviews](https://engageandmanage.com/blog/performance-review-example-phrases-comments/)")
-            st.markdown("- [Job Knowledge Phrases](https://status.net/articles/job-knowledge-performance-review-phrases-paragraphs-examples/)")
-            return
+    Make it sound like a voiceover script for a video. Use bullet points and bold formatting.
+    """
 
-        # Role-specific templates (expandable)
-        if "teacher" in role:
-            st.markdown("### 🧑‍🏫 Templates for Teachers")
-            st.markdown("- [TemplateLab Teacher Evaluation Forms](https://templatelab.com/teacher-evaluation-forms/)")
-            st.markdown("- [WordLayouts Editable Teacher Form](https://www.wordlayouts.com/teacher-evaluation-form/)")
-            st.markdown("- [Performance Reviewer Template](https://performancereviewer.com/download/teacher-performance-review-template/)")
-        elif "chef" in role:
-            st.markdown("### 🍳 Templates for Chefs")
-            st.markdown("- [Oysterlink Chef Review Template with KPIs](https://oysterlink.com/spotlight/performance-review-template-chef-kpis-goal-setting/)")
-            st.markdown("- [Chef Evaluation Forms – SampleForms](https://www.sampleforms.com/chef-evaluation-form.html)")
-            st.markdown("- [Performance Reviewer Chef Template](https://performancereviewer.com/download/chef-performance-review-template/)")
-        elif "project manager" in role:
-            st.markdown("### 📄 Templates for Project Managers")
-            st.markdown("- [ScaleTime Project Manager Review Examples](https://scaletime.co/blog/project-manager-performance-review-examples)")
-            st.markdown("- [WorkStory Project Manager Template](https://www.workstory.team/review-example/project-manager)")
-            st.markdown("- [Status.net Performance Review Templates](https://status.net/articles/performance-review-templates-and-examples/)")
-        elif "frontline inspector" in role or "medical device" in role:
-            st.markdown("### 🏥 Templates for Medical Device Inspectors")
-            st.markdown("- [Greenlight Guru Medical Device Templates](https://www.greenlight.guru/free-medical-device-templates-checklists)")
-            st.markdown("- [FDA Today Medical Device Templates](https://fdatoday.com/medical-device-templates/)")
-            st.markdown("- [Medical Device HQ Templates](https://medicaldevicehq.com/templates/)")
-        else:
-            st.markdown("### 🌐 General Resources You Can Use for Any Role")
-            st.markdown("- [Indeed Review Templates](https://www.indeed.com/career-advice/career-development/performance-review-template)")
-            st.markdown("- [Teamflect Manager Review Examples](https://teamflect.com/blog/performance-management/manager-performance-review-examples)")
-            st.markdown("- [Template.net Performance Review Forms](https://www.template.net/business/teacher-performance-evaluation/)")
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are a gritty, experienced tradesperson writing job reviews for video scripts."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.85,
+            max_tokens=800
+        )
+
+        review_text = response.choices[0].message.content
+        st.markdown("### 🎬 Real-World Job Review")
+        st.write(review_text)
+
+    except Exception as e:
+        st.error(f"❌ Error generating review: {e}")
 
 # -------------------------------
 # ✅ Module 1 Wrapper
 # -------------------------------
 def render_module_1():
     render_template_discovery()
+
+    # Add a second input field and button to trigger review generation
+    role_input = st.text_input("Want a gritty video-style job review?", placeholder="e.g., steel machinist, diesel mechanic")
+    if st.button("🎬 Generate Real-World Review"):
+        if role_input:
+            generate_job_review(role_input)
+        else:
+            st.warning("Please enter a role to generate a review.")
     
 def render_module_2():
     st.title("📄 Job Description Generator")
