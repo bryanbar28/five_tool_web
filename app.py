@@ -1,116 +1,26 @@
 import streamlit as st
-import os
-# -------------------------------
-# 🗣️ Translation System
-# -------------------------------
-TRANSLATIONS = {
-    "en": {
-        "select_language": "🌍 Select Language",
-        "choose_page": "📂 Choose a Page",
-        "subscription_required": "This page requires a subscription.",
-        "generate_profile": "🎯 Generate Profile",
-        "additional_notes": "📝 Additional Notes"
-    },
-    "es": {
-        "select_language": "🌍 Seleccionar idioma",
-        "choose_page": "📂 Elegir página",
-        "subscription_required": "Esta página requiere una suscripción.",
-        "generate_profile": "🎯 Generar perfil",
-        "additional_notes": "📝 Notas adicionales"
-    }
-    # You can expand this with more languages later
-}
 
-def t(key):
-    lang = st.session_state.get("language", "en")
-    return TRANSLATIONS.get(lang, TRANSLATIONS["en"]).get(key, key)
-# -------------------------------
-# 🌐 Language Selector
-# -------------------------------
-st.set_page_config(page_title="LC Innovation Platform", layout="wide")
-
-LANGUAGES = {
-    "English": "en",
-    "Español": "es",
-    "Deutsch": "de",
-    "日本語": "ja",
-    "हिन्दी": "hi",
-    "Français": "fr",
-    "العربية": "ar"
-}
-language = st.selectbox(t("select_language"), options=list(LANGUAGES.keys()), index=0)
-st.session_state["language"] = LANGUAGES[language]
-
-TRANSLATIONS = {
-    "en": {
-        "select_language": "🌍 Select Language",
-        "choose_page": "📂 Choose a Page",
-        "subscription_required": "This page requires a subscription.",
-        "generate_profile": "🎯 Generate Profile",
-        "additional_notes": "📝 Additional Notes"
-    },
-    "es": {
-        "select_language": "🌍 Seleccionar idioma",
-        "choose_page": "📂 Elegir página",
-        "subscription_required": "Esta página requiere una suscripción.",
-        "generate_profile": "🎯 Generar perfil",
-        "additional_notes": "📝 Notas adicionales"
-    },
-    "de": {
-        "select_language": "🌍 Sprache auswählen",
-        "choose_page": "📂 Seite auswählen",
-        "subscription_required": "Diese Seite erfordert ein Abonnement.",
-        "generate_profile": "🎯 Profil erstellen",
-        "additional_notes": "📝 Zusätzliche Notizen"
-    },
-    "ja": {
-        "select_language": "🌍 言語を選択",
-        "choose_page": "📂 ページを選択",
-        "subscription_required": "このページにはサブスクリプションが必要です。",
-        "generate_profile": "🎯 プロファイルを生成",
-        "additional_notes": "📝 追加メモ"
-    },
-    "hi": {
-        "select_language": "🌍 भाषा चुनें",
-        "choose_page": "📂 पृष्ठ चुनें",
-        "subscription_required": "इस पृष्ठ के लिए सदस्यता आवश्यक है।",
-        "generate_profile": "🎯 प्रोफ़ाइल बनाएं",
-        "additional_notes": "📝 अतिरिक्त नोट्स"
-    },
-    "fr": {
-        "select_language": "🌍 Choisir la langue",
-        "choose_page": "📂 Choisir une page",
-        "subscription_required": "Cette page nécessite un abonnement.",
-        "generate_profile": "🎯 Générer un profil",
-        "additional_notes": "📝 Notes supplémentaires"
-    },
-    "ar": {
-        "select_language": "🌍 اختر اللغة",
-        "choose_page": "📂 اختر صفحة",
-        "subscription_required": "هذه الصفحة تتطلب اشتراكًا.",
-        "generate_profile": "🎯 إنشاء ملف",
-        "additional_notes": "📝 ملاحظات إضافية"
-    }
-}
+# =============================================
+# ✅ Unified Streamlit App Code (English Only)
+# =============================================
 
 # -------------------------------
-# 🔐 Pricing Access Control
+# 🔐 Subscription Logic (Placeholder)
 # -------------------------------
 PAID_PAGES = {
-    "Page 9: M&A Intelligence": 3.99,
-    "Page 10: Finding the Right Fit": 3.99,
-    "Page 11: Your Ego": 3.99,
-    "Page 12: Repository": 9.99
+    "Page 9: M&A Intelligence": "$19.99/mo",
+    "Page 10: Finding the Right Fit": "$3.99/mo",
+    "Page 11: Your Ego": "$3.99/mo",
+    "Page 12: Repository": "$9.99/mo"
 }
 
+def is_unlocked(page):
+    # Placeholder logic for subscription check
+    return False
 
-def is_unlocked(module_name):
-    return st.session_state.get(f"unlocked_{module_name}", False)
-
-def unlock_module(module_name, price):
-    if st.button(f"🔓 Unlock {module_name} (${price}/mo)"):
-        st.session_state[f"unlocked_{module_name}"] = True
-        st.success(f"{module_name} unlocked!")
+def unlock_page(page, price):
+    st.warning(f"This page requires a subscription: {price}")
+    st.button("Unlock Now")
 
 # -------------------------------
 # 📚 Module Navigation
@@ -130,45 +40,49 @@ PAGES = [
     "Page 12: Repository"
 ]
 
-selected_page = st.sidebar.selectbox(t("choose_page"), PAGES)
+selected_page = st.sidebar.selectbox("Choose a page", PAGES)
 
 # -------------------------------
 # 🧩 Module Logic
 # -------------------------------
 def render_module_1():
     st.title("🧠 Behavioral Intelligence App")
-    st.text_input("e.g. Find job review for certain industries")
-    st.text_input("i.e. Generate generic performance review for certain industry")
+    query = st.text_input("Enter your query (e.g., Find job review for certain industries)")
+    if st.button("Generate Insights"):
+        st.write(f"AI Response for: {query}")
+        # Placeholder for AI-powered logic
 
 def render_module_2():
     st.title("📄 Job Description Generator")
-    st.text_area("Paste job description or request one by role")
+    jd_input = st.text_area("Paste job description or request one by role")
+    if st.button("Generate Job Description"):
+        st.write(f"AI-generated job description for: {jd_input}")
 
 def render_module_3():
     st.title("📋 Performance Review Generator")
-    st.text_area("Paste review or request one by role")
+    review_input = st.text_area("Paste review or request one by role")
+    if st.button("Generate Performance Review"):
+        st.write(f"AI-generated performance review for: {review_input}")
 
 def render_module_4():
     st.title("⚾ Behavior Under Pressure Grid")
     st.image("images/module4_behavior_grid.png")
-    st.text_area(t("additional_notes"))
-    st.button(t("generate_profile"))
+    st.text_area("Additional Notes")
+    st.button("Generate Profile")
 
 def render_module_5():
     st.title("🧠 Behavioral Calibration Grid")
     st.image("images/module5_calibration_grid.png")
-    st.text_area(t("additional_notes"))
-    st.button(t("generate_profile"))
-
+    st.text_area("Additional Notes")
+    st.button("Generate Profile")
 
 def render_module_6():
     st.title("☢️ Toxicity in the Workplace")
     st.image("images/module6_toxicity_scale.png")
     st.image("images/module6_toxicity_scoring.png")
-    st.text_area("🧠 AI Chat: Ask about Padilla, Hogan, Kaiser, Machiavellianism")  # keep this as-is for now
-    st.text_area(t("additional_notes"))
-    st.button(t("generate_profile"))
-
+    st.text_area("AI Chat: Ask about Padilla, Hogan, Kaiser, Machiavellianism")
+    st.text_area("Additional Notes")
+    st.button("Generate Profile")
 
 def render_module_7():
     st.title("🏆 Leadership Eligibility")
@@ -181,23 +95,23 @@ def render_module_7():
 def render_module_8():
     st.title("📊 SWOT 2.0 Strategic Framework")
     st.markdown("Designed by Bryan Barrera & Microsoft Copilot")
-    st.text_area("📝 Additional Notes and Input")
-    st.text_area("🧠 AI Chat: Ask for SWOT templates, Lean tools, Fishbone diagrams")
-    st.button("🎯 Generate SWOT")
+    st.text_area("Additional Notes and Input")
+    st.text_area("AI Chat: Ask for SWOT templates, Lean tools, Fishbone diagrams")
+    st.button("Generate SWOT")
 
 def render_module_9():
     st.title("🏢 M&A Intelligence (Premium)")
-    st.warning(t("subscription_required"))
-    st.file_uploader("📁 Upload Resumes", accept_multiple_files=True)
-    st.file_uploader("📄 Upload Job Descriptions", accept_multiple_files=True)
-    st.file_uploader("📋 Upload Performance Reviews", accept_multiple_files=True)
-    st.file_uploader("📁 Upload Training & Education Records", accept_multiple_files=True)
-    st.text_area("🏢 Branch Data: Name, Location, Benefits")
-    st.button("📊 Generate Analysis")  # optional to translate later
+    st.warning("Subscription required")
+    st.file_uploader("Upload Resumes", accept_multiple_files=True)
+    st.file_uploader("Upload Job Descriptions", accept_multiple_files=True)
+    st.file_uploader("Upload Performance Reviews", accept_multiple_files=True)
+    st.file_uploader("Upload Training & Education Records", accept_multiple_files=True)
+    st.text_area("Branch Data: Name, Location, Benefits")
+    st.button("Generate Analysis")
 
 def render_module_10():
     st.title("📘 Finding the Right Fit (Book)")
-    st.warning(t("subscription_required"))
+    st.warning("Subscription required")
     st.markdown("Coming Soon: AI-assisted workbook experience")
 
 def render_module_11():
@@ -208,9 +122,9 @@ def render_module_11():
 def render_module_12():
     st.title("🗂️ Repository (Premium)")
     st.warning("This module requires a $9.99/mo subscription.")
-    st.file_uploader("📁 Upload any file to store")
-    st.text_area("📝 Save generated profiles or notes")
-    st.button("💾 Save to Repository")
+    st.file_uploader("Upload any file to store")
+    st.text_area("Save generated profiles or notes")
+    st.button("Save to Repository")
 
 # -------------------------------
 # 🚀 Module Execution
@@ -236,6 +150,4 @@ if selected_page in PAID_PAGES:
     else:
         unlock_page(selected_page, PAID_PAGES[selected_page])
 else:
-    PAGE_RENDERERS[selected_page]()
-
-
+    PAGE_RENDERERSselected_page
