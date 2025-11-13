@@ -54,7 +54,9 @@ PAGES = [
 ]
 
 selected_page = st.sidebar.selectbox("Choose a page", PAGES)
-
+# ✅ Page Routing Logic
+if selected_page == "Page 1: AI HR Assistant - Job Reviews":
+    render_module_1()
 # -------------------------------
 # 🔍 OpenAI Setup
 client = OpenAI()
