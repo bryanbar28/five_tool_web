@@ -201,7 +201,7 @@ def render_module_1():
         else:
             st.warning("Please enter a role to regenerate the review.")
 
-    # 6️⃣ Repository Access (Only after interaction)
+    # 6️⃣ Repository Access (Bottom of Page)
     if st.session_state.show_repository:
         st.markdown("---")
         st.markdown("## 6️⃣ Repository Access")
@@ -220,6 +220,7 @@ def render_module_1():
 
         🔐 [Upgrade to Repository Access](https://buy.stripe.com/14AcN5ghFapx7Jz5xM6oo00)
         """)
+        
 def render_module_2():
     st.title("📄 Job Description Generator")
     st.text_area("Paste job description or request one by role")
