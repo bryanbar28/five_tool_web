@@ -266,11 +266,11 @@ if query:
         - Align hiring with organizational goals
         """)
         return
-
     if "help" in q_lower or "examples" in q_lower or "templates" in q_lower:
         st.markdown("### 🌐 Helpful Job Description Resources")
         st.markdown("- Indeed: Job Description Samples")
-        st.markdown("- [BetterTeam: Job Description Templates](https://www.brkdown("- SHRM: Writing Effective Job Descriptions")
+        st.markdown("- BetterTeam: Job Description Templates")
+        st.markdown("- SHRM: Writing Effective Job Descriptions")
         return
 
     # ✅ AI fallback
