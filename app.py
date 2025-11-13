@@ -270,7 +270,8 @@ def render_module_2():
 
         if "help" in q_lower or "examples" in q_lower or "templates" in q_lower:
             st.markdown("### 🌐 Helpful Job Description Resources")
-            st.markdown("- [Indeed: Job Description Samples)
+            st.markdown("- Indeed: Job Description Samples")
+            st.markdown("- [BetterTeam: Job Description Templates")
             st.markdown("- BetterTeam: Job Description Templates")
             st.markdown("- SHRM: Writing Effective Job Descriptions")
             return  # ✅ inside the function
