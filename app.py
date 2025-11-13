@@ -277,12 +277,23 @@ def render_module_11():
     st.warning("This book requires a $3.99/mo subscription.")
     st.markdown("Coming Soon: Interactive reading experience")
 
-def render_module_12():
-    st.title("🗂️ Repository (Premium)")
-    st.warning("This module requires a $9.99/mo subscription.")
-    st.file_uploader("Upload any file to store")
-    st.text_area("Save generated profiles or notes")
-    st.button("Save to Repository")
+def render_subscribe_page():
+    st.title("🔐 Subscribe to Repository Access")
+
+    st.markdown("""
+    Unlock full functionality with a Repository subscription:
+
+    💼 **$9.99/month**  
+    Includes:
+    - Unlimited saved reviews  
+    - Folder creation and organization  
+    - Export to PDF, DOCX, or CSV  
+    - Private workspace with version history
+
+    🔐 [Upgrade to Repository Access](https://buy.stripe.com/14AcN5ghFapx7Jz5xM6oo00)
+
+    Once subscribed, access buttons on all pages will be enabled.
+    """)
 
 # -------------------------------
 # 🚀 Module Execution
