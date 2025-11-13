@@ -90,7 +90,6 @@ def generate_job_review(query):
 
     except Exception as e:
         st.error(f"❌ Error generating review: {e}")
-
 # -------------------------------
 # ✅ Module 1 Wrapper
 # -------------------------------
