@@ -97,6 +97,13 @@ def render_template_discovery():
             st.markdown("- [Indeed Review Templates](https://www.indeed.com/career-advice/career-development/performance-review-template)")
             st.markdown("- [Teamflect Manager Review Examples](https://teamflect.com/blog/performance-management/manager-performance-review-examples)")
             st.markdown("- [Template.net Performance Review Forms](https://www.template.net/business/teacher-performance-evaluation/)")
+
+# -------------------------------
+# ✅ Module 1 Wrapper
+# -------------------------------
+def render_module_1():
+    render_template_discovery()
+    
 def render_module_2():
     st.title("📄 Job Description Generator")
     st.text_area("Paste job description or request one by role")
