@@ -56,35 +56,37 @@ def render_template_discovery():
 # 🎬 Gritty Job Review Generator
 # -------------------------------
 def generate_job_review(query):
-    st.info(f"🎥 Generating gritty, role-specific job review for: **{query}**")
+    st.info(f"🔍 Generating realistic job review for: **{query}**")
 
     prompt = f"""
-    Write a brutally honest, insider-style job review for the role: {query}.
-    Use the voice of a veteran in the field. Include:
-    - Overall rating (1–5)
-    - What the job actually involves (percent breakdown)
-    - Pay, hours, bonuses
-    - Pros and cons (real talk)
-    - Red flags to ask in interviews
-    - Career path
-    - A hot take to close it out
+    Write a realistic, role-specific job review for the position: {query}.
+    Use a clear, professional tone with practical insights. Include:
 
-    Make it sound like a voiceover script for a video. Use bullet points and bold formatting.
+    - Job Summary: What the role typically involves
+    - Key Responsibilities: 3–5 bullet points
+    - Required Skills and Tools
+    - Compensation and Schedule (typical ranges)
+    - Pros: What employees tend to appreciate
+    - Cons: Common challenges or frustrations
+    - Interview Tips: Questions to ask or red flags to watch for
+    - Career Path: Typical progression in this role
+
+    Avoid generic corporate language. Make it useful for someone considering this job.
     """
 
     try:
         response = client.chat.completions.create(
             model="gpt-4",
             messages=[
-                {"role": "system", "content": "You are a gritty, experienced tradesperson writing job reviews for video scripts."},
+                {"role": "system", "content": "You are a workplace analyst writing realistic job reviews for professionals."},
                 {"role": "user", "content": prompt}
             ],
-            temperature=0.85,
+            temperature=0.7,
             max_tokens=800
         )
 
         review_text = response.choices[0].message.content
-        st.markdown("### 🎬 Real-World Job Review")
+        st.markdown("### 🧾 Realistic Job Review")
         st.write(review_text)
 
     except Exception as e:
