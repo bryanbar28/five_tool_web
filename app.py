@@ -98,8 +98,8 @@ def render_module_1():
     render_template_discovery()
 
     # Add a second input field and button to trigger review generation
-    role_input = st.text_input("Want a gritty video-style job review?", placeholder="e.g., steel machinist, diesel mechanic")
-    if st.button("🎬 Generate Real-World Review"):
+    role_input = st.text_input("Want a realistic job review?", placeholder="e.g., steel machinist, diesel mechanic")
+        if st.button("🧾 Generate Job Review"):tton("🎬 Generate Real-World Review"):
         if role_input:
             generate_job_review(role_input)
         else:
