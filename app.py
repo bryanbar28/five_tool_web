@@ -174,25 +174,25 @@ def render_module_1():
         st.markdown("- [BetterUp: 53 Performance Review Examples](https://www.betterup.com/blog/performance-review-examples)")
         st.markdown("- [Indeed: Review Template Library](https://www.indeed.com/career-advice/career-development/performance-review-template)")
 
-    # 2️⃣ Role Input for Review Generation
-    st.markdown("---")
-    st.subheader("🧾 Generate a Custom Job Review")
-
+    # 2️⃣ Role Input
     review_input = st.text_input("Enter a role to generate a custom review", placeholder="e.g., diesel mechanic, federal grant writer")
 
-    # 3️⃣ Notes Input
-    notes_input = st.text_area("Notes to add (optional)", placeholder="e.g., I work second shift, handle QA reports, and train new hires")
-
-    # 4️⃣ Buttons
+    # 3️⃣ Generate Review Button
     if st.button("Generate Review"):
         if review_input:
-            generate_job_review(review_input, notes_input)
+            review_text = generate_job_review(review_input)
+            st.session_state.initial_review = review_text
         else:
             st.warning("Please enter a role to generate a review.")
 
+    # 4️⃣ Notes Input
+    notes_input = st.text_area("Notes to add (optional)", placeholder="e.g., I work second shift, handle QA reports, and train new hires")
+
+    # 5️⃣ Regenerate Review Button
     if st.button("Regenerate Review"):
         if review_input:
-            generate_job_review(review_input, notes_input)
+            combined_notes = f"{st.session_state.initial_review}\n\nAdditional notes:\n{notes_input}"
+            generate_job_review(review_input, combined_notes)
         else:
             st.warning("Please enter a role to regenerate the review.")
     
