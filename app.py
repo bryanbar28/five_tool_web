@@ -62,6 +62,11 @@ def render_module_1():
     # -------------------------------
 # 🔍 Job Review Generator Logic
 # -------------------------------
+from openai import OpenAI
+
+client = OpenAI()
+
+
 def generate_job_review(query):
     st.info(f"🔍 Generating AI-powered job review for: **{query}**")
 
