@@ -49,66 +49,35 @@ selected_page = st.sidebar.selectbox("Choose a page", PAGES)
 def render_module_1():
     st.title("🧠 Behavioral Intelligence App")
 
-    job_query = st.text_input("Example: Find job review for certain industries", placeholder="e.g., I need a chef for a mom and pop restaurant")
-    review_query = st.text_input("Example: Generate generic performance review for certain industry", placeholder="e.g., chef for kitchen")
+    role_query = st.text_input("Ask me: What does a generic job review look like for a...", placeholder="e.g., project manager, chef, frontline inspector")
 
-    if st.button("🔍 Generate Review"):
-        if review_query:
-            generate_job_review(review_query)
-        elif job_query:
-            generate_job_review(job_query)
+    if role_query:
+        st.markdown(f"🔍 Looking for generic job review templates for: **{role_query}**")
+
+        role = role_query.lower()
+
+        if "project manager" in role:
+            st.markdown("### 📄 Templates for Project Managers")
+            st.markdown("- [ScaleTime Project Manager Review Examples](https://scaletime.co/blog/project-manager-performance-review-examples)")
+            st.markdown("- [WorkStory Project Manager Template](https://www.workstory.team/review-example/project-manager)")
+            st.markdown("- [Status.net Performance Review Templates](https://status.net/articles/performance-review-templates-and-examples/)")
+
+        elif "chef" in role:
+            st.markdown("### 🍳 Templates for Chefs")
+            st.markdown("- [Oysterlink Chef Review Template with KPIs](https://oysterlink.com/spotlight/performance-review-template-chef-kpis-goal-setting/)")
+            st.markdown("- [Chef Evaluation Forms – SampleForms](https://www.sampleforms.com/chef-evaluation-form.html)")
+            st.markdown("- [Performance Reviewer Chef Template](https://performancereviewer.com/download/chef-performance-review-template/)")
+
+        elif "frontline inspector" in role or "medical device" in role:
+            st.markdown("### 🏥 Templates for Medical Device Inspectors")
+            st.markdown("- [Greenlight Guru Medical Device Templates](https://www.greenlight.guru/free-medical-device-templates-checklists)")
+            st.markdown("- [FDA Today Medical Device Templates](https://fdatoday.com/medical-device-templates/)")
+            st.markdown("- [Medical Device HQ Templates](https://medicaldevicehq.com/templates/)")
+
         else:
-            st.warning("Please enter a query to generate a review.")
-    # -------------------------------
-# 🔍 Job Review Generator Logic
-# -------------------------------
-from openai import OpenAI
-
-client = OpenAI()
-
-def generate_job_review(query):
-    st.info(f"🔍 Generating AI-powered job review for: **{query}**")
-
-    prompt = f"""
-    You are an HR expert writing performance reviews. Based on the following role and industry, generate a professional review that includes strengths, areas for improvement, and a constructive tone.
-
-    Role and Industry: {query}
-
-    Format the output with clear headings and bullet points if appropriate.
-    """
-
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are an HR expert who writes performance reviews."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.7,
-            max_tokens=500
-        )
-
-        review_text = response.choices[0].message.content
-        st.markdown("### 🧾 AI-Generated Job Review")
-        st.write(review_text)
-
-    except Exception as e:
-        st.error(f"❌ Error generating review: {e}")
-    # -------------------------------
-# 🧠 Behavioral Intelligence App
-# -------------------------------
-def render_module_1():
-    st.title("🧠 Behavioral Intelligence App")
-
-    job_query = st.text_input("Example: Find job review for certain industries", placeholder="e.g., A project manager in the aerospace industry")
-    review_query = st.text_input("Example: Generate generic performance review for certain industry", placeholder="e.g., chef for kitchen")
-
-    if st.button("🔍 Generate Review"):
-        query = review_query or job_query
-        if query:
-            generate_job_review(query)
-        else:
-            st.warning("Please enter a query to generate a review.")
+            st.warning("No specific templates found for that role. Try a more common title or explore general resources:")
+            st.markdown("- [Indeed Performance Review Templates](https://www.indeed.com/career-advice/career-development/performance-review-template)")
+            st.markdown("- [Teamflect Manager Review Examples](https://teamflect.com/blog/performance-management/manager-performance-review-examples)")
             
 def render_module_2():
     st.title("📄 Job Description Generator")
