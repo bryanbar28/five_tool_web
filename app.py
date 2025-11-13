@@ -54,9 +54,7 @@ PAGES = [
 ]
 
 selected_page = st.sidebar.selectbox("Choose a page", PAGES)
-# ✅ Page Routing Logic
-if selected_page == "Page 1: AI HR Assistant - Job Reviews":
-    render_module_1()
+
 # -------------------------------
 # 🔍 OpenAI Setup
 client = OpenAI()
@@ -327,3 +325,7 @@ if selected_page in PAID_PAGES and not is_unlocked(selected_page):
     unlock_page(selected_page, PAID_PAGES[selected_page])
 else:
     PAGE_RENDERERS[selected_page]()
+
+# ✅ Page Routing Logic
+if selected_page == "Page 1: AI HR Assistant - Job Reviews":
+    render_module_1()
