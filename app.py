@@ -198,7 +198,6 @@ else:
             - Discussion of goals, compensation, or promotion potential  
             - A record for HR and future reference  
             """)
-            return
 
         if "help" in role or "phrases" in role or "statements" in role:
             st.markdown("### 💬 Helpful Job Review Phrases & Comments")
