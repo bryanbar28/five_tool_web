@@ -246,81 +246,81 @@ def generate_job_description(role, notes=None):
 def render_module_2():
     st.title("📄 Job Description Generator")
     st.markdown("⚠️ **Disclaimer:** All work generated on this page will not be saved unless you subscribe to Repository Access.")
-# 1️⃣ Conversational Discovery
-query = st.text_input(
-    "Ask me anything about creating a job description",
-    placeholder="e.g., how to write a job description for a project manager",
-    key="job_desc_query"  # ✅ unique key
-)
 
-if query:
-    st.markdown(f"🔍 You asked: **{query}**")
-    q_lower = query.lower()
+    # 1️⃣ Conversational Discovery
+    query = st.text_input(
+        "Ask me anything about creating a job description",
+        placeholder="e.g., how to write a job description for a project manager",
+        key="job_desc_query"
+    )
 
-    if "what is a job description" in q_lower or "define job description" in q_lower:
-        st.markdown("### 📘 What Is a Job Description?")
-        st.markdown("""
-        A **job description** is a formal document outlining the duties, responsibilities, qualifications, and expectations for a specific role. It helps:
-        - Attract qualified candidates
-        - Set clear performance standards
-        - Align hiring with organizational goals
-        """)
-        return
-    if "help" in q_lower or "examples" in q_lower or "templates" in q_lower:
-        st.markdown("### 🌐 Helpful Job Description Resources")
-        st.markdown("- Indeed: Job Description Samples")
-        st.markdown("- BetterTeam: Job Description Templates")
-        st.markdown("- SHRM: Writing Effective Job Descriptions")
-        return
+    if query:
+        st.markdown(f"🔍 You asked: **{query}**")
+        q_lower = query.lower()
 
-    # ✅ AI fallback
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are an HR expert answering questions about job descriptions."},
-                {"role": "user", "content": query}
-            ],
-            temperature=0.7,
-            max_tokens=500
-        )
-        ai_answer = response.choices[0].message.content
-        st.markdown("### 🤖 AI Response")
-        st.write(ai_answer)
+        if "what is a job description" in q_lower or "define job description" in q_lower:
+            st.markdown("### 📘 What Is a Job Description?")
+            st.markdown("""
+            A **job description** is a formal document outlining the duties, responsibilities, qualifications, and expectations for a specific role. It helps:
+            - Attract qualified candidates
+            - Set clear performance standards
+            - Align hiring with organizational goals
+            """)
+            return  # ✅ inside the function
 
-    except Exception as e:
-        st.error(f"❌ Error generating AI response: {e}")
+        if "help" in q_lower or "examples" in q_lower or "templates" in q_lower:
+            st.markdown("### 🌐 Helpful Job Description Resources")
+            st.markdown("- [Indeed: Job Description Samples)
+            st.markdown("- BetterTeam: Job Description Templates")
+            st.markdown("- SHRM: Writing Effective Job Descriptions")
+            return  # ✅ inside the function
 
-# ✅ Other UI elements with unique keys
-role_input = st.text_input(
-    "Enter a generic role to create a skeleton of the job description",
-    placeholder="e.g., software engineer, HR manager",
-    key="job_desc_role"
-)
+        # ✅ AI fallback
+        try:
+            response = client.chat.completions.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": "You are an HR expert answering questions about job descriptions."},
+                    {"role": "user", "content": query}
+                ],
+                temperature=0.7,
+                max_tokens=500
+            )
+            ai_answer = response.choices[0].message.content
+            st.markdown("### 🤖 AI Response")
+            st.write(ai_answer)
 
-if st.button("Generate Job Description", key="generate_job_desc"):
-    if role_input:
-        description_text = generate_job_description(role_input)
-        st.session_state.initial_description = description_text
-        st.session_state.show_repository = True
-    else:
-        st.warning("Please enter a role to generate a job description.")
+        except Exception as e:
+            st.error(f"❌ Error generating AI response: {e}")
 
-notes_input = st.text_area(
-    "Notes to add (optional)",
-    placeholder="e.g., remote work, bilingual preferred, experience with ERP systems",
-    key="job_desc_notes"
-)
+    # ✅ Other UI elements
+    role_input = st.text_input(
+        "Enter a generic role to create a skeleton of the job description",
+        placeholder="e.g., software engineer, HR manager",
+        key="job_desc_role"
+    )
 
-if st.button("Regenerate Job Description", key="regenerate_job_desc"):
-    if role_input:
-        combined_notes = f"{st.session_state.initial_description}\n\nAdditional notes:\n{notes_input}"
-        generate_job_description(role_input, combined_notes)
-        st.session_state.show_repository = True
-    else:
-        st.warning("Please enter a role to regenerate the job description.")
-   
+    if st.button("Generate Job Description", key="generate_job_desc"):
+        if role_input:
+            description_text = generate_job_description(role_input)
+            st.session_state.initial_description = description_text
+            st.session_state.show_repository = True
+        else:
+            st.warning("Please enter a role to generate a job description.")
 
+    notes_input = st.text_area(
+        "Notes to add (optional)",
+        placeholder="e.g., remote work, bilingual preferred, experience with ERP systems",
+        key="job_desc_notes"
+    )
+
+    if st.button("Regenerate Job Description", key="regenerate_job_desc"):
+        if role_input:
+            combined_notes = f"{st.session_state.initial_description}\n\nAdditional notes:\n{notes_input}"
+            generate_job_description(role_input, combined_notes)
+            st.session_state.show_repository = True
+        else:
+            st.warning("Please enter a role to regenerate the job description.")
     # 2️⃣ Role Input
     role_input = st.text_input("Enter a generic role to create a skeleton of the job description", placeholder="e.g., software engineer, HR manager")
 
