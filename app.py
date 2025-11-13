@@ -66,7 +66,6 @@ from openai import OpenAI
 
 client = OpenAI()
 
-
 def generate_job_review(query):
     st.info(f"🔍 Generating AI-powered job review for: **{query}**")
 
@@ -79,7 +78,7 @@ def generate_job_review(query):
     """
 
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are an HR expert who writes performance reviews."},
@@ -89,7 +88,7 @@ def generate_job_review(query):
             max_tokens=500
         )
 
-        review_text = response['choices'][0]['message']['content']
+        review_text = response.choices[0].message.content
         st.markdown("### 🧾 AI-Generated Job Review")
         st.write(review_text)
 
