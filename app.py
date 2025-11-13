@@ -6,6 +6,8 @@ st.set_page_config(page_title="Five-Tool App", layout="wide")
 # ✅ Session state setup
 if "initial_review" not in st.session_state:
     st.session_state.initial_review = ""
+if "show_repository" not in st.session_state:
+    st.session_state.show_repository = False
 
 # ✅ OpenAI client setup
 client = OpenAI(api_key="your-openai-api-key")  # or use os.getenv("OPENAI_API_KEY")
