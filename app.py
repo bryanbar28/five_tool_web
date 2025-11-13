@@ -95,13 +95,38 @@ def generate_job_review(query):
 # ✅ Module 1 Wrapper
 # -------------------------------
 def render_module_1():
-    render_template_discovery()
+    st.title("🧠 Behavioral Intelligence App — Job Review Explorer")
 
-    # Add a second input field and button to trigger review generation
-    role_input = st.text_input("Want a realistic job review?", placeholder="e.g., steel machinist, diesel mechanic")
-    if st.button("🧾 Generate Job Review"):
-        if role_input:
-            generate_job_review(role_input)
+    # Section 1: Ask me anything
+    role_query = st.text_input("Ask me anything about job reviews, templates, or phrases", placeholder="e.g., steel machinist, mechanic, I need help writing a review")
+
+    if role_query:
+        st.markdown(f"🔍 Searching for job review resources related to: **{role_query}**")
+        role = role_query.lower()
+
+        # Conversational fallback
+        if "help" in role or "phrases" in role or "statements" in role:
+            st.markdown("### 💬 Helpful Job Review Phrases & Comments")
+            st.markdown("- [Status.net: Job Knowledge Phrases](https://status.net/articles/job-knowledge-performance-review-phrases-paragraphs-examples/)")
+            st.markdown("- [BuddiesHR: 75 Review Phrases](https://blog.buddieshr.com/75-effective-performance-review-phrases-examples/)")
+            st.markdown("- [Engage & Manage: 120 Review Comments](https://engageandmanage.com/blog/performance-review-example-phrases-comments/)")
+            return
+
+        # Role-specific examples
+        st.markdown("### 🌐 General Review Templates and Examples")
+        st.markdown("- [Native Teams: 30 Role-Based Review Examples](https://nativeteams.com/blog/performance-review-examples)")
+        st.markdown("- [BetterUp: 53 Performance Review Examples](https://www.betterup.com/blog/performance-review-examples)")
+        st.markdown("- [Indeed: Review Template Library](https://www.indeed.com/career-advice/career-development/performance-review-template)")
+
+    # Section 2: Generate custom review
+    st.markdown("---")
+    st.subheader("🧾 Generate a Custom Job Review")
+
+    review_input = st.text_input("Enter a role to generate a custom review", placeholder="e.g., diesel mechanic, tribal grant writer")
+
+    if st.button("Generate Review"):
+        if review_input:
+            generate_job_review(review_input)
         else:
             st.warning("Please enter a role to generate a review.")
     
