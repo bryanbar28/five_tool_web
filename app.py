@@ -195,6 +195,23 @@ def render_module_1():
             generate_job_review(review_input, combined_notes)
         else:
             st.warning("Please enter a role to regenerate the review.")
+        st.markdown("---")
+st.subheader("📁 Repository Access")
+
+st.markdown("""
+Everything on this page is free — explore job reviews, ask questions, and generate custom insights.
+
+If you'd like to **store your work**, **save reviews**, or **create files and folders**, you'll need a repository subscription.
+
+💼 **Repository Access**: $9.99/month  
+Includes:
+- Unlimited saved reviews  
+- Folder creation and organization  
+- Export to PDF, DOCX, or CSV  
+- Private workspace with version history
+
+🔐 [Upgrade to Repository Access](https://buy.stripe.com/14AcN5ghFapx7Jz5xM6oo00)  
+""")    
     
 def render_module_2():
     st.title("📄 Job Description Generator")
