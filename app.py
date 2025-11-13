@@ -143,7 +143,7 @@ def generate_job_review(role, notes=None):
 # ✅ Module 1 Wrapper
 # -------------------------------
 def render_module_1():
-    st.title("🤖 AI HR Assistant — Job Reviews")")
+    st.title("🤖 AI HR Assistant — Job Reviews")
 
     # 1️⃣ Conversational Discovery
     role_query = st.text_input("Ask me anything about job reviews, templates, or phrases", placeholder="e.g., steel machinist, mechanic, I need help writing a review")
