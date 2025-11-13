@@ -147,6 +147,7 @@ def generate_job_review(role, notes=None):
 # -------------------------------
 def render_module_1():
     st.title("🤖 AI HR Assistant — Job Reviews")
+    st.markdown("⚠️ **Disclaimer:** All work generated on this page will not be saved unless you subscribe to Repository Access.")
 
     # 1️⃣ Conversational Discovery
     role_query = st.text_input("Ask me anything about job reviews, templates, or phrases", placeholder="e.g., steel machinist, mechanic, I need help writing a review")
@@ -200,37 +201,6 @@ def render_module_1():
             st.session_state.show_repository = True
         else:
             st.warning("Please enter a role to regenerate the review.")
-
-    # 6️⃣ Repository Access (Bottom of Page)
-    if st.session_state.get("show_repository"):
-        st.markdown("---")
-        st.markdown("## 📁 Repository Access")
-
-        st.markdown("""
-        Everything on this page is free — explore job reviews, ask questions, and generate custom insights.
-
-        If you'd like to **store your work**, **save reviews**, or **create files and folders**, you'll need a repository subscription.
-
-        💼 **Repository Access: $9.99/month**  
-        Includes:
-        - Unlimited saved reviews  
-        - Folder creation and organization  
-        - Export to PDF, DOCX, or CSV  
-        - Private workspace with version history
-
-        🔐 [Upgrade to Repository Access](https://buy.stripe.com/14AcN5ghFapx7Jz5xM6oo00)
-        """)
-
-        # 🔐 Access Control Buttons
-        def is_subscribed():
-            return False  # Replace with real logic later
-
-        if is_subscribed():
-            st.button("💾 Save Review to Repository")
-            st.button("📂 Create New Folder")
-        else:
-            st.button("💾 Save Review to Repository", disabled=True, help="Requires Repository Access")
-            st.button("📂 Create New Folder", disabled=True, help="Requires Repository Access")
         
 def render_module_2():
     st.title("📄 Job Description Generator")
