@@ -208,7 +208,7 @@ def render_module_1():
 
 if st.session_state.show_repository:
     st.markdown("---")
-    st.subheader("📁 Repository Access")
+    st.markdown("## 6️⃣ Repository Access")
 
     st.markdown("""
     Everything on this page is free — explore job reviews, ask questions, and generate custom insights.
