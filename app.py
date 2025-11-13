@@ -64,28 +64,38 @@ def render_module_1():
 def generate_job_review(query):
     st.info(f"Searching for job review related to: **{query}**")
 
-    if "chef" in query.lower():
-        st.markdown("### 🧾 Sample Job Review for Chef")
+    role = query.lower()
+
+    if "project manager" in role:
+        st.markdown("### 🧾 Sample Job Review for Project Manager")
         st.write("""
-        **Role**: Chef  
-        **Industry**: Kitchen / Restaurant  
+        **Role**: Project Manager  
+        **Industry**: Business / Operations  
         **Review Summary**:  
-        The chef consistently demonstrates exceptional culinary skills, maintains high hygiene standards, and leads the kitchen team with professionalism. Areas for improvement include menu innovation and cost control strategies.
+        The project manager demonstrates strong leadership in cross-functional teams, maintains timelines and budgets, and communicates effectively with stakeholders. Areas for improvement include risk mitigation planning and post-project evaluation.
         """)
-    elif "event planner" in query.lower():
-        st.markdown("### 🧾 Sample Job Review for Event Planner")
+    elif "business analyst" in role:
+        st.markdown("### 🧾 Sample Job Review for Business Analyst")
         st.write("""
-        **Role**: Event Planner  
-        **Industry**: Public Sector / Economic Development  
+        **Role**: Business Analyst  
+        **Industry**: Strategy / Finance  
         **Review Summary**:  
-        The event planner excels at coordinating logistics, managing vendor relationships, and executing high-impact community events. Strengths include stakeholder communication and budget adherence. Opportunities for growth include digital engagement and post-event analytics.
+        The analyst excels at data interpretation, stakeholder interviews, and translating business needs into actionable insights. Opportunities for growth include visualization tools and agile methodology fluency.
+        """)
+    elif "executive assistant" in role:
+        st.markdown("### 🧾 Sample Job Review for Executive Assistant")
+        st.write("""
+        **Role**: Executive Assistant  
+        **Industry**: Corporate / Administrative  
+        **Review Summary**:  
+        The assistant manages schedules, correspondence, and logistics with precision. Strengths include discretion, multitasking, and proactive problem-solving. Development areas include delegation and digital workflow optimization.
         """)
     else:
         st.warning("No specific review found for that role. Try a more common title or industry.")
         st.markdown("#### 🔗 General Performance Review Resources")
-        st.markdown("- [120 Performance Review Phrases](https://engageandmanage.com/blog/performance-review-example-phrases-comments/)")
-        st.markdown("- [Job Knowledge Review Examples](https://status.net/articles/job-knowledge-performance-review-phrases-paragraphs-examples/)")
-        st.markdown("- [53 Performance Review Templates](https://www.betterup.com/blog/performance-review-examples)")
+        st.markdown("- [100 Performance Review Phrases for Business Roles](https://status.net/articles/job-knowledge-performance-review-phrases-paragraphs-examples/)")
+        st.markdown("- [20 Essential Business Roles Within an Organization](https://www.indeed.com/career-advice/starting-new-job/business-roles)")
+        st.markdown("- [How to Perform a Job Analysis – Forbes](https://www.forbes.com/advisor/business/job-analysis/)")
     # -------------------------------
 # 🧠 Behavioral Intelligence App
 # -------------------------------
