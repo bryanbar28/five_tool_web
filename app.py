@@ -147,41 +147,6 @@ def generate_job_review(role, notes=None):
 # -------------------------------
 def render_module_1():
     st.title("🤖 AI HR Assistant — Job Reviews")
-    # 🔐 Access Control Logic
-def is_subscribed():
-    # Placeholder logic — replace with real subscription check later
-    return False
-
-# 🔘 Save Review Button
-if is_subscribed():
-    st.button("💾 Save Review to Repository")
-else:
-    st.button("💾 Save Review to Repository", disabled=True, help="Requires Repository Access")
-
-# 🔘 Create Folder Button
-if is_subscribed():
-    st.button("📂 Create New Folder")
-else:
-    st.button("📂 Create New Folder", disabled=True, help="Requires Repository Access")
-
-    # 🔐 Repository Access (Always visible at top)
-    st.markdown("---")
-    st.markdown("## 📁 Repository Access")
-
-    st.markdown("""
-    Everything on this page is free — explore job reviews, ask questions, and generate custom insights.
-
-    If you'd like to **store your work**, **save reviews**, or **create files and folders**, you'll need a repository subscription.
-
-    💼 **Repository Access**: $9.99/month  
-    Includes:
-    - Unlimited saved reviews  
-    - Folder creation and organization  
-    - Export to PDF, DOCX, or CSV  
-    - Private workspace with version history
-
-    🔐 [Upgrade to Repository Access](https://buy.stripe.com/14AcN5ghFapx7Jz5xM6oo00)
-    """)
 
     # 1️⃣ Conversational Discovery
     role_query = st.text_input("Ask me anything about job reviews, templates, or phrases", placeholder="e.g., steel machinist, mechanic, I need help writing a review")
@@ -198,12 +163,14 @@ else:
             - Discussion of goals, compensation, or promotion potential  
             - A record for HR and future reference  
             """)
+            return
 
         if "help" in role or "phrases" in role or "statements" in role:
             st.markdown("### 💬 Helpful Job Review Phrases & Comments")
             st.markdown("- [Status.net: Job Knowledge Phrases](https://status.net/articles/job-knowledge-performance-review-phrases-paragraphs-examples/)")
             st.markdown("- [BuddiesHR: 75 Review Phrases](https://blog.buddieshr.com/75-effective-performance-review-phrases-examples/)")
             st.markdown("- [Engage & Manage: 120 Review Comments](https://engageandmanage.com/blog/performance-review-example-phrases-comments/)")
+            return
 
         st.markdown("### 🌐 General Review Templates and Examples")
         st.markdown("- [Native Teams: 30 Role-Based Review Examples](https://nativeteams.com/blog/performance-review-examples)")
@@ -233,6 +200,37 @@ else:
             st.session_state.show_repository = True
         else:
             st.warning("Please enter a role to regenerate the review.")
+
+    # 6️⃣ Repository Access (Bottom of Page)
+    if st.session_state.get("show_repository"):
+        st.markdown("---")
+        st.markdown("## 📁 Repository Access")
+
+        st.markdown("""
+        Everything on this page is free — explore job reviews, ask questions, and generate custom insights.
+
+        If you'd like to **store your work**, **save reviews**, or **create files and folders**, you'll need a repository subscription.
+
+        💼 **Repository Access: $9.99/month**  
+        Includes:
+        - Unlimited saved reviews  
+        - Folder creation and organization  
+        - Export to PDF, DOCX, or CSV  
+        - Private workspace with version history
+
+        🔐 [Upgrade to Repository Access](https://buy.stripe.com/14AcN5ghFapx7Jz5xM6oo00)
+        """)
+
+        # 🔐 Access Control Buttons
+        def is_subscribed():
+            return False  # Replace with real logic later
+
+        if is_subscribed():
+            st.button("💾 Save Review to Repository")
+            st.button("📂 Create New Folder")
+        else:
+            st.button("💾 Save Review to Repository", disabled=True, help="Requires Repository Access")
+            st.button("📂 Create New Folder", disabled=True, help="Requires Repository Access")
         
 def render_module_2():
     st.title("📄 Job Description Generator")
