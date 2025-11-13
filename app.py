@@ -51,8 +51,7 @@ client = OpenAI()
 # 🧠 Template Discovery Module
 # -------------------------------
 def render_template_discovery():
-    # your template discovery logic...
-
+# your template discovery logic...
 # -------------------------------
 # 🎬 Gritty Job Review Generator
 # -------------------------------
