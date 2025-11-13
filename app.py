@@ -200,25 +200,30 @@ def render_module_1():
         else:
             st.warning("Please enter a role to regenerate the review.")
         st.markdown("---")
+        
     if st.session_state.show_repository:
             st.markdown("---")
             st.subheader("📁 Repository Access")
             st.subheader("📁 Repository Access")
 
-st.markdown("""
-Everything on this page is free — explore job reviews, ask questions, and generate custom insights.
+if st.session_state.show_repository:
+    st.markdown("---")
+    st.subheader("📁 Repository Access")
 
-If you'd like to **store your work**, **save reviews**, or **create files and folders**, you'll need a repository subscription.
+    st.markdown("""
+    Everything on this page is free — explore job reviews, ask questions, and generate custom insights.
 
-💼 **Repository Access**: $9.99/month  
-Includes:
-- Unlimited saved reviews  
-- Folder creation and organization  
-- Export to PDF, DOCX, or CSV  
-- Private workspace with version history
+    If you'd like to **store your work**, **save reviews**, or **create files and folders**, you'll need a repository subscription.
 
-🔐 [Upgrade to Repository Access](https://buy.stripe.com/14AcN5ghFapx7Jz5xM6oo00)  
-""")    
+    💼 **Repository Access**: $9.99/month  
+    Includes:
+    - Unlimited saved reviews  
+    - Folder creation and organization  
+    - Export to PDF, DOCX, or CSV  
+    - Private workspace with version history
+
+    🔐 [Upgrade to Repository Access](https://buy.stripe.com/14AcN5ghFapx7Jz5xM6oo00)
+    """)
     
 def render_module_2():
     st.title("📄 Job Description Generator")
