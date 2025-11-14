@@ -43,13 +43,14 @@ PAGES = [
     "Page 2: Job Descriptions Generator",
     "Page 3: The 5 Tool Employee Framework",
     "page 4: The 5 Tool Employee Framework: Deep Research Version", 
-    "Page 5: Behavior Under Pressure Grid",
-    "Page 6: Behavioral Calibration Grid",
-    "Page 7: Toxicity in the Workplace",
-    "Page 8: Leadership Eligibility",
-    "Page 9: SWOT 2.0",
-    "Page 10: M&A Intelligence",
-    "Page 11: Repository"
+    "Page 5: Management Training",
+    "Page 6: Behavior Under Pressure Grid",
+    "Page 7: Behavioral Calibration Grid",
+    "Page 8: Toxicity in the Workplace",
+    "Page 9: Leadership Eligibility",
+    "Page 10: SWOT 2.0",
+    "Page 11: M&A Intelligence",
+    "Page 12: Repository"
 ]
 
 selected_page = st.sidebar.selectbox("Choose a page", PAGES)
@@ -456,6 +457,14 @@ def render_module_4():
     st.button("Generate Profile")
 
 def render_module_5():
+    st.title("Management Training")
+    st.markdown("### What is the Behavior Under Pressure Grid?")
+    st.markdown("""
+    This grid shows how behavioral tools manifest in two states:
+    - **Intentional Use:** Calm, focused, deliberate behavior.
+    - **Under Duress:** How traits distort under stress.
+
+def render_module_6():
     st.title("Behavior Under Pressure")
     st.markdown("### What is the Behavior Under Pressure Grid?")
     st.markdown("""
@@ -507,13 +516,13 @@ def render_module_5():
             st.warning("Please add comments before generating insights.")
 
 
-def render_module_6():
+def render_module_7():
     st.title("🧠 Behavioral Calibration Grid")
     st.image("images/module5_calibration_grid.png")
     st.text_area("Additional Notes")
     st.button("Generate Profile")
 
-def render_module_7():
+def render_module_8():
     st.title("☢️ Toxicity in the Workplace")
     st.image("images/module6_toxicity_scale.png")
     st.image("images/module6_toxicity_scoring.png")
@@ -521,7 +530,7 @@ def render_module_7():
     st.text_area("Additional Notes")
     st.button("Generate Profile")
 
-def render_module_8():
+def render_module_9():
     st.title("🏆 Leadership Eligibility")
     st.image("images/module7_calibration_grid.png")
     st.image("images/module7_eligibility_filter.png")
@@ -529,7 +538,7 @@ def render_module_8():
     st.image("images/module7_diagnostic_rubric.png")
     st.image("images/module7_outcomes.png")
 
-def render_module_9():
+def render_module_10():
     st.title("📊 SWOT 2.0 Strategic Framework")
     st.markdown("Designed by Bryan Barrera & Microsoft Copilot")
 
@@ -548,7 +557,7 @@ def render_module_9():
         st.write("**Opportunities:**", opportunities)
         st.write("**Threats:**", threats)
 
-def render_module_10():
+def render_module_11():
     st.title("🏢 M&A Intelligence (Premium)")
     st.warning("Subscription required")
     st.file_uploader("Upload Resumes", accept_multiple_files=True)
@@ -558,7 +567,7 @@ def render_module_10():
     st.text_area("Branch Data: Name, Location, Benefits")
     st.button("Generate Analysis")
 
-def render_module_11():
+def render_module_12():
     st.title("🚧 Page 12: Under Construction")
     st.markdown("This page is not yet implemented.")
 
