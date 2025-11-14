@@ -43,13 +43,13 @@ PAGES = [
     "Page 2: Job Descriptions Generator",
     "Page 3: The 5 Tool Employee Framework",
     "page 4: The 5 Tool Employee Framework: Deep Research Version", 
-    "Page 3: Behavior Under Pressure Grid",
-    "Page 4: Behavioral Calibration Grid",
-    "Page 5: Toxicity in the Workplace",
-    "Page 6: Leadership Eligibility",
-    "Page 7: SWOT 2.0",
-    "Page 8: M&A Intelligence",
-    "Page 9: Repository"
+    "Page 5: Behavior Under Pressure Grid",
+    "Page 6: Behavioral Calibration Grid",
+    "Page 7: Toxicity in the Workplace",
+    "Page 8: Leadership Eligibility",
+    "Page 9: SWOT 2.0",
+    "Page 10: M&A Intelligence",
+    "Page 11: Repository"
 ]
 
 selected_page = st.sidebar.selectbox("Choose a page", PAGES)
