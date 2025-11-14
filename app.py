@@ -324,7 +324,7 @@ def render_module_2():
 def render_module_3():
     st.title("The 5 Tool Employee Framework")
 
-    # ✅ Display intro content from first attachment
+    # ✅ Display intro content
     st.markdown("### _Introduction into the 5 Tool Employee Framework_")
     st.markdown("_An Interchangeable Model_")
     st.markdown("#### 5 Tool Baseball Player")
@@ -348,23 +348,41 @@ def render_module_3():
     st.markdown("---")
 
     # ✅ Persistent AI Chatbox
-    st.subheader("🤖 Ask AI About the Framework or Baseball Analogy")
+    st.subheader("🤖 Ask AI About the Framework or Training Recommendations")
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
 
-    user_question = st.text_input("Ask a question (e.g., 'Tell me more about the framework', 'Who is a current 5-tool player?')")
+    user_question = st.text_input("Ask a question (e.g., 'Tell me more about the framework', 'Can you recommend trainings?')")
 
     if st.button("Send Question"):
         if user_question.strip():
             try:
+                # ✅ Curated training links for common topics
+                curated_links = """
+                Recommended Online Training:
+                - [Agile Decision-Making Frameworks – Coursera](https://www.coursera.org/learn/agile-decision-making-frameworks)
+                - [Effective Communication for Today’s Leader – Coursera](https://www.coursera.org/learn/effective-communication-for-todays-leader)
+                - [Strategic Thinking – IMD Online](https://www.imd.org/strategy/st/online-course-strategy/)
+                - [Conflict Resolution Skills – UC Irvine on Coursera](https://www.coursera.org/courses?query=conflict%20resolution)
+                - [Adaptability & Resilience – Coursera](https://www.coursera.org/courses?query=adaptability)
+                """
+
+                # ✅ System prompt includes logic for training recommendations
+                system_prompt = f"""
+                You are an expert on the 5 Tool Employee Framework and baseball analytics.
+                If the user asks for training recommendations, provide curated links like these:
+                {curated_links}
+                Also, search for additional relevant resources if possible.
+                """
+
                 response = client.chat.completions.create(
                     model="gpt-4",
                     messages=[
-                        {"role": "system", "content": "You are an expert on the 5 Tool Employee Framework and baseball analytics. Reference Branch Rickey, Bill James, sabermetrics, and modern 5-tool players when relevant."},
+                        {"role": "system", "content": system_prompt},
                         {"role": "user", "content": user_question}
                     ],
                     temperature=0.7,
-                    max_tokens=500
+                    max_tokens=700
                 )
                 ai_answer = response.choices[0].message.content
                 st.session_state.chat_history.append((user_question, ai_answer))
