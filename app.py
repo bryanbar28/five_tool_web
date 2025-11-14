@@ -323,9 +323,104 @@ def render_module_2():
             st.warning("Please enter a role to regenerate the job description.")
 def render_module_3():
     st.title("The 5 Tool Employee Framework")
-    st.image("images/module5_calibration_grid.png")
-    st.text_area("Additional Notes")
-    st.button("Generate Profile")
+
+    # ✅ Display full content from attachment
+    st.markdown("### _Introduction into the 5 Tool Employee Framework_")
+    st.markdown("_An Interchangeable Model_")
+    st.markdown("#### 5 Tool Baseball Player")
+    st.markdown("""
+    - **Hitting for Average** – Consistently making contact and getting on base.
+    - **Hitting for Power** – Ability to drive the ball for extra bases or home runs.
+    - **Speed** – Quickness on the bases and in the field.
+    - **Fielding** – Defensive ability, including range and reaction time.
+    - **Arm Strength** – Throwing ability, especially for outfielders and infielders.
+    """)
+
+    st.markdown("#### Baseball Tools vs. Professional Skills")
+    st.markdown("""
+    - ⚾ **Hitting → Technical Competence**  
+      Just like hitting is fundamental for a baseball player, mastering core skills is crucial for a professional. Without solid technical ability, everything else suffers.
+    - 🧠 **Fielding → Problem-Solving Ability**  
+      A great fielder reacts quickly, adjusts to the situation, and prevents errors—just like a skilled problem solver who diagnoses inefficiencies and finds solutions before bigger issues arise.
+    - ⚡ **Speed → Adaptability & Continuous Learning**  
+      Speed gives a player a competitive edge, allowing them to react fast and adjust on the fly. In the business world, adaptability and continuous learning ensure professionals keep up with changes and remain ahead of the curve.
+    - 💪 **Arm Strength → Communication & Leadership**  
+      A powerful arm is necessary for making impactful plays—just like effective communication and leadership drive motivation, accountability, and team success.
+    - 🚀 **Power → Strategic Decision-Making**  
+      Power hitters change the game with big plays, just like leaders who think long-term and make high-impact decisions based on data and vision.
+    """)
+
+    st.markdown("---")
+
+    # ✅ Persistent AI Chatbox
+    st.subheader("🤖 Ask AI About the Framework or Baseball Analogy")
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = []
+
+    user_question = st.text_input("Ask a question (e.g., 'Tell me more about the framework', 'Who is a current 5-tool player?')")
+
+    if st.button("Send Question"):
+        if user_question.strip():
+            try:
+                response = client.chat.completions.create(
+                    model="gpt-4",
+                    messages=[
+                        {"role": "system", "content": "You are an expert on the 5 Tool Employee Framework and baseball analytics. Reference Branch Rickey, Bill James, sabermetrics, and modern 5-tool players when relevant."},
+                        {"role": "user", "content": user_question}
+                    ],
+                    temperature=0.7,
+                    max_tokens=500
+                )
+                ai_answer = response.choices[0].message.content
+                st.session_state.chat_history.append((user_question, ai_answer))
+            except Exception as e:
+                st.error(f"❌ Error generating AI response: {e}")
+        else:
+            st.warning("Please enter a question before sending.")
+
+    # ✅ Display chat history
+    if st.session_state.chat_history:
+        st.markdown("### 💬 Conversation History")
+        for q, a in st.session_state.chat_history:
+            st.markdown(f"**You:** {q}")
+            st.markdown(f"**AI:** {a}")
+            st.markdown("---")
+
+    st.markdown("---")
+
+    # ✅ Notes section for custom 5 Tool Employee
+    st.subheader("🛠 Add notes to create your own 5 Tool Employee")
+    notes_input = st.text_area("Enter notes about your ideal employee or evaluation criteria", placeholder="e.g., strong leadership, adaptable, great communicator")
+
+    if st.button("Generate 5 Tool Employee"):
+        if notes_input.strip():
+            try:
+                prompt = f"""
+                Create a customized 5 Tool Employee profile based on these notes: {notes_input}.
+                Include:
+                - Technical Competence
+                - Problem-Solving Ability
+                - Adaptability & Continuous Learning
+                - Communication & Leadership
+                - Strategic Decision-Making
+                Use the baseball analogy for flavor (Branch Rickey, Bill James, sabermetrics) and make it fun yet professional.
+                """
+                response = client.chat.completions.create(
+                    model="gpt-4",
+                    messages=[
+                        {"role": "system", "content": "You are an HR strategist and baseball historian creating a blended profile."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=0.7,
+                    max_tokens=700
+                )
+                profile = response.choices[0].message.content
+                st.markdown("### 🧾 Your Custom 5 Tool Employee Profile")
+                st.write(profile)
+            except Exception as e:
+                st.error(f"❌ Error generating profile: {e}")
+        else:
+            st.warning("Please add notes before generating the profile.")
     
 def render_module_4():
     st.title("The 5 Tool Employee Framework: Deep Research Version")
