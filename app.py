@@ -348,7 +348,7 @@ def render_module_3():
     st.markdown("---")
 
     # ✅ Persistent AI Chatbox
-    st.subheader("🤖 Ask AI About the Framework or Training Recommendations")
+    st.subheader("🤖 Ask AI About the Framework")
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
 
