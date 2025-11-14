@@ -319,7 +319,6 @@ def render_module_2():
             st.session_state.show_repository = True
         else:
             st.warning("Please enter a role to regenerate the job description.")
-
 def render_module_3():
     st.title("⚾ Behavior Under Pressure Grid")
     st.markdown("### What is the Behavior Under Pressure Grid?")
@@ -331,8 +330,25 @@ def render_module_3():
     Use this tool for leadership diagnostics, hiring decisions, and team development.
     """)
 
-    # ✅ Display the grid image (fix path issue)
-    st.image("https://your-public-image-url.com/module4_behavior_grid.png", caption="Behavior Under Pressure Grid")
+    # ✅ Display the grid as a table
+    data = {
+        "Tool": ["Power", "Speed", "Fielding", "Hitting Avg.", "Arm Strength"],
+        "Intentional Use": [
+            "Drives results, owns outcomes",
+            "Reflects, adjusts, integrates",
+            "Foresees risks, protects systems",
+            "Delivers consistently and reliably",
+            "Aligns and influences with clarity"
+        ],
+        "Under Duress": [
+            "Overreaches, avoids feedback",
+            "Reacts, deflects, performs for show",
+            "Freezes, rigidifies, blocks learning",
+            "Checks out, avoids stretch or change",
+            "Charms without clarity, dominates without connection"
+        ]
+    }
+    st.table(data)
 
     # ✅ Add comments input
     user_comments = st.text_area("Add your comments or observations", placeholder="e.g., This candidate freezes under pressure but excels in planning.")
@@ -341,7 +357,6 @@ def render_module_3():
     if st.button("Generate Grid with Insights"):
         if user_comments.strip():
             st.subheader("🔍 AI Insights Based on Your Comments")
-            # Call OpenAI for analysis
             response = client.chat.completions.create(
                 model="gpt-4",
                 messages=[
@@ -354,6 +369,7 @@ def render_module_3():
             st.write(response.choices[0].message.content)
         else:
             st.warning("Please add comments before generating insights.")
+
 
 def render_module_4():
     st.title("🧠 Behavioral Calibration Grid")
