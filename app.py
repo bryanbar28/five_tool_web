@@ -394,9 +394,7 @@ PAGE_RENDERERS = {
     PAGES[6]: render_module_7,
     PAGES[7]: render_module_8,
     PAGES[8]: render_module_9,
-    PAGES[9]: render_module_10,
-    PAGES[10]: render_module_11,
-    PAGES[11]: render_module_12
+    PAGES[9]: render_module_12
 }
 
 if selected_page in PAID_PAGES and not is_unlocked(selected_page):
