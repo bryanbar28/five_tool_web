@@ -324,7 +324,7 @@ def render_module_2():
 def render_module_3():
     st.title("The 5 Tool Employee Framework")
 
-    # ✅ Display full content from attachment
+    # ✅ Display intro content from first attachment
     st.markdown("### _Introduction into the 5 Tool Employee Framework_")
     st.markdown("_An Interchangeable Model_")
     st.markdown("#### 5 Tool Baseball Player")
@@ -338,16 +338,11 @@ def render_module_3():
 
     st.markdown("#### Baseball Tools vs. Professional Skills")
     st.markdown("""
-    - ⚾ **Hitting → Technical Competence**  
-      Just like hitting is fundamental for a baseball player, mastering core skills is crucial for a professional. Without solid technical ability, everything else suffers.
-    - 🧠 **Fielding → Problem-Solving Ability**  
-      A great fielder reacts quickly, adjusts to the situation, and prevents errors—just like a skilled problem solver who diagnoses inefficiencies and finds solutions before bigger issues arise.
-    - ⚡ **Speed → Adaptability & Continuous Learning**  
-      Speed gives a player a competitive edge, allowing them to react fast and adjust on the fly. In the business world, adaptability and continuous learning ensure professionals keep up with changes and remain ahead of the curve.
-    - 💪 **Arm Strength → Communication & Leadership**  
-      A powerful arm is necessary for making impactful plays—just like effective communication and leadership drive motivation, accountability, and team success.
-    - 🚀 **Power → Strategic Decision-Making**  
-      Power hitters change the game with big plays, just like leaders who think long-term and make high-impact decisions based on data and vision.
+    - ⚾ **Hitting → Technical Competence**
+    - 🧠 **Fielding → Problem-Solving Ability**
+    - ⚡ **Speed → Adaptability & Continuous Learning**
+    - 💪 **Arm Strength → Communication & Leadership**
+    - 🚀 **Power → Strategic Decision-Making**
     """)
 
     st.markdown("---")
@@ -395,20 +390,34 @@ def render_module_3():
     if st.button("Generate 5 Tool Employee"):
         if notes_input.strip():
             try:
-                prompt = f"""
-                Create a customized 5 Tool Employee profile based on these notes: {notes_input}.
-                Include:
-                - Technical Competence
-                - Problem-Solving Ability
-                - Adaptability & Continuous Learning
-                - Communication & Leadership
-                - Strategic Decision-Making
-                Use the baseball analogy for flavor (Branch Rickey, Bill James, sabermetrics) and make it fun yet professional.
+                # ✅ Hidden Deep-Research Framework embedded in system prompt
+                deep_research_framework = """
+                The Deep-Research 5-Tool Employee Framework:
+                - Speed: Cognitive & Behavioral Agility
+                - Power: Ownership, Initiative & Decisiveness
+                - Fielding: Strategic Foresight & System Protection
+                - Hitting for Average: Reliability, Rhythm & Repeatability
+                - Arm Strength: Communication Reach & Influence
+                Each includes Natural Gift, High-Functioning Expression, Dysfunction Signals, Behavioral Insights, and Where It Shows Up.
                 """
+
+                prompt = f"""
+                Use the following framework (hidden from user) to generate a layman-friendly, business-focused 5 Tool Employee profile:
+                {deep_research_framework}
+
+                User notes: {notes_input}
+
+                Output should:
+                - Be clear and practical (avoid jargon).
+                - Include sections for: Technical Competence, Problem-Solving Ability, Adaptability & Continuous Learning, Communication & Leadership, Strategic Decision-Making.
+                - Provide strengths and improvement areas.
+                - Avoid baseball references completely.
+                """
+
                 response = client.chat.completions.create(
                     model="gpt-4",
                     messages=[
-                        {"role": "system", "content": "You are an HR strategist and baseball historian creating a blended profile."},
+                        {"role": "system", "content": "You are an HR strategist using a behavioral framework to create practical employee profiles."},
                         {"role": "user", "content": prompt}
                     ],
                     temperature=0.7,
