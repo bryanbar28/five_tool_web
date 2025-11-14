@@ -566,7 +566,6 @@ def render_module_11():
 def render_module_12():
     st.title("🚧 Page 12: Under Construction")
     st.markdown("This page is not yet implemented.")
-
 # -------------------------------
 # 🚀 Module Execution
 # -------------------------------
@@ -588,4 +587,4 @@ PAGE_RENDERERS = {
 if selected_page in PAID_PAGES and not is_unlocked(selected_page):
     unlock_page(selected_page, PAID_PAGES[selected_page])
 else:
-    PAGE_RENDERERSselected_page
+    PAGE_RENDERERSselected_page  # ✅ Correct syntax
