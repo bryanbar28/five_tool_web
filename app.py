@@ -448,6 +448,7 @@ def render_module_3():
                 st.error(f"❌ Error generating profile: {e}")
         else:
             st.warning("Please add notes before generating the profile.")
+            
 # ✅ Always show Deep-Research Framework after generation
 st.markdown("### 📘 The Deep-Research 5-Tool Employee Framework")
 st.markdown("""
@@ -555,7 +556,10 @@ Each tool includes:
 **Behavioral Insight:** Influence that isn’t anchored in clarity becomes theater. Real communication reaches not just ears—but identity and belonging.  
 **Where It Shows Up:** Sales, enablement, leadership, cross-functional translators, cultural brokers
 """)
-
+# Place this at the VERY END of render_module_3(), after all other st.markdown, st.button, etc.
+st.markdown("---")
+st.markdown("### 📘 The Deep-Research 5-Tool Employee Framework")
+st.markdown(""" ... full content ... """)
     
 def render_module_4():
     st.title("The 5 Tool Employee Framework: Deep Research Version")
