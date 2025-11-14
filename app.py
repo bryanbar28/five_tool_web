@@ -322,29 +322,6 @@ def render_module_2():
             st.session_state.show_repository = True
         else:
             st.warning("Please enter a role to regenerate the job description.")
-    # 2️⃣ Role Input
-    role_input = st.text_input("Enter a generic role to create a skeleton of the job description", placeholder="e.g., software engineer, HR manager")
-
-    # 3️⃣ Generate Job Description Button
-    if st.button("Generate Job Description"):
-        if role_input:
-            description_text = generate_job_description(role_input)
-            st.session_state.initial_description = description_text
-            st.session_state.show_repository = True
-        else:
-            st.warning("Please enter a role to generate a job description.")
-
-    # 4️⃣ Notes Input
-    notes_input = st.text_area("Notes to add (optional)", placeholder="e.g., remote work, bilingual preferred, experience with ERP systems")
-
-    # 5️⃣ Regenerate Button
-    if st.button("Regenerate Job Description"):
-        if role_input:
-            combined_notes = f"{st.session_state.initial_description}\n\nAdditional notes:\n{notes_input}"
-            generate_job_description(role_input, combined_notes)
-            st.session_state.show_repository = True
-        else:
-            st.warning("Please enter a role to regenerate the job description.")
 
 def render_module_3():
     st.title("📋 Performance Review Generator")
