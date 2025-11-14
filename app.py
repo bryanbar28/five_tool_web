@@ -457,8 +457,96 @@ def render_module_4():
     st.button("Generate Profile")
 
 def render_module_5():
-    st.title("Management Training")
-    st.markdown("### This module is under development.")
+    st.title("📚 Management Training — AI Resource Finder")
+    st.markdown("### Ask AI for any training, article, video, or resource in leadership, HR, or management topics.")
+
+    # ✅ Initialize chat history
+    if "training_chat_history" not in st.session_state:
+        st.session_state.training_chat_history = []
+
+    # ✅ User input
+    user_query = st.text_input("Ask about any training topic (e.g., 'Delegation 101', 'Conflict Resolution', 'Executive Coaching')")
+
+    if st.button("Send Query"):
+        if user_query.strip():
+            try:
+                # ✅ Embed the full topic list into the system prompt for retrieval
+                topic_list = """
+                INTRO LEVEL:
+                Transition from Individual Contributor to Leader, Delegation 101, Time Management for New Managers,
+                Giving & Receiving Feedback (SBI model), Running Effective 1:1s, Basic Goal Setting (SMART),
+                Intro to Emotional Intelligence, Active Listening, Motivation Hygiene Theory (Herzberg),
+                Recognizing Burnout Signs, Anti-Harassment Basics, FMLA Overview, Payroll & Overtime Rules,
+                Documenting Performance Conversations, Tuckman Stages, Running Your First Team Meeting,
+                Ice-Breakers & Psychological Safety.
+
+                MID-LEVEL:
+                Situational Leadership II, Coaching vs. Mentoring, Crucial Conversations, Managing Up & Across,
+                Setting OKRs, Calibration Sessions, PIP Design & Legal Safety, 360 Feedback Systems,
+                Bias in Performance Reviews, Job Analysis & Competency Modeling, Selection Interview Techniques,
+                Validity & Reliability of Assessments, Employee Engagement Surveys, Change Management (Kotter 8-Step),
+                Conflict Resolution Styles (Thomas-Kilmann), Team Decision-Making Biases, Culture Audits,
+                IDP Creation, Succession Planning Basics, Learning Agility, Micro-Learning Design,
+                EEOC, ADA, Title VII Case Studies, Global Mobility & Expat Packages, Data Privacy (GDPR/CCPA).
+
+                EXPERT LEVEL:
+                Balanced Scorecard, Leadership Pipeline, Stakeholder Mapping, Scenario Planning,
+                Predictive Turnover Models, Network Analysis of Collaboration, Diversity Metrics & ROI,
+                Skills Ontology & Gap Analysis, Matrix vs. Functional Structures, Agile @ Scale for Non-Tech,
+                Span of Control Optimization, M&A Cultural Integration, Leadership Assessment Centers,
+                Psychometric Validation Studies, Counterproductive Work Behavior, High-Potential Identification,
+                ADKAR Deep Dive, Prosci Certification Modules, Resistance Typology, Transformation Playbooks,
+                Pay Equity Analysis, LTI Design, Clawback Policies, Say-on-Pay Prep, Works Council Negotiation,
+                International Assignment Policy, Cultural Intelligence (CQ).
+
+                EXECUTIVE LEVEL:
+                HR as Business Partner, Workforce Planning @ Board Level, ESG & Human Capital Reporting,
+                CEO Succession, Executive Termination Protocols, Whistleblower Systems, DEI Crisis Comms,
+                Labor Union Strategy, AI-Augmented Workforce, Gig Economy Governance, Remote/Hybrid Operating Models,
+                Skills-Based Org, Comp Committee Charter, Human Capital Metrics in 10-K, Say-on-Pay Defense,
+                Activist Investor Prep, Executive Derailers, Dark Triad Screening, Neuroscience of Decision-Making,
+                Cultural Due Diligence Playbook, Retention Bonus Modeling, Synergy Capture via People.
+
+                CROSS-LEVEL MODULES:
+                Inclusive Leadership & Allyship, Mental Health First Aid, Data Literacy for Managers,
+                AI Ethics in HR, Storytelling with Data, Negotiation Mastery.
+                """
+
+                system_prompt = f"""
+                You are an AI resource curator for management and HR training. Match user queries to the closest topics
+                from this list and provide:
+                - A short explanation of the topic
+                - Recommended training resources (courses, articles, videos)
+                - Practical tips or frameworks
+                Topic list:
+                {topic_list}
+                """
+
+                response = client.chat.completions.create(
+                    model="gpt-4",
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_query}
+                    ],
+                    temperature=0.7,
+                    max_tokens=700
+                )
+
+                ai_answer = response.choices[0].message.content
+                st.session_state.training_chat_history.append((user_query, ai_answer))
+
+            except Exception as e:
+                st.error(f"❌ Error generating AI response: {e}")
+        else:
+            st.warning("Please enter a query before sending.")
+
+    # ✅ Display chat history
+    if st.session_state.training_chat_history:
+        st.markdown("### 💬 Conversation History")
+        for q, a in st.session_state.training_chat_history:
+            st.markdown(f"**You:** {q}")
+            st.markdown(f"**AI:** {a}")
+            st.markdown("---")
 
 def render_module_6():
     st.title("Behavior Under Pressure")
