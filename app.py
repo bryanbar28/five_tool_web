@@ -587,4 +587,4 @@ PAGE_RENDERERS = {
 if selected_page in PAID_PAGES and not is_unlocked(selected_page):
     unlock_page(selected_page, PAID_PAGES[selected_page])
 else:
-    PAGE_RENDERERSselected_page  # ✅ Correct syntax
+    PAGE_RENDERERS[selected_page]() 
