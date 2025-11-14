@@ -322,9 +322,38 @@ def render_module_2():
 
 def render_module_3():
     st.title("⚾ Behavior Under Pressure Grid")
-    st.image("images/module4_behavior_grid.png")
-    st.text_area("Additional Notes")
-    st.button("Generate Profile")
+    st.markdown("### What is the Behavior Under Pressure Grid?")
+    st.markdown("""
+    This grid shows how behavioral tools manifest in two states:
+    - **Intentional Use:** Calm, focused, deliberate behavior.
+    - **Under Duress:** How traits distort under stress.
+    
+    Use this tool for leadership diagnostics, hiring decisions, and team development.
+    """)
+
+    # ✅ Display the grid image (fix path issue)
+    st.image("https://your-public-image-url.com/module4_behavior_grid.png", caption="Behavior Under Pressure Grid")
+
+    # ✅ Add comments input
+    user_comments = st.text_area("Add your comments or observations", placeholder="e.g., This candidate freezes under pressure but excels in planning.")
+
+    # ✅ Generate AI insights
+    if st.button("Generate Grid with Insights"):
+        if user_comments.strip():
+            st.subheader("🔍 AI Insights Based on Your Comments")
+            # Call OpenAI for analysis
+            response = client.chat.completions.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": "You are an organizational psychologist analyzing behavior under pressure."},
+                    {"role": "user", "content": f"Analyze this comment in context of the Behavior Under Pressure Grid: {user_comments}"}
+                ],
+                temperature=0.7,
+                max_tokens=400
+            )
+            st.write(response.choices[0].message.content)
+        else:
+            st.warning("Please add comments before generating insights.")
 
 def render_module_4():
     st.title("🧠 Behavioral Calibration Grid")
