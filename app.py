@@ -459,7 +459,7 @@ def render_module_4():
 def render_module_5():
     st.title("Management Training")
     st.markdown("### This module is under development.")
-    
+
 def render_module_6():
     st.title("Behavior Under Pressure")
     st.markdown("### What is the Behavior Under Pressure Grid?")
@@ -469,7 +469,7 @@ def render_module_6():
     - **Under Duress:** How traits distort under stress.
     
     Use this tool for leadership diagnostics, hiring decisions, and team development.
-    "")
+    """)
 
     # ✅ Display the grid as a table
     data = {
@@ -536,7 +536,7 @@ def render_module_9():
 
 def render_module_10():
     st.title("📊 SWOT 2.0 Strategic Framework")
-    st.markdown("Designed by Bryan Barrera & Microsoft Copilot")
+    st.markdown("Designed by Bryan Barrera &amp; Microsoft Copilot")
 
     notes = st.text_area("Additional Notes and Input")
     ai_chat = st.text_area("AI Chat: Ask for SWOT templates, Lean tools, Fishbone diagrams")
@@ -554,12 +554,12 @@ def render_module_10():
         st.write("**Threats:**", threats)
 
 def render_module_11():
-    st.title("🏢 M&A Intelligence (Premium)")
+    st.title("🏢 M&amp;A Intelligence (Premium)")
     st.warning("Subscription required")
     st.file_uploader("Upload Resumes", accept_multiple_files=True)
     st.file_uploader("Upload Job Descriptions", accept_multiple_files=True)
     st.file_uploader("Upload Performance Reviews", accept_multiple_files=True)
-    st.file_uploader("Upload Training & Education Records", accept_multiple_files=True)
+    st.file_uploader("Upload Training &amp; Education Records", accept_multiple_files=True)
     st.text_area("Branch Data: Name, Location, Benefits")
     st.button("Generate Analysis")
 
@@ -588,4 +588,4 @@ PAGE_RENDERERS = {
 if selected_page in PAID_PAGES and not is_unlocked(selected_page):
     unlock_page(selected_page, PAID_PAGES[selected_page])
 else:
-    PAGE_RENDERERS[selected_page]()
+    PAGE_RENDERERSselected_page
