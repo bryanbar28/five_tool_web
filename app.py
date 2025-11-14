@@ -41,16 +41,13 @@ def unlock_page(page, price):
 PAGES = [
     "Page 1: AI HR Assistant - Job Reviews",
     "Page 2: Job Descriptions Generator",
-    "Page 3: Performance Review Generator",
-    "Page 4: Behavior Under Pressure Grid",
-    "Page 5: Behavioral Calibration Grid",
-    "Page 6: Toxicity in the Workplace",
-    "Page 7: Leadership Eligibility",
-    "Page 8: SWOT 2.0",
-    "Page 9: M&A Intelligence",
-    "Page 10: Finding the Right Fit",
-    "Page 11: Your Ego",
-    "Page 12: Repository"
+    "Page 3: Behavior Under Pressure Grid",
+    "Page 4: Behavioral Calibration Grid",
+    "Page 5: Toxicity in the Workplace",
+    "Page 6: Leadership Eligibility",
+    "Page 7: SWOT 2.0",
+    "Page 8: M&A Intelligence",
+    "Page 9: Repository"
 ]
 
 selected_page = st.sidebar.selectbox("Choose a page", PAGES)
@@ -324,22 +321,18 @@ def render_module_2():
             st.warning("Please enter a role to regenerate the job description.")
 
 def render_module_3():
-    st.title("📋 Performance Review Generator")
-    st.text_area("Paste review or request one by role")
-
-def render_module_4():
     st.title("⚾ Behavior Under Pressure Grid")
     st.image("images/module4_behavior_grid.png")
     st.text_area("Additional Notes")
     st.button("Generate Profile")
 
-def render_module_5():
+def render_module_4():
     st.title("🧠 Behavioral Calibration Grid")
     st.image("images/module5_calibration_grid.png")
     st.text_area("Additional Notes")
     st.button("Generate Profile")
 
-def render_module_6():
+def render_module_5():
     st.title("☢️ Toxicity in the Workplace")
     st.image("images/module6_toxicity_scale.png")
     st.image("images/module6_toxicity_scoring.png")
@@ -347,7 +340,7 @@ def render_module_6():
     st.text_area("Additional Notes")
     st.button("Generate Profile")
 
-def render_module_7():
+def render_module_6():
     st.title("🏆 Leadership Eligibility")
     st.image("images/module7_calibration_grid.png")
     st.image("images/module7_eligibility_filter.png")
@@ -355,7 +348,7 @@ def render_module_7():
     st.image("images/module7_diagnostic_rubric.png")
     st.image("images/module7_outcomes.png")
 
-def render_module_8():
+def render_module_7():
     st.title("📊 SWOT 2.0 Strategic Framework")
     st.markdown("Designed by Bryan Barrera & Microsoft Copilot")
 
@@ -374,7 +367,7 @@ def render_module_8():
         st.write("**Opportunities:**", opportunities)
         st.write("**Threats:**", threats)
 
-def render_module_9():
+def render_module_8():
     st.title("🏢 M&A Intelligence (Premium)")
     st.warning("Subscription required")
     st.file_uploader("Upload Resumes", accept_multiple_files=True)
@@ -384,17 +377,7 @@ def render_module_9():
     st.text_area("Branch Data: Name, Location, Benefits")
     st.button("Generate Analysis")
 
-def render_module_10():
-    st.title("📘 Finding the Right Fit (Book)")
-    st.warning("Subscription required")
-    st.markdown("Coming Soon: AI-assisted workbook experience")
-
-def render_module_11():
-    st.title("📕 Your Ego: The Real Reason Your Business is Failing")
-    st.warning("This book requires a $3.99/mo subscription.")
-    st.markdown("Coming Soon: Interactive reading experience")
-
-def render_module_12():
+def render_module_9():
     st.title("🚧 Page 12: Under Construction")
     st.markdown("This page is not yet implemented.")
 
