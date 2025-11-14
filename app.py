@@ -473,7 +473,7 @@ def render_module_6():
     - **Under Duress:** How traits distort under stress.
     
     Use this tool for leadership diagnostics, hiring decisions, and team development.
-    """)
+    "")
 
     # ✅ Display the grid as a table
     data = {
