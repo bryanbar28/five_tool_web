@@ -458,12 +458,8 @@ def render_module_4():
 
 def render_module_5():
     st.title("Management Training")
-    st.markdown("### What is the Behavior Under Pressure Grid?")
-    st.markdown("""
-    This grid shows how behavioral tools manifest in two states:
-    - **Intentional Use:** Calm, focused, deliberate behavior.
-    - **Under Duress:** How traits distort under stress.
-
+    st.markdown("### This module is under development.")
+    
 def render_module_6():
     st.title("Behavior Under Pressure")
     st.markdown("### What is the Behavior Under Pressure Grid?")
