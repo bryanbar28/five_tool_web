@@ -41,6 +41,8 @@ def unlock_page(page, price):
 PAGES = [
     "Page 1: AI HR Assistant - Job Reviews",
     "Page 2: Job Descriptions Generator",
+    "Page 3: The 5 Tool Employee Framework",
+    "page 4: The 5 Tool Employee Framework: Deep Research Version", 
     "Page 3: Behavior Under Pressure Grid",
     "Page 4: Behavioral Calibration Grid",
     "Page 5: Toxicity in the Workplace",
@@ -320,7 +322,19 @@ def render_module_2():
         else:
             st.warning("Please enter a role to regenerate the job description.")
 def render_module_3():
-    st.title("⚾ Behavior Under Pressure Grid")
+    st.title("The 5 Tool Employee Framework")
+    st.image("images/module5_calibration_grid.png")
+    st.text_area("Additional Notes")
+    st.button("Generate Profile")
+    
+def render_module_4():
+    st.title("The 5 Tool Employee Framework: Deep Research Version")
+    st.image("images/module5_calibration_grid.png")
+    st.text_area("Additional Notes")
+    st.button("Generate Profile")
+
+def render_module_5():
+    st.title("Behavior Under Pressure")
     st.markdown("### What is the Behavior Under Pressure Grid?")
     st.markdown("""
     This grid shows how behavioral tools manifest in two states:
@@ -371,13 +385,13 @@ def render_module_3():
             st.warning("Please add comments before generating insights.")
 
 
-def render_module_4():
+def render_module_6():
     st.title("🧠 Behavioral Calibration Grid")
     st.image("images/module5_calibration_grid.png")
     st.text_area("Additional Notes")
     st.button("Generate Profile")
 
-def render_module_5():
+def render_module_7():
     st.title("☢️ Toxicity in the Workplace")
     st.image("images/module6_toxicity_scale.png")
     st.image("images/module6_toxicity_scoring.png")
@@ -385,7 +399,7 @@ def render_module_5():
     st.text_area("Additional Notes")
     st.button("Generate Profile")
 
-def render_module_6():
+def render_module_8():
     st.title("🏆 Leadership Eligibility")
     st.image("images/module7_calibration_grid.png")
     st.image("images/module7_eligibility_filter.png")
@@ -393,7 +407,7 @@ def render_module_6():
     st.image("images/module7_diagnostic_rubric.png")
     st.image("images/module7_outcomes.png")
 
-def render_module_7():
+def render_module_9():
     st.title("📊 SWOT 2.0 Strategic Framework")
     st.markdown("Designed by Bryan Barrera & Microsoft Copilot")
 
@@ -412,7 +426,7 @@ def render_module_7():
         st.write("**Opportunities:**", opportunities)
         st.write("**Threats:**", threats)
 
-def render_module_8():
+def render_module_10():
     st.title("🏢 M&A Intelligence (Premium)")
     st.warning("Subscription required")
     st.file_uploader("Upload Resumes", accept_multiple_files=True)
@@ -422,7 +436,7 @@ def render_module_8():
     st.text_area("Branch Data: Name, Location, Benefits")
     st.button("Generate Analysis")
 
-def render_module_9():
+def render_module_11():
     st.title("🚧 Page 12: Under Construction")
     st.markdown("This page is not yet implemented.")
 
@@ -439,6 +453,9 @@ PAGE_RENDERERS = {
     PAGES[6]: render_module_7,
     PAGES[7]: render_module_8,
     PAGES[8]: render_module_9,
+    PAGES[9]: render_module_10,
+    PAGES[10]: render_module_11,
+    PAGES[11]: render_module_12,
 }
 
 if selected_page in PAID_PAGES and not is_unlocked(selected_page):
