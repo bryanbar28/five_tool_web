@@ -103,6 +103,32 @@ PAGES = [
     "Page 11: Repository"
 ]
 
+elected_page = st.sidebar.selectbox("Choose a page", PAGES)
+
+# ✅ Page rendering logic goes BELOW this, not inside the list
+if selected_page == "Page 1: AI HR Assistant - Job Reviews":
+    st.write("Page 1 content goes here...")
+elif selected_page == "Page 2: Job Descriptions Generator":
+    st.write("Page 2 content goes here...")
+elif selected_page == "Page 3: Management Training":
+    st.write("Page 3 content goes here...")
+elif selected_page == "Page 4: The 5 Tool Employee Framework":
+    st.write("Page 4 content goes here...")
+elif selected_page == "Page 5: The 5 Tool Employee Framework: Deep Research Version":
+    st.write("Page 5 content goes here...")
+elif selected_page == "Page 6: Behavior Under Pressure Grid":
+    st.write("Page 6 content goes here...")
+elif selected_page == "Page 7: Behavioral Calibration Grid":
+    render_module_7()  # ✅ This calls your function
+elif selected_page == "Page 8: Toxicity in the Workplace":
+    st.write("Page 8 content goes here...")
+elif selected_page == "Page 9: SWOT 2.0":
+    st.write("Page 9 content goes here...")
+elif selected_page == "Page 10: M&A Intelligence":
+    st.write("Page 10 content goes here...")
+elif selected_page == "Page 11: Repository":
+    st.write("Page 11 content goes here...")
+
 selected_page = st.sidebar.selectbox("Choose a page", PAGES)
 
 # -------------------------------
@@ -917,10 +943,8 @@ def render_module_6():
             st.write(response.choices[0].message.content)
         else:
             st.warning("Please add comments before generating insights.")
-
+            
 def render_module_7():
-    import plotly.express as px  # ✅ Only needed if not already imported globally
-
     # Define the five tools
     TOOLS = ["Speed", "Power", "Fielding", "Hitting for Average", "Arm Strength"]
 
