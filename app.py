@@ -1,3 +1,4 @@
+import pandas as pd
 import streamlit as st
 from openai import OpenAI  # ✅ OpenAI client import
 
@@ -861,7 +862,7 @@ def render_module_5():
                 st.error(f"❌ Error generating AI response: {e}")
         else:
             st.warning("Please enter a question before diving further.")
-        
+
 def render_module_6():
     st.title("Behavior Under Pressure")
     st.markdown("### What is the Behavior Under Pressure Grid? An evaluation tool for the behavior that leaders, both current, and potentially, showcase when under stress or pressure")
@@ -873,7 +874,7 @@ def render_module_6():
     Use this tool for leadership diagnostics, hiring decisions, and team development.
     """)
 
-    # ✅ Display the grid as a table starting with 1, through 5 
+    # ✅ Display the grid without index numbers
     data = {
         "Tool": ["Power", "Speed", "Fielding", "Hitting Avg.", "Arm Strength"],
         "Intentional Use": [
@@ -891,7 +892,9 @@ def render_module_6():
             "Charms without clarity, dominates without connection"
         ]
     }
-    st.table(data)
+
+    df = pd.DataFrame(data)
+    st.table(df.style.hide(axis="index"))  # ✅ This hides the index column
 
     # ✅ Add comments input
     user_comments = st.text_area("Add your comments or observations", placeholder="e.g., This candidate freezes under pressure but excels in planning.")
