@@ -590,7 +590,6 @@ def render_module_4():
 
     user_question = st.text_input("Ask a question (e.g., 'Tell me more about the framework', 'Can you recommend trainings?')")
 
-    # ✅ Updated Send Question block
     if st.button("Send Question"):
         if user_question.strip():
             try:
