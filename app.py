@@ -242,7 +242,7 @@ def generate_job_description(role, notes=None):
 
     except Exception as e:
         st.error(f"❌ Error generating job description: {e}")
-
+        
 def render_module_2():
     st.title("📄 Job Description Generator")
     st.markdown("⚠️ **Disclaimer:** All work generated on this page will not be saved unless you subscribe to Repository Access.")
@@ -272,9 +272,7 @@ def render_module_2():
             st.markdown("### 📘 What Is a Job Description?")
             st.markdown(ai_answer)
             st.session_state.job_desc_chat_history.append((query, ai_answer))  # ✅ Save to history
-            return
-
-        if "help" in q_lower or "examples" in q_lower or "templates" in q_lower:
+        elif "help" in q_lower or "examples" in q_lower or "templates" in q_lower:
             ai_answer = """
             ### 🌐 Helpful Job Description Resources
             - Indeed: Job Description Samples
@@ -283,26 +281,25 @@ def render_module_2():
             """
             st.markdown(ai_answer)
             st.session_state.job_desc_chat_history.append((query, ai_answer))  # ✅ Save to history
-            return
+        else:
+            # ✅ AI fallback
+            try:
+                response = client.chat.completions.create(
+                    model="gpt-4",
+                    messages=[
+                        {"role": "system", "content": "You are an HR expert answering questions about job descriptions."},
+                        {"role": "user", "content": query}
+                    ],
+                    temperature=0.7,
+                    max_tokens=500
+                )
+                ai_answer = response.choices[0].message.content
+                st.markdown("### 🤖 AI Response")
+                st.write(ai_answer)
+                st.session_state.job_desc_chat_history.append((query, ai_answer))  # ✅ Save to history
 
-        # ✅ AI fallback
-        try:
-            response = client.chat.completions.create(
-                model="gpt-4",
-                messages=[
-                    {"role": "system", "content": "You are an HR expert answering questions about job descriptions."},
-                    {"role": "user", "content": query}
-                ],
-                temperature=0.7,
-                max_tokens=500
-            )
-            ai_answer = response.choices[0].message.content
-            st.markdown("### 🤖 AI Response")
-            st.write(ai_answer)
-            st.session_state.job_desc_chat_history.append((query, ai_answer))  # ✅ Save to history
-
-        except Exception as e:
-            st.error(f"❌ Error generating AI response: {e}")
+            except Exception as e:
+                st.error(f"❌ Error generating AI response: {e}")
 
     # ✅ Other UI elements
     role_input = st.text_input(
