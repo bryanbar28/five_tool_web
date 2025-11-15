@@ -778,6 +778,7 @@ if st.button("Dive Further"):
             st.error(f"❌ Error generating AI response: {e}")
     else:
         st.warning("Please enter a question before diving further.")
+        
 def render_module_6():
     st.title("Behavior Under Pressure")
     st.markdown("### What is the Behavior Under Pressure Grid?")
