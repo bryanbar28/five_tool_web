@@ -516,8 +516,10 @@ def render_module_5():
                 You are an AI resource curator for management and HR training. Match user queries to the closest topics
                 from this list and provide:
                 - A short explanation of the topic
-                - Recommended training resources (courses, articles, videos)
+                - Recommended training resources (courses, articles, videos) with clickable Markdown links
                 - Practical tips or frameworks
+                Format resources like:
+                - Resource Name
                 Topic list:
                 {topic_list}
                 """
@@ -540,13 +542,14 @@ def render_module_5():
         else:
             st.warning("Please enter a query before sending.")
 
-    # ✅ Display chat history
-    if st.session_state.training_chat_history:
-        st.markdown("### 💬 Conversation History")
-        for q, a in st.session_state.training_chat_history:
-            st.markdown(f"**You:** {q}")
-            st.markdown(f"**AI:** {a}")
-            st.markdown("---")
+   # ✅ Display chat history with Markdown rendering
+if st.session_state.training_chat_history:
+    st.markdown("### 💬 Conversation History")
+    for q, a in st.session_state.training_chat_history:
+        st.markdown(f"**You:** {q}")
+        st.markdown(f"**AI:**")
+        st.markdown(a, unsafe_allow_html=True)  # Allows clickable links
+        st.markdown("---")
 
 def render_module_6():
     st.title("Behavior Under Pressure")
