@@ -480,6 +480,12 @@ def render_module_3():
             st.markdown("**AI:**")
             st.markdown(a)  # Markdown links render correctly
             st.markdown("---")
+        
+        # Add Clear History button here
+        if st.button("Clear History"):
+            st.session_state.training_chat_history = []
+            st.success("✅ Conversation history cleared!")
+
             
 def render_module_4():
     st.title("The 5 Tool Employee Framework")
