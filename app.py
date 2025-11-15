@@ -449,6 +449,7 @@ def render_module_3():
                 st.error(f"❌ Error generating profile: {e}")
         else:
             st.warning("Please add notes before generating the profile.")
+            
 def render_module_5():
     st.title("📚 Management Training — AI Resource Finder")
     st.markdown("### Ask AI for any training, article, video, or resource in leadership, HR, or management topics.")
@@ -489,7 +490,8 @@ def render_module_5():
                 - Recommended training resources (courses, articles, videos) with clickable Markdown links
                 - Practical tips or frameworks
                 Format resources like:
-                - [Conflict Resolution Skills — Coursera](https://www.cour"
+                - Conflict Resolution Skills — Coursera
+                """
 
                 response = client.chat.completions.create(
                     model="gpt-4",
