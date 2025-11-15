@@ -1,6 +1,7 @@
 import pandas as pd
 import streamlit as st
 from openai import OpenAI  # ✅ OpenAI client import
+import plotly.express as px
 
 st.set_page_config(page_title="Five-Tool App", layout="wide")
 
