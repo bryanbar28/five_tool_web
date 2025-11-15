@@ -22,8 +22,6 @@ client = OpenAI(api_key="your-openai-api-key")  # or use os.getenv("OPENAI_API_K
 # -------------------------------
 PAID_PAGES = {
     "Page 9: M&A Intelligence": "$19.99/mo",
-    "Page 10: Finding the Right Fit": "$3.99/mo",
-    "Page 11: Your Ego": "$3.99/mo",
     "Page 12: Repository": "$9.99/mo"
 }
 
@@ -342,6 +340,7 @@ def render_module_2():
         if st.button("Clear History"):
             st.session_state.job_desc_chat_history = []
             st.success("✅ Conversation history cleared!")
+            st.stop()  # ✅ Stops execution cleanly instead of rerun
     
 def render_module_3():
     st.title("📚 Management Training: Intro to beginner, mid, and expert level leadership — AI Resource Finder")
