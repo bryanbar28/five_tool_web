@@ -458,7 +458,7 @@ def render_module_4():
 
 def render_module_5():
     st.title("📚 Management Training — AI Resource Finder")
-    st.markdown("### Ask AI for any training, article, video, or resource in leadership, HR, or management topics.")
+    st.markdown("### Ask AI for any training, article, or resource in leadership, HR, or management topics.")
 
     # ✅ Initialize chat history
     if "training_chat_history" not in st.session_state:
