@@ -918,10 +918,116 @@ def render_module_6():
             st.warning("Please add comments before generating insights.")
 
 def render_module_7():
+    import plotly.express as px  # ✅ Only needed if not already imported globally
+
+    # Define the five tools
+    TOOLS = ["Speed", "Power", "Fielding", "Hitting for Average", "Arm Strength"]
+
+    # Educational content for collapsible panels
+    educational_panels = {
+        "Urgency vs Foresight": "Speed without foresight creates reactive chaos. Leaders must balance urgency with strategic anticipation.",
+        "Leadership Eligibility Filter": "Evaluates readiness for management roles using 5-Tool scoring and behavioral calibration.",
+        "Messaging to Mask Misalignment": "How narrative optics hide behavioral misalignment and erode trust.",
+        "Risk-Sensitive Execution Roles": "Roles requiring precision under pressure demand foresight, agility, and clarity.",
+        "Hidden Elements": "Anticipation, discipline, and preparation operate behind the scenes to prevent behavioral drift."
+    }
+
+    # Interpretation logic based on total score
+    def interpret_score(total_score):
+        if total_score >= 21:
+            return "Leadership-Ready", (
+                "Promote to management. Provide light coaching on minor gaps to polish leadership skills."
+            )
+        elif 15 <= total_score <= 20:
+            return "Stretch-Capable", (
+                "Consider promotion only with targeted development on low-scoring areas. "
+                "Assign trial leadership projects and monitor improvement."
+            )
+        else:
+            return "High-Risk", (
+                "Do not promote. Keep in current role or consider non-leadership growth. "
+                "Focus on strengthening fundamentals before revisiting leadership readiness."
+            )
+
+    # Generate narrative analysis
+    def generate_analysis(scores, notes):
+        total_score = sum(scores)
+        category, action = interpret_score(total_score)
+
+        analysis = f"**Evaluation Summary**\n\n"
+        analysis += f"**Total Score:** {total_score}/25\n"
+        analysis += f"**Leadership Category:** {category}\n"
+        analysis += f"**Recommended Action:** {action}\n\n"
+
+        analysis += "**Tool-by-Tool Analysis:**\n"
+        for tool, score in zip(TOOLS, scores):
+            if score <= 2:
+                status = "Needs Development"
+                implication = "High risk under pressure; requires focused coaching and support."
+            elif score <= 4:
+                status = "Effective"
+                implication = "Functional but lacks consistency for high-stakes leadership."
+            else:
+                status = "Exceptional"
+                implication = "Strong leadership trait; leverage as a core strength."
+            analysis += f"- **{tool}:** Score {score} ({status}) → {implication}\n"
+
+        analysis += "\n**Employee Notes:**\n"
+        analysis += f"{notes if notes else 'No additional notes provided.'}\n\n"
+
+        analysis += "**Development Recommendations:**\n"
+        analysis += "- Strengthen anticipation, discipline, and preparation to prevent behavioral drift.\n"
+        analysis += "- Address gaps with targeted coaching and scenario-based training.\n"
+        analysis += "- Monitor for signs of reactive behavior or inconsistency under pressure.\n"
+
+        return analysis
+
+    # Streamlit UI
     st.title("🧠 Behavioral Calibration Grid")
-    st.image("images/module5_calibration_grid.png")
-    st.text_area("Additional Notes")
-    st.button("Generate Profile")
+
+    # Dropdown for frameworks
+    framework = st.selectbox(
+        "Select Framework",
+        [
+            "Behavioral Calibration Grid",
+            "Leadership Eligibility Filter",
+            "SME Pitfall Table",
+            "Risk-Sensitive Execution Roles",
+            "Messaging to Mask Misalignment"
+        ]
+    )
+
+    # Text areas for questions and notes
+    user_question = st.text_area("Ask a question about the framework")
+    employee_notes = st.text_area("Enter notes about the employee")
+
+    # Sliders for scoring each tool
+    st.subheader("Score the Employee on Each Tool (1-5)")
+    scores = []
+    for tool in TOOLS:
+        score = st.slider(tool, 1, 5, 3)
+        scores.append(score)
+
+    # Educational panels
+    st.subheader("Educational Panels")
+    for title, content in educational_panels.items():
+        with st.expander(title):
+            st.write(content)
+
+    # Generate Scoring button
+    if st.button("Generate Scoring"):
+        analysis = generate_analysis(scores, employee_notes)
+        st.markdown(analysis)
+
+        # Radar chart visualization
+        fig = px.line_polar(
+            r=scores,
+            theta=TOOLS,
+            line_close=True,
+            title="Behavioral Tool Scoring Radar"
+        )
+        fig.update_traces(fill='toself')
+        st.plotly_chart(fig)
 
 def render_module_8():
     st.title("☢️ Toxicity in the Workplace")
