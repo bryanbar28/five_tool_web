@@ -403,7 +403,6 @@ def render_module_3():
 
     # ✅ Full topic list (flattened)
     topics = [
-        "5 Tool Employee Framework", 
         "Transition from Individual Contributor to Leader",
         "Delegation 101",
         "Time Management for New Managers",
@@ -435,6 +434,7 @@ def render_module_3():
         "Validity & Reliability of Assessments",
         "Employee Engagement Surveys",
         "Change Management (Kotter 8-Step)",
+        "5 Tool Employee Framework", 
         "Conflict Resolution Styles (Thomas-Kilmann)",
         "Team Decision-Making Biases",
         "Culture Audits",
