@@ -593,7 +593,6 @@ def render_module_4():
 if st.button("Send Question"):
     if user_question.strip():
         try:
-            # ✅ Build system prompt with static links
             system_prompt = """
             You are an expert on the 5 Tool Employee Framework. Always align answers with this mapping:
 
