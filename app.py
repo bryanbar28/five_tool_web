@@ -504,7 +504,7 @@ def render_module_3():
         if st.button("Clear History"):
             st.session_state.training_chat_history = []
             st.success("✅ Conversation history cleared!")
-            st.experimental_rerun()  # ✅ Fix: refresh immediately
+            st.rerun() 
 
 def render_module_4():
     st.title("The 5 Tool Employee Framework")
