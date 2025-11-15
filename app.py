@@ -873,7 +873,7 @@ def render_module_6():
     Use this tool for leadership diagnostics, hiring decisions, and team development.
     """)
 
-    # ✅ Display the grid as a table
+    # ✅ Display the grid as a table starting with 1, through 5 
     data = {
         "Tool": ["Power", "Speed", "Fielding", "Hitting Avg.", "Arm Strength"],
         "Intentional Use": [
