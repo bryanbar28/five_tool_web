@@ -41,9 +41,9 @@ def unlock_page(page, price):
 PAGES = [
     "Page 1: AI HR Assistant - Job Reviews",
     "Page 2: Job Descriptions Generator",
-    "Page 3: The 5 Tool Employee Framework",
-    "page 4: The 5 Tool Employee Framework: Deep Research Version", 
-    "Page 5: Management Training",
+    "Page 3: Management Training",
+    "page 4: The 5 Tool Employee Framework",
+    "Page 5: The 5 Tool Employee Framework: Deep Research Version", 
     "Page 6: Behavior Under Pressure Grid",
     "Page 7: Behavioral Calibration Grid",
     "Page 8: Toxicity in the Workplace",
@@ -322,7 +322,166 @@ def render_module_2():
             st.session_state.show_repository = True
         else:
             st.warning("Please enter a role to regenerate the job description.")
+            
 def render_module_3():
+    st.title("📚 Management Training: Intro to beginner, mid, and expert level leadership — AI Resource Finder")
+    st.markdown("### Ask AI for any training, article, video, or resource in leadership, HR, or management topics.")
+
+    # ✅ Initialize chat history
+    if "training_chat_history" not in st.session_state:
+        st.session_state.training_chat_history = []
+
+    # ✅ Full topic list (flattened)
+    topics = [
+        "Transition from Individual Contributor to Leader",
+        "Delegation 101",
+        "Time Management for New Managers",
+        "Giving & Receiving Feedback (SBI model)",
+        "Running Effective 1:1s",
+        "Basic Goal Setting (SMART)",
+        "Intro to Emotional Intelligence",
+        "Active Listening",
+        "Motivation Hygiene Theory (Herzberg)",
+        "Recognizing Burnout Signs",
+        "Anti-Harassment Basics",
+        "FMLA Overview",
+        "Payroll & Overtime Rules",
+        "Documenting Performance Conversations",
+        "Tuckman Stages",
+        "Running Your First Team Meeting",
+        "Ice-Breakers & Psychological Safety",
+        "Situational Leadership II",
+        "Coaching vs. Mentoring",
+        "Crucial Conversations",
+        "Managing Up & Across",
+        "Setting OKRs",
+        "Calibration Sessions",
+        "PIP Design & Legal Safety",
+        "360 Feedback Systems",
+        "Bias in Performance Reviews",
+        "Job Analysis & Competency Modeling",
+        "Selection Interview Techniques",
+        "Validity & Reliability of Assessments",
+        "Employee Engagement Surveys",
+        "Change Management (Kotter 8-Step)",
+        "Conflict Resolution Styles (Thomas-Kilmann)",
+        "Team Decision-Making Biases",
+        "Culture Audits",
+        "IDP Creation",
+        "Succession Planning Basics",
+        "Learning Agility",
+        "Micro-Learning Design",
+        "EEOC, ADA, Title VII Case Studies",
+        "Global Mobility & Expat Packages",
+        "Data Privacy (GDPR/CCPA)",
+        "Balanced Scorecard",
+        "Leadership Pipeline",
+        "Stakeholder Mapping",
+        "Scenario Planning",
+        "Predictive Turnover Models",
+        "Network Analysis of Collaboration",
+        "Diversity Metrics & ROI",
+        "Skills Ontology & Gap Analysis",
+        "Matrix vs. Functional Structures",
+        "Agile @ Scale for Non-Tech",
+        "Span of Control Optimization",
+        "M&A Cultural Integration",
+        "Leadership Assessment Centers",
+        "Psychometric Validation Studies",
+        "Counterproductive Work Behavior",
+        "High-Potential Identification",
+        "ADKAR Deep Dive",
+        "Prosci Certification Modules",
+        "Resistance Typology",
+        "Transformation Playbooks",
+        "Pay Equity Analysis",
+        "LTI Design",
+        "Clawback Policies",
+        "Say-on-Pay Prep",
+        "Works Council Negotiation",
+        "International Assignment Policy",
+        "Cultural Intelligence (CQ)",
+        "HR as Business Partner",
+        "Workforce Planning @ Board Level",
+        "ESG & Human Capital Reporting",
+        "CEO Succession",
+        "Executive Termination Protocols",
+        "Whistleblower Systems",
+        "DEI Crisis Comms",
+        "Labor Union Strategy",
+        "AI-Augmented Workforce",
+        "Gig Economy Governance",
+        "Remote/Hybrid Operating Models",
+        "Skills-Based Org",
+        "Comp Committee Charter",
+        "Human Capital Metrics in 10-K",
+        "Say-on-Pay Defense",
+        "Activist Investor Prep",
+        "Executive Derailers",
+        "Dark Triad Screening",
+        "Neuroscience of Decision-Making",
+        "Cultural Due Diligence Playbook",
+        "Retention Bonus Modeling",
+        "Synergy Capture via People",
+        "Inclusive Leadership & Allyship",
+        "Mental Health First Aid",
+        "Data Literacy for Managers",
+        "AI Ethics in HR",
+        "Storytelling with Data",
+        "Negotiation Mastery"
+    ]
+
+    # ✅ Dropdown + Text Input
+    st.markdown("#### Select a topic or enter your own:")
+    selected_topic = st.selectbox("Choose from HR topics:", topics)
+    custom_query = st.text_input("Or enter your own topic:")
+
+    query_to_send = custom_query.strip() if custom_query.strip() else selected_topic
+
+    # ✅ Send Query Button
+    if st.button("Send Query"):
+        if query_to_send:
+            try:
+                system_prompt = f"""
+                You are an AI resource curator for management and HR training. Match user queries to the closest topics
+                from this list and provide:
+                - A short explanation of the topic
+                - Recommended training resources (courses, articles, videos) with clickable Markdown links
+                - Practical tips or frameworks
+                Format resources like:
+                - Conflict Resolution Skills — Coursera
+                Topic list:
+                {', '.join(topics)}
+                """
+
+                response = client.chat.completions.create(
+                    model="gpt-4",
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": query_to_send}
+                    ],
+                    temperature=0.7,
+                    max_tokens=700
+                )
+
+                ai_answer = response.choices[0].message.content
+                st.session_state.training_chat_history.append((query_to_send, ai_answer))
+
+            except Exception as e:
+                st.error(f"❌ Error generating AI response: {e}")
+        else:
+            st.warning("Please enter a query or select a topic.")
+
+    # ✅ Display chat history
+    if st.session_state.training_chat_history:
+        st.markdown("### 💬 Conversation History")
+        for q, a in st.session_state.training_chat_history[-10:]:
+            st.markdown(f"**You:** {q}")
+            st.markdown("**AI:**")
+            st.markdown(a)  # Markdown links render correctly
+            st.markdown("---")
+            
+def render_module_4():
     st.title("The 5 Tool Employee Framework")
 
     # ✅ Display intro content
@@ -450,8 +609,8 @@ def render_module_3():
         else:
             st.warning("Please add notes before generating the profile.")
 
-def render_module_4():
-    st.title("Advanced Deep Research — The 5 Tool Employee Framework")
+def render_module_5():
+      st.title("Advanced Deep Research — The 5 Tool Employee Framework")
 
     # ✅ Display full PDF content in a scrollable section
     pdf_content = """
@@ -618,164 +777,6 @@ def render_module_4():
                 st.error(f"❌ Error generating AI response: {e}")
         else:
             st.warning("Please enter a question before diving further.")
-
-def render_module_5():
-    st.title("📚 Management Training: Intro to beginner, mid, and expert level leadership — AI Resource Finder")
-    st.markdown("### Ask AI for any training, article, video, or resource in leadership, HR, or management topics.")
-
-    # ✅ Initialize chat history
-    if "training_chat_history" not in st.session_state:
-        st.session_state.training_chat_history = []
-
-    # ✅ Full topic list (flattened)
-    topics = [
-        "Transition from Individual Contributor to Leader",
-        "Delegation 101",
-        "Time Management for New Managers",
-        "Giving & Receiving Feedback (SBI model)",
-        "Running Effective 1:1s",
-        "Basic Goal Setting (SMART)",
-        "Intro to Emotional Intelligence",
-        "Active Listening",
-        "Motivation Hygiene Theory (Herzberg)",
-        "Recognizing Burnout Signs",
-        "Anti-Harassment Basics",
-        "FMLA Overview",
-        "Payroll & Overtime Rules",
-        "Documenting Performance Conversations",
-        "Tuckman Stages",
-        "Running Your First Team Meeting",
-        "Ice-Breakers & Psychological Safety",
-        "Situational Leadership II",
-        "Coaching vs. Mentoring",
-        "Crucial Conversations",
-        "Managing Up & Across",
-        "Setting OKRs",
-        "Calibration Sessions",
-        "PIP Design & Legal Safety",
-        "360 Feedback Systems",
-        "Bias in Performance Reviews",
-        "Job Analysis & Competency Modeling",
-        "Selection Interview Techniques",
-        "Validity & Reliability of Assessments",
-        "Employee Engagement Surveys",
-        "Change Management (Kotter 8-Step)",
-        "Conflict Resolution Styles (Thomas-Kilmann)",
-        "Team Decision-Making Biases",
-        "Culture Audits",
-        "IDP Creation",
-        "Succession Planning Basics",
-        "Learning Agility",
-        "Micro-Learning Design",
-        "EEOC, ADA, Title VII Case Studies",
-        "Global Mobility & Expat Packages",
-        "Data Privacy (GDPR/CCPA)",
-        "Balanced Scorecard",
-        "Leadership Pipeline",
-        "Stakeholder Mapping",
-        "Scenario Planning",
-        "Predictive Turnover Models",
-        "Network Analysis of Collaboration",
-        "Diversity Metrics & ROI",
-        "Skills Ontology & Gap Analysis",
-        "Matrix vs. Functional Structures",
-        "Agile @ Scale for Non-Tech",
-        "Span of Control Optimization",
-        "M&A Cultural Integration",
-        "Leadership Assessment Centers",
-        "Psychometric Validation Studies",
-        "Counterproductive Work Behavior",
-        "High-Potential Identification",
-        "ADKAR Deep Dive",
-        "Prosci Certification Modules",
-        "Resistance Typology",
-        "Transformation Playbooks",
-        "Pay Equity Analysis",
-        "LTI Design",
-        "Clawback Policies",
-        "Say-on-Pay Prep",
-        "Works Council Negotiation",
-        "International Assignment Policy",
-        "Cultural Intelligence (CQ)",
-        "HR as Business Partner",
-        "Workforce Planning @ Board Level",
-        "ESG & Human Capital Reporting",
-        "CEO Succession",
-        "Executive Termination Protocols",
-        "Whistleblower Systems",
-        "DEI Crisis Comms",
-        "Labor Union Strategy",
-        "AI-Augmented Workforce",
-        "Gig Economy Governance",
-        "Remote/Hybrid Operating Models",
-        "Skills-Based Org",
-        "Comp Committee Charter",
-        "Human Capital Metrics in 10-K",
-        "Say-on-Pay Defense",
-        "Activist Investor Prep",
-        "Executive Derailers",
-        "Dark Triad Screening",
-        "Neuroscience of Decision-Making",
-        "Cultural Due Diligence Playbook",
-        "Retention Bonus Modeling",
-        "Synergy Capture via People",
-        "Inclusive Leadership & Allyship",
-        "Mental Health First Aid",
-        "Data Literacy for Managers",
-        "AI Ethics in HR",
-        "Storytelling with Data",
-        "Negotiation Mastery"
-    ]
-
-    # ✅ Dropdown + Text Input
-    st.markdown("#### Select a topic or enter your own:")
-    selected_topic = st.selectbox("Choose from HR topics:", topics)
-    custom_query = st.text_input("Or enter your own topic:")
-
-    query_to_send = custom_query.strip() if custom_query.strip() else selected_topic
-
-    # ✅ Send Query Button
-    if st.button("Send Query"):
-        if query_to_send:
-            try:
-                system_prompt = f"""
-                You are an AI resource curator for management and HR training. Match user queries to the closest topics
-                from this list and provide:
-                - A short explanation of the topic
-                - Recommended training resources (courses, articles, videos) with clickable Markdown links
-                - Practical tips or frameworks
-                Format resources like:
-                - Conflict Resolution Skills — Coursera
-                Topic list:
-                {', '.join(topics)}
-                """
-
-                response = client.chat.completions.create(
-                    model="gpt-4",
-                    messages=[
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": query_to_send}
-                    ],
-                    temperature=0.7,
-                    max_tokens=700
-                )
-
-                ai_answer = response.choices[0].message.content
-                st.session_state.training_chat_history.append((query_to_send, ai_answer))
-
-            except Exception as e:
-                st.error(f"❌ Error generating AI response: {e}")
-        else:
-            st.warning("Please enter a query or select a topic.")
-
-    # ✅ Display chat history
-    if st.session_state.training_chat_history:
-        st.markdown("### 💬 Conversation History")
-        for q, a in st.session_state.training_chat_history[-10:]:
-            st.markdown(f"**You:** {q}")
-            st.markdown("**AI:**")
-            st.markdown(a)  # Markdown links render correctly
-            st.markdown("---")
 
 def render_module_6():
     st.title("Behavior Under Pressure")
