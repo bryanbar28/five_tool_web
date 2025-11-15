@@ -455,7 +455,7 @@ def render_module_4():
     st.write("This module is under development.")
 
 def render_module_5():
-    st.title("📚 Management Training — AI Resource Finder")
+    st.title("📚 Management Training: Intro to beginner, mid, and expert level leadership — AI Resource Finder")
     st.markdown("### Ask AI for any training, article, video, or resource in leadership, HR, or management topics.")
 
     # ✅ Initialize chat history
