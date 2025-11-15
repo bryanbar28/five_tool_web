@@ -462,8 +462,51 @@ def render_module_5():
     if "training_chat_history" not in st.session_state:
         st.session_state.training_chat_history = []
 
-    # ✅ Topics with previews
-    topics_with_preview = {
+    # ✅ Full topic list grouped by level
+    topics_by_level = {
+        "Intro Level": [
+            "Transition from Individual Contributor to Leader", "Delegation 101", "Time Management for New Managers",
+            "Giving & Receiving Feedback (SBI model)", "Running Effective 1:1s", "Basic Goal Setting (SMART)",
+            "Intro to Emotional Intelligence", "Active Listening", "Motivation Hygiene Theory (Herzberg)",
+            "Recognizing Burnout Signs", "Anti-Harassment Basics", "FMLA Overview", "Payroll & Overtime Rules",
+            "Documenting Performance Conversations", "Tuckman Stages", "Running Your First Team Meeting",
+            "Ice-Breakers & Psychological Safety"
+        ],
+        "Mid-Level": [
+            "Situational Leadership II", "Coaching vs. Mentoring", "Crucial Conversations", "Managing Up & Across",
+            "Setting OKRs", "Calibration Sessions", "PIP Design & Legal Safety", "360 Feedback Systems",
+            "Bias in Performance Reviews", "Job Analysis & Competency Modeling", "Selection Interview Techniques",
+            "Validity & Reliability of Assessments", "Employee Engagement Surveys", "Change Management (Kotter 8-Step)",
+            "Conflict Resolution Styles (Thomas-Kilmann)", "Team Decision-Making Biases", "Culture Audits",
+            "IDP Creation", "Succession Planning Basics", "Learning Agility", "Micro-Learning Design",
+            "EEOC, ADA, Title VII Case Studies", "Global Mobility & Expat Packages", "Data Privacy (GDPR/CCPA)"
+        ],
+        "Expert Level": [
+            "Balanced Scorecard", "Leadership Pipeline", "Stakeholder Mapping", "Scenario Planning",
+            "Predictive Turnover Models", "Network Analysis of Collaboration", "Diversity Metrics & ROI",
+            "Skills Ontology & Gap Analysis", "Matrix vs. Functional Structures", "Agile @ Scale for Non-Tech",
+            "Span of Control Optimization", "M&A Cultural Integration", "Leadership Assessment Centers",
+            "Psychometric Validation Studies", "Counterproductive Work Behavior", "High-Potential Identification",
+            "ADKAR Deep Dive", "Prosci Certification Modules", "Resistance Typology", "Transformation Playbooks",
+            "Pay Equity Analysis", "LTI Design", "Clawback Policies", "Say-on-Pay Prep", "Works Council Negotiation",
+            "International Assignment Policy", "Cultural Intelligence (CQ)"
+        ],
+        "Executive Level": [
+            "HR as Business Partner", "Workforce Planning @ Board Level", "ESG & Human Capital Reporting",
+            "CEO Succession", "Executive Termination Protocols", "Whistleblower Systems", "DEI Crisis Comms",
+            "Labor Union Strategy", "AI-Augmented Workforce", "Gig Economy Governance", "Remote/Hybrid Operating Models",
+            "Skills-Based Org", "Comp Committee Charter", "Human Capital Metrics in 10-K", "Say-on-Pay Defense",
+            "Activist Investor Prep", "Executive Derailers", "Dark Triad Screening", "Neuroscience of Decision-Making",
+            "Cultural Due Diligence Playbook", "Retention Bonus Modeling", "Synergy Capture via People"
+        ],
+        "Cross-Level Modules": [
+            "Inclusive Leadership & Allyship", "Mental Health First Aid", "Data Literacy for Managers",
+            "AI Ethics in HR", "Storytelling with Data", "Negotiation Mastery"
+        ]
+    }
+
+    # ✅ Preview dictionary (partial for now)
+    preview_dict = {
         "Delegation 101": "Learn how to assign tasks effectively without micromanaging.",
         "Conflict Resolution Styles (Thomas-Kilmann)": "Understand five conflict styles: competing, collaborating, compromising, avoiding, accommodating.",
         "Executive Coaching": "Develop leadership presence and decision-making through structured coaching.",
@@ -474,19 +517,22 @@ def render_module_5():
 
     # ✅ Dropdown + Text Input
     st.markdown("#### Select a topic or enter your own:")
-    selected_topic = st.selectbox("Choose from HR topics:", list(topics_with_preview.keys()))
+    all_topics = [f"{level}: {topic}" for level, topics in topics_by_level.items() for topic in topics]
+    selected_topic = st.selectbox("Choose from HR topics:", all_topics)
     custom_query = st.text_input("Or enter your own topic:")
 
-    query_to_send = custom_query.strip() if custom_query.strip() else selected_topic
+    query_to_send = custom_query.strip() if custom_query.strip() else selected_topic.split(": ", 1)[1]
 
-    # ✅ Show preview if dropdown is used
+    # ✅ Show preview if available
     if not custom_query.strip():
-        st.info(f"**Preview:** {topics_with_preview[selected_topic]}")
+        preview_text = preview_dict.get(query_to_send, "Preview coming soon for this topic.")
+        st.info(f"**Preview:** {preview_text}")
 
     # ✅ Send Query Button
     if st.button("Send Query"):
         if query_to_send:
             try:
+                # ✅ Build system prompt
                 system_prompt = """
                 You are an AI resource curator for management and HR training. Match user queries to the closest topics
                 and provide:
@@ -515,15 +561,14 @@ def render_module_5():
         else:
             st.warning("Please enter a query or select a topic.")
 
-    # ✅ Display chat history in scrollable container
+    # ✅ Display chat history
     if st.session_state.training_chat_history:
         st.markdown("### 💬 Conversation History")
-        with st.container():
-            for q, a in st.session_state.training_chat_history[-10:]:
-                st.markdown(f"**You:** {q}")
-                st.markdown("**AI:**")
-                st.markdown(a)  # Markdown links render correctly
-                st.markdown("---")
+        for q, a in st.session_state.training_chat_history[-10:]:
+            st.markdown(f"**You:** {q}")
+            st.markdown("**AI:**")
+            st.markdown(a)
+            st.markdown("---")
 
 def render_module_6():
     st.title("Behavior Under Pressure")
@@ -575,7 +620,6 @@ def render_module_6():
             st.write(response.choices[0].message.content)
         else:
             st.warning("Please add comments before generating insights.")
-
 
 def render_module_7():
     st.title("🧠 Behavioral Calibration Grid")
