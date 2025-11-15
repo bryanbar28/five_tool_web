@@ -13,6 +13,57 @@ if "show_repository" not in st.session_state:
 # ✅ OpenAI client setup
 client = OpenAI(api_key="your-openai-api-key")  # or use os.getenv("OPENAI_API_KEY")
 
+# ✅ Additional imports for YouTube API
+from googleapiclient.discovery import build
+import os
+
+# ✅ API keys (use environment variables for security)
+YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")  # Set this in your environment
+CHANNEL_ID = "YOUR_CHANNEL_ID"  # Replace with your actual channel ID
+
+# ✅ Fetch videos from your channel
+def fetch_youtube_videos():
+    youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
+    request = youtube.search().list(
+        part="snippet",
+        channelId=CHANNEL_ID,
+        maxResults=20,  # Fetch up to 20 videos
+        order="date"    # Can change to "relevance" if needed
+    )
+    response = request.execute()
+
+    videos = []
+    for item in response.get("items", []):
+        video_title = item["snippet"]["title"]
+        video_url = f"https://www.youtube.com/watch?v={item['id']['videoId']}"
+        videos.append({"title": video_title, "url": video_url})
+    return videos
+
+# ✅ Map videos to 5 Tool categories using keywords
+def map_videos_to_tools(videos):
+    mapping = {
+        "Hitting for Average": None,
+        "Fielding": None,
+        "Speed": None,
+        "Arm Strength": None,
+        "Power": None
+    }
+
+    for video in videos:
+        title = video["title"].lower()
+        if "technical" in title or "competence" in title or "hitting" in title:
+            mapping["Hitting for Average"] = video["url"]
+        elif "problem" in title or "fielding" in title or "solution" in title:
+            mapping["Fielding"] = video["url"]
+        elif "adaptability" in title or "speed" in title or "learning" in title:
+            mapping["Speed"] = video["url"]
+        elif "communication" in title or "leadership" in title or "arm" in title:
+            mapping["Arm Strength"] = video["url"]
+        elif "strategy" in title or "decision" in title or "power" in title:
+            mapping["Power"] = video["url"]
+
+    return mapping
+
 # =============================================
 # ✅ Unified Streamlit App with AI-Powered SWOT
 # =============================================
@@ -539,21 +590,16 @@ def render_module_4():
 
     user_question = st.text_input("Ask a question (e.g., 'Tell me more about the framework', 'Can you recommend trainings?')")
 
+    # ✅ Updated Send Question block
     if st.button("Send Question"):
         if user_question.strip():
             try:
-                # ✅ Curated training links for common topics
-                curated_links = """
-                Recommended Online Training:
-                - [Agile Decision-Making Frameworks – Coursera](https://www.coursera.org/learn/agile-decision-making-frameworks)
-                - [Effective Communication for Today’s Leader – Coursera](https://www.coursera.org/learn/effective-communication-for-todays-leader)
-                - [Strategic Thinking – IMD Online](https://www.imd.org/strategy/st/online-course-strategy/)
-                - [Conflict Resolution Skills – UC Irvine on Coursera](https://www.coursera.org/courses?query=conflict%20resolution)
-                - [Adaptability & Resilience – Coursera](https://www.coursera.org/courses?query=adaptability)
-                """
+                # ✅ Fetch videos and map them
+                videos = fetch_youtube_videos()
+                video_mapping = map_videos_to_tools(videos)
 
-                # ✅ System prompt includes logic for training recommendations
-                system_prompt = """
+                # ✅ Build system prompt dynamically
+                system_prompt = f"""
                 You are an expert on the 5 Tool Employee Framework. Always align answers with this mapping:
 
                 Baseball Tools → Professional Skills:
@@ -563,11 +609,22 @@ def render_module_4():
                 - Arm Strength → Communication & Leadership
                 - Power → Strategic Decision-Making
 
-                If the user asks for training recommendations, respond with:
-                - A short intro explaining the 5 Tool Employee Framework.
-                - A structured list: Baseball Tool → Skill → Recommended Courses (with links).
-                - Use clear formatting (Markdown headings and bullet points).
-                - Avoid generic advice; always tie back to the framework.
+                Respond in this format:
+                1. Tool → Skill
+                   - Short explanation of why this matters.
+                   - Link to a YouTube video from this channel.
+
+                Use these links:
+                - Hitting for Average: {video_mapping.get("Hitting for Average", "https://www.youtube.com/@5toolemployeeframeworkchannel")}
+                - Fielding: {video_mapping.get("Fielding", "https://www.youtube.com/@5toolemployeeframeworkchannel")}
+                - Speed: {video_mapping.get("Speed", "https://www.youtube.com/@5toolemployeeframeworkchannel")}
+                - Arm Strength: {video_mapping.get("Arm Strength", "https://www.youtube.com/@5toolemployeeframeworkchannel")}
+                - Power: {video_mapping.get("Power", "https://www.youtube.com/@5toolemployeeframeworkchannel")}
+
+                At the end, include:
+                **📚 Buy the Book:** Mastering the 5 Tool Employee Framework
+
+                Do NOT include any other external links.
                 """
 
                 response = client.chat.completions.create(
@@ -579,8 +636,10 @@ def render_module_4():
                     temperature=0.7,
                     max_tokens=700
                 )
+
                 ai_answer = response.choices[0].message.content
                 st.session_state.chat_history.append((user_question, ai_answer))
+
             except Exception as e:
                 st.error(f"❌ Error generating AI response: {e}")
         else:
@@ -596,14 +655,13 @@ def render_module_4():
 
     st.markdown("---")
 
-    # ✅ Notes section for custom 5 Tool Employee
+    # ✅ Notes section for custom 5 Tool Employee (unchanged)
     st.subheader("🛠 Add notes to create your own 5 Tool Employee")
     notes_input = st.text_area("Enter notes about your ideal employee or evaluation criteria", placeholder="e.g., strong leadership, adaptable, great communicator")
 
     if st.button("Generate 5 Tool Employee"):
         if notes_input.strip():
             try:
-                # ✅ Hidden Deep-Research Framework embedded in system prompt
                 deep_research_framework = """
                 The Deep-Research 5-Tool Employee Framework:
                 - Speed: Cognitive & Behavioral Agility
@@ -611,11 +669,10 @@ def render_module_4():
                 - Fielding: Strategic Foresight & System Protection
                 - Hitting for Average: Reliability, Rhythm & Repeatability
                 - Arm Strength: Communication Reach & Influence
-                Each includes Natural Gift, High-Functioning Expression, Dysfunction Signals, Behavioral Insights, and Where It Shows Up.
                 """
 
                 prompt = f"""
-                Use the following framework (hidden from user) to generate a layman-friendly, business-focused 5 Tool Employee profile:
+                Use the following framework to generate a layman-friendly, business-focused 5 Tool Employee profile:
                 {deep_research_framework}
 
                 User notes: {notes_input}
@@ -636,6 +693,7 @@ def render_module_4():
                     temperature=0.7,
                     max_tokens=700
                 )
+
                 profile = response.choices[0].message.content
                 st.markdown("### 🧾 Your Custom 5 Tool Employee Profile")
                 st.write(profile)
