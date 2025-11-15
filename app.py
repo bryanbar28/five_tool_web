@@ -502,18 +502,6 @@ def render_module_5():
         "Cross-Level Modules": [
             "Inclusive Leadership & Allyship", "Mental Health First Aid", "Data Literacy for Managers",
             "AI Ethics in HR", "Storytelling with Data", "Negotiation Mastery"
-        ]
-    }
-
-    # ✅ Preview dictionary (partial for now)
-    preview_dict = {
-        "Delegation 101": "Learn how to assign tasks effectively without micromanaging.",
-        "Conflict Resolution Styles (Thomas-Kilmann)": "Understand five conflict styles: competing, collaborating, compromising, avoiding, accommodating.",
-        "Executive Coaching": "Develop leadership presence and decision-making through structured coaching.",
-        "Situational Leadership II": "Adapt leadership style based on team maturity and task complexity.",
-        "Balanced Scorecard": "Measure organizational performance across financial and non-financial metrics.",
-        "Inclusive Leadership & Allyship": "Foster diversity and inclusion through active allyship behaviors."
-    }
 
     # ✅ Dropdown + Text Input
     st.markdown("#### Select a topic or enter your own:")
