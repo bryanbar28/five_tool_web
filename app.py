@@ -449,6 +449,10 @@ def render_module_3():
                 st.error(f"❌ Error generating profile: {e}")
         else:
             st.warning("Please add notes before generating the profile.")
+
+def render_module_4():
+    st.title("Module 4 Coming Soon")
+    st.write("This module is under development.")
             
 def render_module_5():
     st.title("📚 Management Training — AI Resource Finder")
