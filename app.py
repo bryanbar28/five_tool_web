@@ -498,13 +498,14 @@ def render_module_3():
         for q, a in st.session_state.training_chat_history[-10:]:
             st.markdown(f"**You:** {q}")
             st.markdown("**AI:**")
-            st.markdown(a)  # Markdown links render correctly
+            st.markdown(a)
             st.markdown("---")
-        
-        # Add Clear History button here
+
+        # ✅ Clear History Button with immediate refresh
         if st.button("Clear History"):
             st.session_state.training_chat_history = []
             st.success("✅ Conversation history cleared!")
+            st.experimental_rerun()  # ✅ Fix: refresh immediately
 
 def render_module_4():
     st.title("The 5 Tool Employee Framework")
