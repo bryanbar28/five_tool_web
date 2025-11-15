@@ -610,7 +610,7 @@ def render_module_4():
                    - Link to a YouTube video from this channel: https://www.youtube.com/@5toolemployeeframeworkchannel
 
                 At the end, include:
-                **📚 Buy the Book:** Mastering the 5 Tool Employee Framework
+                Want to understand the framework further: **📚 Buy the Book on Amazon:** Finding the Right Fit: An AI Assisted HR Workbook Introducing the 5 Tool Employee Framework https://a.co/d/3nBKXXb 
 
                 Do NOT include any other external links.
                 """
