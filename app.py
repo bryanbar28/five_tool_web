@@ -322,6 +322,19 @@ def render_module_2():
             st.session_state.show_repository = True
         else:
             st.warning("Please enter a role to regenerate the job description.")
+
+    # ✅ Clear History Section at Bottom
+    if st.session_state.job_desc_chat_history:
+        st.markdown("### 💬 Conversation History")
+        for q, a in st.session_state.job_desc_chat_history[-10:]:
+            st.markdown(f"**You:** {q}")
+            st.markdown("**AI:**")
+            st.markdown(a)
+            st.markdown("---")
+
+        if st.button("Clear History"):
+            st.session_state.job_desc_chat_history = []
+            st.success("✅ Conversation history cleared!")
             
 def render_module_3():
     st.title("📚 Management Training: Intro to beginner, mid, and expert level leadership — AI Resource Finder")
