@@ -622,62 +622,76 @@ def render_module_5():
                 st.markdown("**AI:**")
                 st.markdown(a)  # Markdown links render correctly
                 st.markdown("---")
-
 def render_module_5():
     st.title("📚 Management Training — AI Resource Finder")
-    st.markdown("### Ask AI for any training, article, or resource in leadership, HR, or management topics.")
+    st.markdown("### Ask AI for any training, article, video, or resource in leadership, HR, or management topics.")
 
     # ✅ Initialize chat history
     if "training_chat_history" not in st.session_state:
         st.session_state.training_chat_history = []
 
-    # ✅ User input
-    user_query = st.text_input("Ask about any training topic (e.g., 'Delegation 101', 'Conflict Resolution', 'Executive Coaching')")
+    # ✅ Topic list with previews
+    topics_with_preview = {
+        "Delegation 101": "Learn how to assign tasks effectively without micromanaging.",
+        "Conflict Resolution Styles (Thomas-Kilmann)": "Understand five conflict styles: competing, collaborating, compromising, avoiding, accommodating.",
+        "Executive Coaching": "Develop leadership presence and decision-making through structured coaching.",
+        "Situational Leadership II": "Adapt leadership style based on team maturity and task complexity.",
+        "Balanced Scorecard": "Measure organizational performance across financial and non-financial metrics.",
+        "Inclusive Leadership & Allyship": "Foster diversity and inclusion through active allyship behaviors."
+    }
+
+    # ✅ Dropdown + Text Input
+    st.markdown("#### Select a topic or enter your own:")
+    selected_topic = st.selectbox("Choose from HR topics:", list(topics_with_preview.keys()))
+    custom_query = st.text_input("Or enter your own topic:")
+
+    query_to_send = custom_query.strip() if custom_query.strip() else selected_topic
+
+    # ✅ Show preview if dropdown is used
+    if not custom_query.strip():
+        st.info(f"**Preview:** {topics_with_preview[selected_topic]}")
 
     if st.button("Send Query"):
-        if user_query.strip():
+        if query_to_send:
             try:
-                topic_list = """ ... (same topic list as before) ... """
-
-                system_prompt = f"""
+                # ✅ Build system prompt
+                system_prompt = """
                 You are an AI resource curator for management and HR training. Match user queries to the closest topics
-                from this list and provide:
+                and provide:
                 - A short explanation of the topic
                 - Recommended training resources (courses, articles, videos) with clickable Markdown links
                 - Practical tips or frameworks
                 Format resources like:
                 - Conflict Resolution Skills — Coursera
-                Topic list:
-                {topic_list}
                 """
 
                 response = client.chat.completions.create(
                     model="gpt-4",
                     messages=[
                         {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": user_query}
+                        {"role": "user", "content": query_to_send}
                     ],
                     temperature=0.7,
                     max_tokens=700
                 )
 
                 ai_answer = response.choices[0].message.content
-                st.session_state.training_chat_history.append((user_query, ai_answer))
+                st.session_state.training_chat_history.append((query_to_send, ai_answer))
 
             except Exception as e:
                 st.error(f"❌ Error generating AI response: {e}")
         else:
-            st.warning("Please enter a query before sending.")
+            st.warning("Please enter a query or select a topic.")
 
-    # ✅ Display chat history BELOW input
+    # ✅ Display chat history in scrollable container
     if st.session_state.training_chat_history:
         st.markdown("### 💬 Conversation History")
-        for q, a in st.session_state.training_chat_history:
-            st.markdown(f"**You:** {q}")
-            st.markdown("**AI:**")
-            st.markdown(a)  # Markdown links will render correctly
-            st.markdown("---")
-
+        with st.container():
+            for q, a in st.session_state.training_chat_history[-10:]:
+                st.markdown(f"**You:** {q}")
+                st.markdown("**AI:**")
+                st.markdown(a)  # Markdown links render correctly
+                st.markdown("---")
 
 def render_module_6():
     st.title("Behavior Under Pressure")
