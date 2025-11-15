@@ -189,7 +189,7 @@ def render_module_1():
             st.warning("Please enter a role to generate a review.")
 
     # 4️⃣ Notes Input
-    notes_input = st.text_area("Notes to add (optional)", placeholder="e.g., I work second shift, handle QA reports, and train new hires")
+    notes_input = st.text_area("Notes to add or restructure (optional)", placeholder="e.g., I work second shift, handle QA reports, and train new hires")
 
     # 5️⃣ Regenerate Review Button
     if st.button("Regenerate Review"):
