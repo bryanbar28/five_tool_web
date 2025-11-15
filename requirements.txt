@@ -4,3 +4,4 @@ python-dotenv
 psycopg2-binary
 supabase
 requests
+google-api-python-client
