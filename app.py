@@ -451,8 +451,173 @@ def render_module_3():
             st.warning("Please add notes before generating the profile.")
 
 def render_module_4():
-    st.title("Module 4 Coming Soon")
-    st.write("This module is under development.")
+    st.title("Advanced Deep Research — The 5 Tool Employee Framework")
+
+    # ✅ Display full PDF content in a scrollable section
+    pdf_content = """
+    ### The Final Version
+
+    _The Deep-Research 5-Tool Employee Framework_
+    A behavioral operating system for high-performance environments. Designed to evaluate not just output, but behavior under pressure, natural tendencies, and the psychodynamic tensions that determine real-world effectiveness.
+
+    Each tool includes:
+    - Natural Gift: Innate tendencies that fuel the behavior
+    - High-Functioning Expression: What excellence looks like
+    - Dysfunction Signals: How strengths derail under pressure
+    - Behavioral Insights: How to calibrate for sustained impact
+    - Where It Shows Up: Cross-industry applications and archetypes
+
+    #### Speed — Cognitive & Behavioral Agility
+    Natural Gift: Pattern recognition, emotional agility, perceptual timing
+    High-Functioning Expression:
+    - Adjusts mid-motion with grace and clarity
+    - Communicates with precise cadence—knowing when to pause, pivot, or push
+    - Integrates feedback without spiraling or flinching
+    - Creates momentum without overcomplication
+    Dysfunction Signals:
+    - Reacts impulsively to maintain control or optics
+    - Mistakes urgency for depth
+    - Avoids structure, defaults to charisma
+    - Performs rather than processes under pressure
+    Behavioral Insight: Psychological agility is the governor here—not raw reaction speed. Sustainable performance depends on metabolizing tension, not just masking it.
+    Where It Shows Up:
+    - Change management
+    - Customer-facing adaptation
+    - Executive communication in volatile contexts
+    - Individual Contributors managing high-volume ambiguity
+
+    #### Power — Ownership, Initiative & Decisiveness
+    Natural Gift: Inner drive, conviction, will to close
+    High-Functioning Expression:
+    - Owns the mission from start to finish—no deflection
+    - Pushes progress without waiting for consensus
+    - Makes high-impact decisions that others align behind
+    - Brings heat without burning bridges
+    Dysfunction Signals:
+    - Bulldozes collaboration for speed
+    - Hides behind motion to deflect reflection
+    - Overuses authority or energy to silence dissent
+    - Equates charisma with clarity
+    Behavioral Insight: Unchecked Power erodes trust. Under stress, ego and volume increase—but clarity and alignment disappear. Humility is the ultimate limiter.
+    Where It Shows Up:
+    - Founders and team leads
+    - Accountable closers and operators
+    - High-pressure roles with final-call authority
+
+    #### Fielding — Strategic Foresight & System Protection
+    Natural Gift: Systems awareness, anticipatory thinking, stability
+    High-Functioning Expression:
+    - Spots second- and third-order consequences early
+    - Builds guardrails for scalable decision-making
+    - Operates upstream of risk, not downstream of damage
+    - Stays composed when uncertainty spikes
+    Dysfunction Signals:
+    - Becomes overly risk-averse or defensive
+    - Resists new data or shifts in environment
+    - Defaults to rigid safeguards that halt innovation
+    - Blames others when overwhelmed
+    Behavioral Insight: Fielding reveals emotional maturity through discipline—not reaction. Pressure doesn't break systems. People do, when foresight is missing.
+    Where It Shows Up:
+    - Compliance, audit, legal, ops
+    - Strategic planning, QA, IT architecture
+    - Team stabilizers and culture protectors
+
+    #### Hitting for Average — Reliability, Rhythm & Repeatability
+    Natural Gift: Execution discipline, operational precision, resilience
+    High-Functioning Expression:
+    - Delivers under pressure—quietly and predictably
+    - Builds trust through consistency, not theatrics
+    - Anchors workflows and norms others depend on
+    - Focuses on base hits, not glory swings
+    Dysfunction Signals:
+    - Hides in routine to avoid ambiguity
+    - Resents lack of recognition in flashy cultures
+    - Over-indexes on habit and under-indexes on strategy
+    - Performs tasks mechanically, loses intent
+    Behavioral Insight: Culture often underrates the glue. But rhythm beats reaction, and trust beats tension. Recognition must find the quiet storm.
+    Where It Shows Up:
+    - Ops, customer success, fulfillment
+    - Risk-sensitive execution roles
+    - Individual Contributors who prevent chaos and catch the slack
+
+    #### Arm Strength — Communication Reach & Influence
+    Natural Gift: Expressive clarity, emotional connection, presence
+    High-Functioning Expression:
+    - Pitch it
+    - Distills vision into language that moves people
+    - Connects across functions and hierarchies effortlessly
+    - Builds buy-in without overreaching
+    - Communicates emotionally and intellectually
+    Dysfunction Signals:
+    - Charms without delivering substance
+    - Dominates conversations, silences opposition
+    - Uses messaging to mask misalignment
+    - Prioritizes performance over truth
+    Behavioral Insight: Influence that isn’t anchored in clarity becomes theater. Real communication reaches not just ears—but identity and belonging.
+    Where It Shows Up:
+    - Sales, enablement, leadership
+    - Cross-functional translators
+    - Cultural brokers and stakeholder wranglers
+    """
+
+    st.markdown(pdf_content)
+
+    # ✅ Question input
+    question = st.text_input("Ask a question about the framework:")
+
+    # ✅ Dive Further button
+    if st.button("Dive Further"):
+        if question.strip():
+            try:
+                # ✅ Hidden advanced concepts for AI context
+                hidden_context = """
+                Advanced Leadership Concepts:
+                - Emotional Intelligence
+                - Appreciative Inquiry
+                - Maturana & Varela – Tree of Life
+                - Invisible, Shared, Authentic, Servant, Toxic Leadership
+                - Transactional & Transformational Leadership
+                - Social Cognitive Theory (Bandura)
+                - Psychological Capital (Luthans, Avolio, Youssef)
+                - Ilya Prigogine
+                - Drucker’s work (The Effective Executive)
+                - Capra & Autopoiesis
+                - Balanced Scorecard (Kaplan & Norton)
+                - Deming’s Quality Circles
+                - Cameron & Quinn (Competing Values Framework, OCAI)
+                - Related leadership literature
+                """
+
+                system_prompt = f"""
+                You are an advanced HR and leadership research assistant. Use the following framework and concepts to answer deeply:
+                Framework:
+                {pdf_content}
+                Hidden Concepts:
+                {hidden_context}
+                Provide:
+                - A research-level explanation
+                - Practical implications
+                - References to leadership theories where relevant
+                """
+
+                response = client.chat.completions.create(
+                    model="gpt-4",
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": question}
+                    ],
+                    temperature=0.7,
+                    max_tokens=1000
+                )
+
+                ai_answer = response.choices[0].message.content
+                st.markdown("### 🔍 Deep Dive Answer")
+                st.markdown(ai_answer)
+
+            except Exception as e:
+                st.error(f"❌ Error generating AI response: {e}")
+        else:
+            st.warning("Please enter a question before diving further.")
 
 def render_module_5():
     st.title("📚 Management Training: Intro to beginner, mid, and expert level leadership — AI Resource Finder")
