@@ -562,7 +562,7 @@ def render_module_4():
     # ✅ Title and intro first
     st.title("The 5 Tool Employee Framework")
     st.markdown("### _Introduction into the 5 Tool Employee Framework_")
-    st.markdown("_An Interchangeable Model. Book available on Amazon https://a.co/d/08TRigO _")
+    st.markdown("_An Interchangeable Model. Book available on Amazon https://a.co/d/08TRigO and check out YouTube channel explaining every detail of the 5 tool: www.youtube.com/@5toolemployeeframework _")
 
     st.markdown("#### 5 Tool Baseball Player")
     st.markdown("""
