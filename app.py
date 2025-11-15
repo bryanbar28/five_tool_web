@@ -864,7 +864,7 @@ def render_module_5():
         
 def render_module_6():
     st.title("Behavior Under Pressure")
-    st.markdown("### What is the Behavior Under Pressure Grid? An evaluation tool for the behavior that leaders, both current, and potential act when under stress")
+    st.markdown("### What is the Behavior Under Pressure Grid? An evaluation tool for the behavior that leaders, both current, and potentially, showcase when under stress or pressure")
     st.markdown("""
     This grid shows how behavioral tools manifest in two states:
     - **Intentional Use:** Calm, focused, deliberate behavior.
