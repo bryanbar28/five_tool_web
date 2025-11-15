@@ -1,27 +1,24 @@
 import pandas as pd
 import streamlit as st
-from openai import OpenAI  # ✅ OpenAI client import
+from openai import OpenAI
 import plotly.express as px
+from googleapiclient.discovery import build
+import os
 
 st.set_page_config(page_title="Five-Tool App", layout="wide")
 
 # ✅ Session state setup
 if "initial_review" not in st.session_state:
     st.session_state.initial_review = ""
-    
 if "show_repository" not in st.session_state:
     st.session_state.show_repository = False
 
 # ✅ OpenAI client setup
 client = OpenAI(api_key="your-openai-api-key")  # or use os.getenv("OPENAI_API_KEY")
 
-# ✅ Additional imports for YouTube API
-from googleapiclient.discovery import build
-import os
-
-# ✅ API keys (use environment variables for security)
-YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")  # Set this in your environment
-CHANNEL_ID = "YOUR_CHANNEL_ID"  # Replace with your actual channel ID
+# ✅ API keys
+YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
+CHANNEL_ID = "YOUR_CHANNEL_ID"
 
 # ✅ Fetch videos from your channel
 def fetch_youtube_videos():
@@ -29,11 +26,10 @@ def fetch_youtube_videos():
     request = youtube.search().list(
         part="snippet",
         channelId=CHANNEL_ID,
-        maxResults=20,  # Fetch up to 20 videos
-        order="date"    # Can change to "relevance" if needed
+        maxResults=20,
+        order="date"
     )
     response = request.execute()
-
     videos = []
     for item in response.get("items", []):
         video_title = item["snippet"]["title"]
@@ -41,7 +37,7 @@ def fetch_youtube_videos():
         videos.append({"title": video_title, "url": video_url})
     return videos
 
-# ✅ Map videos to 5 Tool categories using keywords
+# ✅ Map videos to 5 Tool categories
 def map_videos_to_tools(videos):
     mapping = {
         "Hitting for Average": None,
@@ -50,7 +46,6 @@ def map_videos_to_tools(videos):
         "Arm Strength": None,
         "Power": None
     }
-
     for video in videos:
         title = video["title"].lower()
         if "technical" in title or "competence" in title or "hitting" in title:
@@ -63,38 +58,28 @@ def map_videos_to_tools(videos):
             mapping["Arm Strength"] = video["url"]
         elif "strategy" in title or "decision" in title or "power" in title:
             mapping["Power"] = video["url"]
-
     return mapping
 
-# =============================================
-# ✅ Unified Streamlit App with AI-Powered SWOT
-# =============================================
-
-# -------------------------------
-# 🔐 Subscription Logic (Placeholder)
-# -------------------------------
+# ✅ Subscription logic
 PAID_PAGES = {
     "Page 9: M&A Intelligence": "$19.99/mo",
     "Page 12: Repository": "$9.99/mo"
 }
 
 def is_unlocked(page):
-    # Placeholder logic for subscription check
     return False
 
 def unlock_page(page, price):
     st.warning(f"This page requires a subscription: {price}")
     st.button("Unlock Now")
 
-# -------------------------------
-# 📚 Module Navigation
-# -------------------------------
+# ✅ Navigation
 PAGES = [
     "Page 1: AI HR Assistant - Job Reviews",
     "Page 2: Job Descriptions Generator",
     "Page 3: Management Training",
-    "page 4: The 5 Tool Employee Framework",
-    "Page 5: The 5 Tool Employee Framework: Deep Research Version", 
+    "Page 4: The 5 Tool Employee Framework",
+    "Page 5: The 5 Tool Employee Framework: Deep Research Version",
     "Page 6: Behavior Under Pressure Grid",
     "Page 7: Behavioral Calibration Grid",
     "Page 8: Toxicity in the Workplace",
@@ -103,9 +88,10 @@ PAGES = [
     "Page 11: Repository"
 ]
 
-elected_page = st.sidebar.selectbox("Choose a page", PAGES)
+# ✅ Correct selectbox (remove duplicate)
+selected_page = st.sidebar.selectbox("Choose a page", PAGES)
 
-# ✅ Page rendering logic goes BELOW this, not inside the list
+# ✅ Page rendering logic
 if selected_page == "Page 1: AI HR Assistant - Job Reviews":
     st.write("Page 1 content goes here...")
 elif selected_page == "Page 2: Job Descriptions Generator":
@@ -119,7 +105,7 @@ elif selected_page == "Page 5: The 5 Tool Employee Framework: Deep Research Vers
 elif selected_page == "Page 6: Behavior Under Pressure Grid":
     st.write("Page 6 content goes here...")
 elif selected_page == "Page 7: Behavioral Calibration Grid":
-    render_module_7()  # ✅ This calls your function
+    st.write("Page 7 content goes here...")  # Replace with render_module_7() later
 elif selected_page == "Page 8: Toxicity in the Workplace":
     st.write("Page 8 content goes here...")
 elif selected_page == "Page 9: SWOT 2.0":
@@ -128,8 +114,6 @@ elif selected_page == "Page 10: M&A Intelligence":
     st.write("Page 10 content goes here...")
 elif selected_page == "Page 11: Repository":
     st.write("Page 11 content goes here...")
-
-selected_page = st.sidebar.selectbox("Choose a page", PAGES)
 
 # -------------------------------
 # 🔍 OpenAI Setup
