@@ -246,6 +246,10 @@ def generate_job_description(role, notes=None):
 def render_module_2():
     st.title("📄 Job Description Generator")
     st.markdown("⚠️ **Disclaimer:** All work generated on this page will not be saved unless you subscribe to Repository Access.")
+        
+    # ✅ Initialize history
+    if "job_desc_chat_history" not in st.session_state:
+        st.session_state.job_desc_chat_history = []
 
     # 1️⃣ Conversational Discovery
     query = st.text_input(
@@ -259,22 +263,27 @@ def render_module_2():
         q_lower = query.lower()
 
         if "what is a job description" in q_lower or "define job description" in q_lower:
-            st.markdown("### 📘 What Is a Job Description?")
-            st.markdown("""
+            ai_answer = """
             A **job description** is a formal document outlining the duties, responsibilities, qualifications, and expectations for a specific role. It helps:
             - Attract qualified candidates
             - Set clear performance standards
             - Align hiring with organizational goals
-            """)
-            return  # ✅ inside the function
+            """
+            st.markdown("### 📘 What Is a Job Description?")
+            st.markdown(ai_answer)
+            st.session_state.job_desc_chat_history.append((query, ai_answer))  # ✅ Save to history
+            return
 
         if "help" in q_lower or "examples" in q_lower or "templates" in q_lower:
-            st.markdown("### 🌐 Helpful Job Description Resources")
-            st.markdown("- Indeed: Job Description Samples")
-            st.markdown("- [BetterTeam: Job Description Templates")
-            st.markdown("- BetterTeam: Job Description Templates")
-            st.markdown("- SHRM: Writing Effective Job Descriptions")
-            return  # ✅ inside the function
+            ai_answer = """
+            ### 🌐 Helpful Job Description Resources
+            - Indeed: Job Description Samples
+            - BetterTeam: Job Description Templates
+            - SHRM: Writing Effective Job Descriptions
+            """
+            st.markdown(ai_answer)
+            st.session_state.job_desc_chat_history.append((query, ai_answer))  # ✅ Save to history
+            return
 
         # ✅ AI fallback
         try:
@@ -290,6 +299,7 @@ def render_module_2():
             ai_answer = response.choices[0].message.content
             st.markdown("### 🤖 AI Response")
             st.write(ai_answer)
+            st.session_state.job_desc_chat_history.append((query, ai_answer))  # ✅ Save to history
 
         except Exception as e:
             st.error(f"❌ Error generating AI response: {e}")
@@ -335,7 +345,7 @@ def render_module_2():
         if st.button("Clear History"):
             st.session_state.job_desc_chat_history = []
             st.success("✅ Conversation history cleared!")
-            
+    
 def render_module_3():
     st.title("📚 Management Training: Intro to beginner, mid, and expert level leadership — AI Resource Finder")
     st.markdown("### Ask AI for any training, article, video, or resource in leadership, HR, or management topics.")
@@ -499,7 +509,6 @@ def render_module_3():
             st.session_state.training_chat_history = []
             st.success("✅ Conversation history cleared!")
 
-            
 def render_module_4():
     st.title("The 5 Tool Employee Framework")
 
