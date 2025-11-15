@@ -5,3 +5,5 @@ psycopg2-binary
 supabase
 requests
 google-api-python-client
+plotly
+pandas
