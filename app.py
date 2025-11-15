@@ -863,6 +863,7 @@ def render_module_5():
         else:
             st.warning("Please enter a question before diving further.")
 
+
 def render_module_6():
     st.title("Behavior Under Pressure")
     st.markdown("### What is the Behavior Under Pressure Grid? An evaluation tool for the behavior that leaders, both current, and potentially, showcase when under stress or pressure")
@@ -874,7 +875,7 @@ def render_module_6():
     Use this tool for leadership diagnostics, hiring decisions, and team development.
     """)
 
-    # ✅ Display the grid without index numbers
+    # ✅ Create DataFrame
     data = {
         "Tool": ["Power", "Speed", "Fielding", "Hitting Avg.", "Arm Strength"],
         "Intentional Use": [
@@ -894,7 +895,9 @@ def render_module_6():
     }
 
     df = pd.DataFrame(data)
-    st.table(df.style.hide(axis="index"))  # ✅ This hides the index column
+
+    # ✅ Hide index completely
+    st.dataframe(df, hide_index=True)  # Works in latest Streamlit versions
 
     # ✅ Add comments input
     user_comments = st.text_area("Add your comments or observations", placeholder="e.g., This candidate freezes under pressure but excels in planning.")
