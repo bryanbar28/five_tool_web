@@ -558,11 +558,11 @@ def render_module_3():
             st.rerun() 
 
 def render_module_4():
+    # ✅ Title and intro first
     st.title("The 5 Tool Employee Framework")
-
-    # ✅ Display intro content
     st.markdown("### _Introduction into the 5 Tool Employee Framework_")
     st.markdown("_An Interchangeable Model_")
+
     st.markdown("#### 5 Tool Baseball Player")
     st.markdown("""
     - **Hitting for Average** – Consistently making contact and getting on base.
@@ -583,54 +583,55 @@ def render_module_4():
 
     st.markdown("---")
 
-    # ✅ Persistent AI Chatbox
+    # ✅ Chatbox section AFTER intro
     st.subheader("🤖 Ask AI About the Framework")
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
 
     user_question = st.text_input("Ask a question (e.g., 'Tell me more about the framework', 'Can you recommend trainings?')")
 
-if st.button("Send Question"):
-    if user_question.strip():
-        try:
-            system_prompt = """
-            You are an expert on the 5 Tool Employee Framework. Always align answers with this mapping:
+    # ✅ Updated Send Question logic (fallback version)
+    if st.button("Send Question"):
+        if user_question.strip():
+            try:
+                system_prompt = """
+                You are an expert on the 5 Tool Employee Framework. Always align answers with this mapping:
 
-            Baseball Tools → Professional Skills:
-            - Hitting for Average → Technical Competence
-            - Fielding → Problem-Solving Ability
-            - Speed → Adaptability & Continuous Learning
-            - Arm Strength → Communication & Leadership
-            - Power → Strategic Decision-Making
+                Baseball Tools → Professional Skills:
+                - Hitting for Average → Technical Competence
+                - Fielding → Problem-Solving Ability
+                - Speed → Adaptability & Continuous Learning
+                - Arm Strength → Communication & Leadership
+                - Power → Strategic Decision-Making
 
-            Respond in this format:
-            1. Tool → Skill
-               - Short explanation of why this matters.
-               - Link to a YouTube video from this channel: https://www.youtube.com/@5toolemployeeframeworkchannel
+                Respond in this format:
+                1. Tool → Skill
+                   - Short explanation of why this matters.
+                   - Link to a YouTube video from this channel: https://www.youtube.com/@5toolemployeeframeworkchannel
 
-            At the end, include:
-            **📚 Buy the Book:** Mastering the 5 Tool Employee Framework
+                At the end, include:
+                **📚 Buy the Book:** Mastering the 5 Tool Employee Framework
 
-            Do NOT include any other external links.
-            """
+                Do NOT include any other external links.
+                """
 
-            response = client.chat.completions.create(
-                model="gpt-4",
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_question}
-                ],
-                temperature=0.7,
-                max_tokens=700
-            )
+                response = client.chat.completions.create(
+                    model="gpt-4",
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_question}
+                    ],
+                    temperature=0.7,
+                    max_tokens=700
+                )
 
-            ai_answer = response.choices[0].message.content
-            st.session_state.chat_history.append((user_question, ai_answer))
+                ai_answer = response.choices[0].message.content
+                st.session_state.chat_history.append((user_question, ai_answer))
 
-        except Exception as e:
-            st.error(f"❌ Error generating AI response: {e}")
-    else:
-        st.warning("Please enter a question before sending.")
+            except Exception as e:
+                st.error(f"❌ Error generating AI response: {e}")
+        else:
+            st.warning("Please enter a question before sending.")
 
     # ✅ Display chat history
     if st.session_state.chat_history:
@@ -642,7 +643,7 @@ if st.button("Send Question"):
 
     st.markdown("---")
 
-    # ✅ Notes section for custom 5 Tool Employee (unchanged)
+    # ✅ Notes section stays at the bottom
     st.subheader("🛠 Add notes to create your own 5 Tool Employee")
     notes_input = st.text_area("Enter notes about your ideal employee or evaluation criteria", placeholder="e.g., strong leadership, adaptable, great communicator")
 
