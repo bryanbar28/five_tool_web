@@ -590,59 +590,48 @@ def render_module_4():
 
     user_question = st.text_input("Ask a question (e.g., 'Tell me more about the framework', 'Can you recommend trainings?')")
 
-    if st.button("Send Question"):
-        if user_question.strip():
-            try:
-                # ✅ Fetch videos and map them
-                videos = fetch_youtube_videos()
-                video_mapping = map_videos_to_tools(videos)
+if st.button("Send Question"):
+    if user_question.strip():
+        try:
+            # ✅ Build system prompt with static links
+            system_prompt = """
+            You are an expert on the 5 Tool Employee Framework. Always align answers with this mapping:
 
-                # ✅ Build system prompt dynamically
-                system_prompt = f"""
-                You are an expert on the 5 Tool Employee Framework. Always align answers with this mapping:
+            Baseball Tools → Professional Skills:
+            - Hitting for Average → Technical Competence
+            - Fielding → Problem-Solving Ability
+            - Speed → Adaptability & Continuous Learning
+            - Arm Strength → Communication & Leadership
+            - Power → Strategic Decision-Making
 
-                Baseball Tools → Professional Skills:
-                - Hitting for Average → Technical Competence
-                - Fielding → Problem-Solving Ability
-                - Speed → Adaptability & Continuous Learning
-                - Arm Strength → Communication & Leadership
-                - Power → Strategic Decision-Making
+            Respond in this format:
+            1. Tool → Skill
+               - Short explanation of why this matters.
+               - Link to a YouTube video from this channel: https://www.youtube.com/@5toolemployeeframeworkchannel
 
-                Respond in this format:
-                1. Tool → Skill
-                   - Short explanation of why this matters.
-                   - Link to a YouTube video from this channel.
+            At the end, include:
+            **📚 Buy the Book:** Mastering the 5 Tool Employee Framework
 
-                Use these links:
-                - Hitting for Average: {video_mapping.get("Hitting for Average", "https://www.youtube.com/@5toolemployeeframeworkchannel")}
-                - Fielding: {video_mapping.get("Fielding", "https://www.youtube.com/@5toolemployeeframeworkchannel")}
-                - Speed: {video_mapping.get("Speed", "https://www.youtube.com/@5toolemployeeframeworkchannel")}
-                - Arm Strength: {video_mapping.get("Arm Strength", "https://www.youtube.com/@5toolemployeeframeworkchannel")}
-                - Power: {video_mapping.get("Power", "https://www.youtube.com/@5toolemployeeframeworkchannel")}
+            Do NOT include any other external links.
+            """
 
-                At the end, include:
-                **📚 Buy the Book:** Mastering the 5 Tool Employee Framework
+            response = client.chat.completions.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_question}
+                ],
+                temperature=0.7,
+                max_tokens=700
+            )
 
-                Do NOT include any other external links.
-                """
+            ai_answer = response.choices[0].message.content
+            st.session_state.chat_history.append((user_question, ai_answer))
 
-                response = client.chat.completions.create(
-                    model="gpt-4",
-                    messages=[
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": user_question}
-                    ],
-                    temperature=0.7,
-                    max_tokens=700
-                )
-
-                ai_answer = response.choices[0].message.content
-                st.session_state.chat_history.append((user_question, ai_answer))
-
-            except Exception as e:
-                st.error(f"❌ Error generating AI response: {e}")
-        else:
-            st.warning("Please enter a question before sending.")
+        except Exception as e:
+            st.error(f"❌ Error generating AI response: {e}")
+    else:
+        st.warning("Please enter a question before sending.")
 
     # ✅ Display chat history
     if st.session_state.chat_history:
