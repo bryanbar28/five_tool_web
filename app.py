@@ -403,6 +403,7 @@ def render_module_3():
 
     # ✅ Full topic list (flattened)
     topics = [
+        "5 Tool Employee Framework", 
         "Transition from Individual Contributor to Leader",
         "Delegation 101",
         "Time Management for New Managers",
