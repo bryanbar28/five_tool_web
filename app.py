@@ -97,10 +97,9 @@ PAGES = [
     "Page 6: Behavior Under Pressure Grid",
     "Page 7: Behavioral Calibration Grid",
     "Page 8: Toxicity in the Workplace",
-    "Page 9: Leadership Eligibility",
-    "Page 10: SWOT 2.0",
-    "Page 11: M&A Intelligence",
-    "Page 12: Repository"
+    "Page 9: SWOT 2.0",
+    "Page 10: M&A Intelligence",
+    "Page 11: Repository"
 ]
 
 selected_page = st.sidebar.selectbox("Choose a page", PAGES)
@@ -933,14 +932,6 @@ def render_module_8():
     st.button("Generate Profile")
 
 def render_module_9():
-    st.title("🏆 Leadership Eligibility")
-    st.image("images/module7_calibration_grid.png")
-    st.image("images/module7_eligibility_filter.png")
-    st.image("images/module7_scoring_scale.png")
-    st.image("images/module7_diagnostic_rubric.png")
-    st.image("images/module7_outcomes.png")
-
-def render_module_10():
     st.title("📊 SWOT 2.0 Strategic Framework")
     st.markdown("Designed by Bryan Barrera &amp; Microsoft Copilot")
 
@@ -959,7 +950,7 @@ def render_module_10():
         st.write("**Opportunities:**", opportunities)
         st.write("**Threats:**", threats)
 
-def render_module_11():
+def render_module_10():
     st.title("🏢 M&amp;A Intelligence (Premium)")
     st.warning("Subscription required")
     st.file_uploader("Upload Resumes", accept_multiple_files=True)
@@ -969,7 +960,7 @@ def render_module_11():
     st.text_area("Branch Data: Name, Location, Benefits")
     st.button("Generate Analysis")
 
-def render_module_12():
+def render_module_11():
     st.title("🚧 Page 12: Under Construction")
     st.markdown("This page is not yet implemented.")
 # -------------------------------
@@ -987,7 +978,6 @@ PAGE_RENDERERS = {
     PAGES[8]: render_module_9,
     PAGES[9]: render_module_10,
     PAGES[10]: render_module_11,
-    PAGES[11]: render_module_12,
 }
 
 if selected_page in PAID_PAGES and not is_unlocked(selected_page):
