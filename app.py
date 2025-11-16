@@ -561,9 +561,8 @@ def render_module_4():
     st.title("The 5 Tool Employee Framework")
     st.markdown("### _Introduction into the 5 Tool Employee Framework_")
     st.markdown(
-        "An Interchangeable Model. Book available on Amazon: "
-        "Finding the Right Fit and check out our YouTube channel: "
-        "[5 Tool EmployeeFramework"
+        "An Interchangeable Model. Book available on Amazon: https://a.co/d/91S2rTc "
+        "Finding the Right Fit and check out our YouTube channel: www.youtube.com/@5toolemployeeframework "
     )
 
     st.markdown("---")
