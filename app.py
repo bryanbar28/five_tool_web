@@ -592,19 +592,62 @@ def render_module_4():
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
 
-    user_question = st.text_input("Ask a question (e.g., 'Tell me more about the framework', 'Can you recommend trainings?')")
+    user_question = st.text_input("Ask a question (e.g., 'Tell me more about hitting for average', 'Explain adaptability')")
 
     if st.button("Send Question"):
         if user_question.strip():
-            ai_answer = f"""
-            Sure! The 5 Tool Employee Framework maps five core professional skills to a structured model for evaluating talent:
-
-            - Hitting for Average → Technical Competence
-            - Fielding → Problem-Solving Ability
-            - Speed → Adaptability & Continuous Learning
-            - Arm Strength → Communication & Leadership
-            - Power → Strategic Decision-Making
-            """
+            # ✅ Rich descriptive answers based on question keywords
+            q_lower = user_question.lower()
+            if "hitting" in q_lower or "technical" in q_lower:
+                ai_answer = """
+                **Hitting for Average → Technical Competence**
+                This tool represents a professional’s ability to perform job-specific duties effectively and consistently.
+                - **Why It Matters:** Without strong technical fundamentals, everything else suffers.
+                - **Behavioral Insight:** High scores indicate rhythm and repeatability under pressure; low scores often signal avoidance of ambiguity or over-reliance on routine.
+                - **Development Path:** Build structured training plans, reinforce accountability, and encourage precision under stress.
+                """
+            elif "fielding" in q_lower or "problem" in q_lower:
+                ai_answer = """
+                **Fielding → Problem-Solving Ability**
+                A great fielder anticipates and adjusts—just like a skilled problem solver who diagnoses inefficiencies early.
+                - **Why It Matters:** Prevents chaos and costly errors.
+                - **Behavioral Insight:** High scores show foresight and composure; low scores reveal rigidity or blame-shifting.
+                - **Development Path:** Scenario planning and root-cause analysis training.
+                """
+            elif "speed" in q_lower or "adaptability" in q_lower:
+                ai_answer = """
+                **Speed → Adaptability & Continuous Learning**
+                Speed in business means agility and learning under pressure.
+                - **Why It Matters:** Keeps employees relevant in fast-changing environments.
+                - **Behavioral Insight:** High scores reflect emotional agility and proactive learning; low scores suggest resistance to change.
+                - **Development Path:** Micro-learning programs and resilience coaching.
+                """
+            elif "arm" in q_lower or "communication" in q_lower:
+                ai_answer = """
+                **Arm Strength → Communication & Leadership**
+                Communication drives clarity and influence across teams.
+                - **Why It Matters:** Aligns stakeholders and builds trust.
+                - **Behavioral Insight:** High scores show authentic leadership; low scores risk optics-driven behavior or dominance.
+                - **Development Path:** Coaching on clarity, empathy, and feedback loops.
+                """
+            elif "power" in q_lower or "strategic" in q_lower:
+                ai_answer = """
+                **Power → Strategic Decision-Making**
+                Power is about foresight and decisive action.
+                - **Why It Matters:** Shapes long-term success and prevents costly missteps.
+                - **Behavioral Insight:** High scores indicate confidence with humility; low scores reveal impulsiveness or short-term thinking.
+                - **Development Path:** Strategic frameworks and risk analysis training.
+                """
+            else:
+                ai_answer = """
+                The 5 Tool Employee Framework evaluates five core skills:
+                - Technical Competence
+                - Problem-Solving Ability
+                - Adaptability & Continuous Learning
+                - Communication & Leadership
+                - Strategic Decision-Making
+                Ask about any tool for a detailed explanation.
+                """
             st.session_state.chat_history.append((user_question, ai_answer.strip()))
         else:
             st.warning("Please enter a question before sending.")
