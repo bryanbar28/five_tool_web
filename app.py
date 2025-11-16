@@ -946,6 +946,8 @@ def render_module_7():
 
     # ✅ UI
     st.title("🧠 Behavioral Calibration & Leadership Readiness")
+
+    # Framework selection
     framework = st.selectbox("Select Framework", [
         "Behavioral Calibration Grid",
         "Leadership Eligibility Filter",
@@ -954,15 +956,25 @@ def render_module_7():
         "Messaging to Mask Misalignment"
     ])
 
-    # ✅ Sliders for scoring
+    # Educational panels
+    st.subheader("Educational Panels")
+    for title, content in educational_panels.items():
+        with st.expander(title):
+            st.write(content)
+
+    # Scoring sliders
     st.subheader("Score the Employee on Each Tool (1-5)")
     scores = [st.slider(tool, 1, 5, 3) for tool in TOOLS]
 
+    # Notes input
     employee_notes = st.text_area("Enter notes about the employee")
 
+    # Generate radar and analysis
     if st.button("Generate Scoring"):
         analysis = generate_analysis(scores, employee_notes, framework)
         st.markdown(analysis)
+
+        # Radar chart
         fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="Behavioral Tool Scoring Radar")
         fig.update_traces(fill='toself')
         st.plotly_chart(fig)
