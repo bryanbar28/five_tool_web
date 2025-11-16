@@ -1148,18 +1148,11 @@ def render_module_7():
 def render_module_8():
     import streamlit as st
     import plotly.express as px
-    import docx
 
-    # Load book content for AI integration
-    book_files = ["The 5 Tool Employee Framework .docx", "Toxicity in the Workplace Scale & Scoring.docx"]
-    book_text = ""
-    for file in book_files:
-        try:
-            doc = docx.Document(file)
-            for para in doc.paragraphs:
-                book_text += para.text + "\n"
-        except:
-            pass
+    # Embed book content and toxicity scale text
+    book_text = """
+    [Insert the relevant sections from your book and toxicity scale here, e.g. Padilla’s Toxic Triangle, Hogan derailers, Machiavellianism, Behavioral Drift, 360-degree feedback, and toxicity scoring rubric.]
+    """
 
     # --- AI response function with structured output ---
     def get_ai_response(question):
