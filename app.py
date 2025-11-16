@@ -927,7 +927,7 @@ def render_module_6():
             st.write(response.choices[0].message.content)
         else:
             st.warning("Please add comments before generating insights.")
-                    
+            
 def render_module_7():
     import plotly.express as px
 
@@ -1001,9 +1001,10 @@ def render_module_7():
 
         return analysis
 
-    # UI
+    # ✅ UI
     st.title("🧠 Behavioral Calibration & Leadership Readiness")
 
+    # ✅ Framework selection
     framework = st.selectbox(
         "Select Framework",
         [
@@ -1015,7 +1016,7 @@ def render_module_7():
         ]
     )
 
-    # Render grids
+    # ✅ Render framework tables
     if framework == "Behavioral Calibration Grid":
         st.write("### Behavioral Calibration Grid")
         st.table([
@@ -1066,65 +1067,69 @@ def render_module_7():
             ["Intentional Ambiguity", "Postpones reckoning, masks misalignment"]
         ])
 
-    # Q&A and notes
+    # ✅ Module 7 Content Placeholder
+    st.subheader("Module 7 Content Goes Here")
+    st.write("This section will display additional insights or interactive content for Module 7.")
+
+    # ✅ Q&A and notes
     user_question = st.text_area("Ask a question about the framework")
     employee_notes = st.text_area("Enter notes about the employee")
-    
-if st.button("Get Answer"):
-    if user_question.strip():
-        with st.spinner("Thinking..."):
-            response = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[
-                    {
-                        "role": "system",
-                        "content": (
-                            "You are an expert on the 5-Tool Employee Framework. "
-                            "Provide detailed, practical, and psychologically rich insights. "
-                            "If the user asks for more detail, expand with examples, implications, "
-                            "and actionable recommendations."
-                        ),
-                    },
-                    {
-                        "role": "user",
-                        "content": f"Framework: {framework}\nQuestion: {user_question}",
-                    },
-                ],
-            )
-        answer_text = response.choices[0].message.content
-        st.markdown(f"**Answer:** {answer_text}")
 
-        # ✅ Dynamic link injection
-        keywords = ["training", "course", "coaching", "resources", "links"]
-        if any(word in user_question.lower() for word in keywords):
-            st.markdown("**Recommended Training Links:**")
-            st.markdown("- Developing Emotional Intelligence – LinkedIn Learning")
-            st.markdown("- Time Management Fundamentals – LinkedIn Learning")
-            st.markdown("- Resilience Training – Coursera")
-            st.markdown("- Scenario-Based Leadership – Harvard Business Publishing")
-            st.markdown("- Watch tutorials on YouTube")
-    else:
-        st.warning("Please enter a question before clicking 'Get Answer'.")
-    
-    # Sliders
+    if st.button("Get Answer"):
+        if user_question.strip():
+            with st.spinner("Thinking..."):
+                response = client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": (
+                                "You are an expert on the 5-Tool Employee Framework. "
+                                "Provide detailed, practical, and psychologically rich insights. "
+                                "If the user asks for more detail, expand with examples, implications, "
+                                "and actionable recommendations."
+                            ),
+                        },
+                        {
+                            "role": "user",
+                            "content": f"Framework: {framework}\nQuestion: {user_question}",
+                        },
+                    ],
+                )
+            answer_text = response.choices[0].message.content
+            st.markdown(f"**Answer:** {answer_text}")
+
+            # ✅ Dynamic link injection
+            keywords = ["training", "course", "coaching", "resources", "links"]
+            if any(word in user_question.lower() for word in keywords):
+                st.markdown("**Recommended Training Links:**")
+                st.markdown("- Developing Emotional Intelligence – LinkedIn Learning")
+                st.markdown("- Time Management Fundamentals – LinkedIn Learning")
+                st.markdown("- Resilience Training – Coursera")
+                st.markdown("- Scenario-Based Leadership – Harvard Business Publishing")
+                st.markdown("- Watch tutorials on YouTube")
+        else:
+            st.warning("Please enter a question before clicking 'Get Answer'.")
+
+    # ✅ Sliders for scoring
     st.subheader("Score the Employee on Each Tool (1-5)")
     scores = [st.slider(tool, 1, 5, 3) for tool in TOOLS]
 
-    # Educational panels
+    # ✅ Educational panels
     st.subheader("Educational Panels")
     for title, content in educational_panels.items():
         with st.expander(title):
             st.write(content)
 
-    # Generate Scoring
+    # ✅ Generate Scoring and Radar Chart
     if st.button("Generate Scoring"):
         analysis = generate_analysis(scores, employee_notes, framework)
         st.markdown(analysis)
 
         fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="Behavioral Tool Scoring Radar")
         fig.update_traces(fill='toself')
-        st.plotly_chart(fig)
-        
+        st.plotly_chart(fig)                  
+
 def render_module_8():
     st.title("☢️ Toxicity in the Workplace")
     st.image("images/module6_toxicity_scale.png")
