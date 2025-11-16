@@ -1006,9 +1006,24 @@ def render_module_7():
         ]
     )
 
-    # Text areas for questions and notes
-    user_question = st.text_area("Ask a question about the framework")
-    employee_notes = st.text_area("Enter notes about the employee")
+   # Text areas for questions and notes
+user_question = st.text_area("Ask a question about the framework")
+employee_notes = st.text_area("Enter notes about the employee")
+
+# ✅ Add a button to process the question
+if st.button("Get Answer"):
+    if user_question.strip():
+        with st.spinner("Thinking..."):
+            response = client.chat.completions.create(
+                model="gpt-4o-mini",  # or your preferred model
+                messages=[
+                    {"role": "system", "content": "You are an expert on behavioral frameworks."},
+                    {"role": "user", "content": f"Framework: {framework}\nQuestion: {user_question}"}
+                ]
+            )
+        st.markdown(f"**Answer:** {response.choices[0].message.content}")
+    else:
+        st.warning("Please enter a question before clicking 'Get Answer'.")
 
     # Sliders for scoring each tool
     st.subheader("Score the Employee on Each Tool (1-5)")
