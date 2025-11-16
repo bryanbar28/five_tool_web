@@ -498,81 +498,66 @@ def render_module_3():
     st.markdown("#### Select a topic or enter your own:")
     selected_topic = st.selectbox("Choose from HR topics:", topics)
     custom_query = st.text_input("Or enter your own topic:")
-
     query_to_send = custom_query.strip() if custom_query.strip() else selected_topic
 
     # ✅ Expandable sections for all topics
     if selected_topic == "PACTD Model (Pivot, Adapt, Create, Transcend, Disrupt)":
         st.info("**PACTD Model** — A strategic guide to help businesses Pivot, Adapt, Create, Transcend, and Disrupt.")
-        with st.expander("📊 Explanation, Resources & Tips"):
+        with st.expander("📖 Explanation, Description & Practical Tips"):
             st.markdown("""
-            **Explanation:**  
-            The PACTD Model helps leaders navigate uncertainty by creating options and opportunities.  
-
-            **Recommended Resources:**  
-            - Your Ego: The Real Reason Your Business is Failing (Amazon)  
-            - Watch on YouTube  
-
-            **Practical Tips:**  
-            - Pivot quickly to capture low-hanging fruit or avoid disaster  
-            - Adapt to external forces like market shifts or regulations  
-            - Create new strategies and culture for long-term success  
-            - Transcend current limits by innovating and scaling  
-            - Disrupt your industry or avoid being disrupted  
+            **Explanation:**
+            The PACTD Model helps leaders navigate uncertainty by creating options and opportunities.
+            **Description:**
+            This model focuses on five strategic actions: Pivot, Adapt, Create, Transcend, and Disrupt, enabling organizations to remain agile and innovative.
+            **Practical Tips:**
+            - Pivot quickly to capture low-hanging fruit or avoid disaster
+            - Adapt to external forces like market shifts or regulations
+            - Create new strategies and culture for long-term success
+            - Transcend current limits by innovating and scaling
+            - Disrupt your industry or avoid being disrupted
             """)
-
     elif selected_topic == "Your Ego: The Real Reason Your Business is Failing":
         st.info("**Your Ego: The Real Reason Your Business is Failing** — A practical guide to overcoming ego-driven decisions.")
         with st.expander("📖 Explanation, Resources & Tips"):
             st.markdown("""
-            **Explanation:**  
-            This topic explores how ego-driven decisions harm businesses and how leaders can embrace humility and strategy.  
-
-            **Recommended Resources:**  
-            - Your Ego: The Real Reason Your Business is Failing (Amazon)  
-
-            **Practical Tips:**  
-            - Practice self-awareness: Regular reflection and feedback  
-            - Embrace humility: Recognize team contributions  
-            - Control emotional reactions: Avoid ego-driven decisions  
-            - Foster continuous learning: Stay adaptable and open-minded  
+            **Explanation:**
+            This topic explores how ego-driven decisions harm businesses and how leaders can embrace humility and strategy.
+            **Recommended Resources:**
+            - Your Ego: The Real Reason Your Business is Failing (Amazon)
+            **Practical Tips:**
+            - Practice self-awareness: Regular reflection and feedback
+            - Embrace humility: Recognize team contributions
+            - Control emotional reactions: Avoid ego-driven decisions
+            - Foster continuous learning: Stay adaptable and open-minded
             """)
-
     elif selected_topic == "5-Tool Employee Framework":
         st.info("**5-Tool Employee Framework** — Inspired by baseball’s legendary 5-tool player concept.")
         with st.expander("⚾ Explanation, Resources & Tips"):
             st.markdown("""
-            **Explanation:**  
-            The 5-Tool Employee Framework measures talent across five critical dimensions for organizational success.  
-
-            **Recommended Resources:**  
-            - Your Ego: The Real Reason Your Business is Failing (Amazon)  
-            - Watch on YouTube  
-
-            **Practical Tips:**  
-            - Speed: Encourage agility and adaptability  
-            - Power: Develop influence and leadership skills  
-            - Fielding: Strengthen problem-solving and risk management  
-            - Hitting for Average: Promote consistent performance  
-            - Arm Strength: Improve communication and outreach  
+            **Explanation:**
+            The 5-Tool Employee Framework measures talent across five critical dimensions for organizational success.
+            **Recommended Resources:**
+            - Your Ego: The Real Reason Your Business is Failing (Amazon)
+            - Watch on YouTube
+            **Practical Tips:**
+            - Speed: Encourage agility and adaptability
+            - Power: Develop influence and leadership skills
+            - Fielding: Strengthen problem-solving and risk management
+            - Hitting for Average: Promote consistent performance
+            - Arm Strength: Improve communication and outreach
             """)
-
     else:
         # ✅ Dynamic expander for all other topics
-        with st.expander("📖 Explanation, Resources & Tips"):
+        with st.expander("📖 Explanation, Description & Practical Tips"):
             st.markdown(f"""
-            **Explanation:**  
-            This topic covers best practices and strategies for {selected_topic}.  
-
-            **Recommended Resources:**  
-            - LinkedIn Learning Course on {selected_topic}  
-            - Harvard Business Review Article  
-            - Training Video on YouTube  
-
-            **Practical Tips:**  
-            - Apply proven frameworks and models  
-            - Use case studies and real-world examples  
-            - Leverage tools and templates for implementation  
+            **Explanation:**
+            This topic covers best practices and strategies for {selected_topic}.
+            **Description:**
+            {selected_topic} is a critical area in leadership and HR that helps improve team performance and organizational success.
+            **Practical Tips:**
+            - Apply proven frameworks and models
+            - Use case studies and real-world examples
+            - Leverage tools and templates for implementation
             """)
 
     # ✅ Send Query Button with structured AI response including links
@@ -584,16 +569,13 @@ def render_module_3():
                 1. **Explanation:** A short summary of the topic.
                 2. **Recommended Resources:** Include clickable links to relevant books, articles, videos, and training courses. If the topic is 'PACTD Model', 'Your Ego: The Real Reason Your Business is Failing', or '5-Tool Employee Framework', include Bryan Barrera's book link and YouTube channel link first.
                 3. **Practical Tips or Frameworks:** Provide actionable steps or frameworks related to the topic.
-
                 Example format:
                 **Explanation:** ...
                 **Recommended Resources:** ...
                 **Practical Tips or Frameworks:** ...
-
                 Topic list:
                 {', '.join(topics)}
                 """
-
                 response = client.chat.completions.create(
                     model="gpt-4",
                     messages=[
@@ -603,10 +585,8 @@ def render_module_3():
                     temperature=0.7,
                     max_tokens=700
                 )
-
                 ai_answer = response.choices[0].message.content
                 st.session_state.training_chat_history.append((query_to_send, ai_answer))
-
             except Exception as e:
                 st.error(f"❌ Error generating AI response: {e}")
         else:
@@ -621,12 +601,11 @@ def render_module_3():
             st.markdown(a)
             st.markdown("---")
 
-        # ✅ Clear History Button
-        if st.button("Clear History"):
-            st.session_state.training_chat_history = []
-            st.success("✅ Conversation history cleared!")
-            st.rerun()
-            
+    # ✅ Clear History Button
+    if st.button("Clear History"):
+        st.session_state.training_chat_history = []
+        st.success("✅ Conversation history cleared!")
+        st.rerun()            
 def render_module_4():
     # ✅ Title and intro first
     st.title("The 5 Tool Employee Framework")
