@@ -900,12 +900,11 @@ def render_module_6():
             st.write(response.choices[0].message.content)
         else:
             st.warning("Please add comments before generating insights.")
-            
+                    
 def render_module_7():
     import plotly.express as px
 
     TOOLS = ["Speed", "Power", "Fielding", "Hitting for Average", "Arm Strength"]
-
     educational_panels = {
         "Urgency vs Foresight": "Speed without foresight creates reactive chaos. Leaders must balance urgency with strategic anticipation.",
         "Leadership Eligibility Filter": "Evaluates readiness for management roles using 5-Tool scoring and behavioral calibration.",
@@ -925,32 +924,10 @@ def render_module_7():
     def generate_analysis(scores, notes, framework):
         total_score = sum(scores)
         category, action = interpret_score(total_score)
-
         analysis = f"### Evaluation Summary\n\n"
         analysis += f"**Total Score:** {total_score}/25\n"
-
-        # Dynamic interpretation based on framework
-        if framework == "Leadership Eligibility Filter":
-            analysis += f"**Leadership Category:** {category}\n"
-            analysis += f"**Recommended Action:** {action}\n\n"
-        elif framework == "Behavioral Calibration Grid":
-            analysis += "**Behavioral Calibration Insights:**\n"
-            analysis += "- Tension Themes: Motion vs Processing, Drive vs Humility, Systems vs Flexibility, Consistency vs Innovation, Clarity vs Performance.\n"
-            analysis += "- Coaching Focus: Reduce reactive behaviors under pressure; strengthen foresight and rhythm.\n\n"
-        elif framework == "SME Pitfall Table":
-            analysis += "**SME Pitfall Insights:**\n"
-            analysis += "- Watch for micromanagement, weaponized expertise, and reactive leadership.\n"
-            analysis += "- Development Path: Build relational fluency and delegation skills before promotion.\n\n"
-        elif framework == "Risk-Sensitive Execution Roles":
-            analysis += "**Risk Calibration Advice:**\n"
-            analysis += "- Ensure precision under pressure; balance speed with foresight.\n"
-            analysis += "- Train for scenario planning and emotional regulation in high-stakes contexts.\n\n"
-        elif framework == "Messaging to Mask Misalignment":
-            analysis += "**Communication Clarity Recommendations:**\n"
-            analysis += "- Avoid narrative smoothing and optics-only alignment.\n"
-            analysis += "- Anchor messaging in behavioral truth and operational transparency.\n\n"
-
-        # Tool-by-tool analysis
+        analysis += f"**Leadership Category:** {category}\n"
+        analysis += f"**Recommended Action:** {action}\n\n"
         analysis += "#### Tool-by-Tool Analysis:\n"
         for tool, score in zip(TOOLS, scores):
             if score <= 2:
@@ -963,146 +940,65 @@ def render_module_7():
                 status = "Exceptional"
                 implication = "Strong leadership trait; leverage as a core strength."
             analysis += f"- **{tool}:** Score {score} ({status}) → {implication}\n"
-
         analysis += "\n#### Employee Notes:\n"
         analysis += f"{notes if notes else 'No additional notes provided.'}\n\n"
-
-        analysis += "#### Development Recommendations:\n"
-        analysis += "- Strengthen anticipation, discipline, and preparation to prevent behavioral drift.\n"
-        analysis += "- Address gaps with targeted coaching and scenario-based training.\n"
-        analysis += "- Monitor for signs of reactive behavior or inconsistency under pressure.\n"
-
         return analysis
 
     # ✅ UI
     st.title("🧠 Behavioral Calibration & Leadership Readiness")
+    framework = st.selectbox("Select Framework", [
+        "Behavioral Calibration Grid",
+        "Leadership Eligibility Filter",
+        "SME Pitfall Table",
+        "Risk-Sensitive Execution Roles",
+        "Messaging to Mask Misalignment"
+    ])
 
-    # ✅ Framework selection
-    framework = st.selectbox(
-        "Select Framework",
-        [
-            "Behavioral Calibration Grid",
-            "Leadership Eligibility Filter",
-            "SME Pitfall Table",
-            "Risk-Sensitive Execution Roles",
-            "Messaging to Mask Misalignment"
-        ]
-    )
+    # ✅ Sliders for scoring
+    st.subheader("Score the Employee on Each Tool (1-5)")
+    scores = [st.slider(tool, 1, 5, 3) for tool in TOOLS]
 
-    # ✅ Render framework tables
-    if framework == "Behavioral Calibration Grid":
-        st.write("### Behavioral Calibration Grid")
-        st.table([
-            ["Tool", "High Expression", "Under Pressure Behavior", "Tension Theme"],
-            ["Speed", "Adaptive, intentional", "Performative, reactive", "Motion vs. Processing"],
-            ["Power", "Accountable, decisive", "Ego-driven, controlling", "Drive vs. Humility"],
-            ["Fielding", "Preventive, disciplined", "Rigid, overwhelmed", "Systems vs. Flexibility"],
-            ["Hitting for Avg.", "Reliable, resilient", "Passive, resentful", "Consistency vs. Innovation"],
-            ["Arm Strength", "Authentic, connective", "Theatrical, dominating", "Clarity vs. Performance"]
-        ])
-    elif framework == "Leadership Eligibility Filter":
-        st.write("### Leadership Eligibility Filter")
-        st.table([
-            ["Domain", "Behavioral Signal", "Eligibility Indicator"],
-            ["Fielding", "Responds with situational precision under ambiguity", "✅ Can manage tension without emotional leakage"],
-            ["Arm Strength", "Communicates clearly across hierarchy and function", "✅ Delivers signal—not noise—to any audience"],
-            ["Speed", "Adapts quickly without skipping strategic foresight", "✅ Demonstrates urgency with calibration"],
-            ["Power", "Holds conviction without overpowering or rigid framing", "✅ Anchored, not authoritarian"],
-            ["Hitting for Average", "Maintains team rhythm, trust, and consistency", "✅ Cultural glue; reduces friction organically"]
-        ])
-    elif framework == "SME Pitfall Table":
-        st.write("### SME Pitfall Table")
-        st.table([
-            ["Trait as SME", "Problem When Promoted", "Behavioral Impact"],
-            ["Execution Excellence", "Over-indexes on personal output", "Micromanagement, resistance to delegation"],
-            ["Deep Knowledge", "Weaponizes expertise to dominate", "Dismissiveness, lack of collaborative fluency"],
-            ["Busy Bee Mentality", "Equates busyness with impact", "Activity ≠ strategy, reactive leadership"],
-            ["Low Emotional Calibration", "Talks down, corrects instead of connects", "Erosion of trust, psychological safety drain"]
-        ])
-    elif framework == "Risk-Sensitive Execution Roles":
-        st.write("### Risk-Sensitive Execution Roles")
-        st.table([
-            ["Trait", "Description"],
-            ["Decision Load", "Frequent choices, each with layered impact"],
-            ["Pressure Tolerance", "Working amid tension without emotional leakage"],
-            ["Cost Awareness", "Knowing when speed amplifies risk vs when it mitigates it"],
-            ["Target Clarity", "Acting with precision even in ambiguous or shifting conditions"],
-            ["Behavioral Calibration", "Adapting communication and behavior based on changing risk signals"]
-        ])
-    elif framework == "Messaging to Mask Misalignment":
-        st.write("### Messaging to Mask Misalignment")
-        st.table([
-            ["Tactic", "Impact"],
-            ["Framing Over Function", "Creates illusion of unity while systems burn out"],
-            ["Overuse of Abstract Values", "Signals alignment without behavioral sync"],
-            ["Narrative Smoothing", "Hides disagreement or conflicting KPIs"],
-            ["Visual Optics vs Operational Truth", "Curates optics while reality erodes"],
-            ["Intentional Ambiguity", "Postpones reckoning, masks misalignment"]
-        ])
-
-    # ✅ Module 7 Content Placeholder
-    st.subheader("Dig Deep, Evaluation, and Scoring")
-    st.write("This section will display additional insights or interactive content for Module 7.")
-
-    # ✅ Q&A and notes
-    user_question = st.text_area("Ask a question about the framework")
     employee_notes = st.text_area("Enter notes about the employee")
 
-    if st.button("Get Answer"):
-        if user_question.strip():
-            with st.spinner("Thinking..."):
-                response = client.chat.completions.create(
-                    model="gpt-4o-mini",
-                    messages=[
-                        {
-                            "role": "system",
-                            "content": (
-                                "You are an expert on the 5-Tool Employee Framework. "
-                                "Provide detailed, practical, and psychologically rich insights. "
-                                "If the user asks for more detail, expand with examples, implications, "
-                                "and actionable recommendations."
-                            ),
-                        },
-                        {
-                            "role": "user",
-                            "content": f"Framework: {framework}\nQuestion: {user_question}",
-                        },
-                    ],
-                )
-            answer_text = response.choices[0].message.content
-            st.markdown(f"**Answer:** {answer_text}")
+    if st.button("Generate Scoring"):
+        analysis = generate_analysis(scores, employee_notes, framework)
+        st.markdown(analysis)
+        fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="Behavioral Tool Scoring Radar")
+        fig.update_traces(fill='toself')
+        st.plotly_chart(fig)
 
-            # ✅ Dynamic link injection
-            keywords = ["training", "course", "coaching", "resources", "links"]
-            if any(word in user_question.lower() for word in keywords):
+        # ✅ Follow-up question box under radar
+        st.subheader("Ask a follow-up question about the radar:")
+        follow_up_question = st.text_area("Enter your question", placeholder="e.g., Can you make some training recommendations?")
+        if st.button("Get AI Answer"):
+            if follow_up_question.strip():
+                response = client.chat.completions.create(
+                    model="gpt-4",
+                    messages=[
+                        {"role": "system", "content": (
+                            "You are an expert on the 5-Tool Employee Framework. "
+                            "Provide detailed, practical, and psychologically rich insights. "
+                            "Always include a link to our YouTube channel: https://www.youtube.com/@5toolemployeeframework "
+                            "and add recommended training links."
+                        )},
+                        {"role": "user", "content": follow_up_question}
+                    ],
+                    temperature=0.7,
+                    max_tokens=700
+                )
+                st.markdown("### AI Answer")
+                st.write(response.choices[0].message.content)
+
+                # ✅ Inject training links
                 st.markdown("**Recommended Training Links:**")
                 st.markdown("- Developing Emotional Intelligence – LinkedIn Learning")
                 st.markdown("- Time Management Fundamentals – LinkedIn Learning")
                 st.markdown("- Resilience Training – Coursera")
                 st.markdown("- Scenario-Based Leadership – Harvard Business Publishing")
                 st.markdown("- Watch tutorials on YouTube")
-        else:
-            st.warning("Please enter a question before clicking 'Get Answer'.")
-
-    # ✅ Sliders for scoring
-    st.subheader("Score the Employee on Each Tool (1-5)")
-    scores = [st.slider(tool, 1, 5, 3) for tool in TOOLS]
-
-    # ✅ Educational panels
-    st.subheader("Educational Panels")
-    for title, content in educational_panels.items():
-        with st.expander(title):
-            st.write(content)
-
-    # ✅ Generate Scoring and Radar Chart
-    if st.button("Generate Scoring"):
-        analysis = generate_analysis(scores, employee_notes, framework)
-        st.markdown(analysis)
-
-        fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="Behavioral Tool Scoring Radar")
-        fig.update_traces(fill='toself')
-        st.plotly_chart(fig)                  
-
+            else:
+                st.warning("Please enter a question before clicking 'Get AI Answer'.")
+                
 def render_module_8():
     st.title("☢️ Toxicity in the Workplace")
     st.image("images/module6_toxicity_scale.png")
