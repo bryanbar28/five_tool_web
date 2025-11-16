@@ -556,46 +556,11 @@ This topic covers best practices and strategies for {selected_topic}.
         st.rerun()    
         
 def render_module_4():
-    # ✅ Title and Intro
     st.title("The 5 Tool Employee Framework")
     st.markdown("### _Introduction into the 5 Tool Employee Framework_")
-    st.markdown("An Interchangeable Model. Book Finding the Right Fit: An AI Assisted Workbook Introducing the 5 Tool Employee Framework available on Amazon: https://a.co/d/91S2rTc and learn about each item in depth through the YouTube channel: www.youtube.com/@5toolemployeeframework")
+    st.markdown("An Interchangeable Model. Book available on Amazon: https://a.co/d/91S2rTc Finding the Right Fit")
     st.markdown("---")
 
-    # ✅ Chatbox Section
-    st.subheader("🤖 Ask AI About the Framework")
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history = []
-
-    user_question = st.text_input("Ask a question (e.g., 'Tell me more about the framework', 'Can you recommend trainings?')")
-
-    if st.button("Send Question"):
-        if user_question.strip():
-            ai_answer = f"""
-            Sure! The 5 Tool Employee Framework maps five core professional skills to a structured model for evaluating talent.
-
-            - Hitting for Average → Technical Competence
-            - Fielding → Problem-Solving Ability
-            - Speed → Adaptability & Continuous Learning
-            - Arm Strength → Communication & Leadership
-            - Power → Strategic Decision-Making
-
-            Want to understand the framework further? 📚 Buy the Book on Amazon: https://a.co/d/3nBKXXb
-            """
-            st.session_state.chat_history.append((user_question, ai_answer.strip()))
-        else:
-            st.warning("Please enter a question before sending.")
-
-    if st.session_state.chat_history:
-        st.markdown("### 💬 Conversation History")
-        for q, a in st.session_state.chat_history:
-            st.markdown(f"**You:** {q}")
-            st.markdown(f"**AI:** {a}")
-            st.markdown("---")
-
-    st.markdown("---")
-
-    # ✅ Notes and Sliders Section
     st.subheader("🛠 Create Your Own 5 Tool Employee")
     notes_input = st.text_area("Enter notes about your ideal employee or evaluation criteria", placeholder="e.g., strong leadership, adaptable, great communicator")
 
@@ -609,37 +574,56 @@ def render_module_4():
     ]
     scores = [st.slider(tool, 1, 10, 5) for tool in tools]
 
-    # ✅ Generate Profile Button
     if st.button("Generate 5 Tool Employee"):
         if notes_input.strip():
             st.markdown("### 🧠 Your Custom 5 Tool Employee Profile")
             for tool, score in zip(tools, scores):
                 st.markdown(f"**{tool} (Score: {score}/10)**")
+
+                # Detailed interpretation based on score
                 if score <= 3:
-                    st.write("- Strength: Basic capability.\n- Improvement: Needs significant development.")
+                    if tool == "Technical Competence":
+                        st.write("- **Behavioral Reality:** Execution rhythm is weak; likely avoids ambiguity and defaults to routine.")
+                        st.write("- **Risk:** Under pressure, may disengage or resist stretch tasks.")
+                        st.write("- **Development Path:** Needs structured training and accountability systems.")
+                    elif tool == "Problem-Solving Ability":
+                        st.write("- **Behavioral Reality:** Struggles to diagnose issues; may freeze or blame others.")
+                        st.write("- **Risk:** Reactive under pressure; firefighting without foresight.")
+                        st.write("- **Development Path:** Build analytical discipline and scenario planning skills.")
+                    elif tool == "Adaptability & Continuous Learning":
+                        st.write("- **Behavioral Reality:** Resistant to change; lacks proactive learning habits.")
+                        st.write("- **Risk:** Falls behind in dynamic environments.")
+                        st.write("- **Development Path:** Encourage micro-learning and resilience training.")
+                    elif tool == "Communication & Leadership":
+                        st.write("- **Behavioral Reality:** Communication lacks clarity; influence is minimal.")
+                        st.write("- **Risk:** May dominate or withdraw, eroding trust.")
+                        st.write("- **Development Path:** Coaching on authentic leadership and feedback loops.")
+                    elif tool == "Strategic Decision-Making":
+                        st.write("- **Behavioral Reality:** Decisions lack foresight; may chase optics over substance.")
+                        st.write("- **Risk:** High chance of costly missteps under pressure.")
+                        st.write("- **Development Path:** Train in strategic frameworks and risk analysis.")
                 elif score <= 6:
-                    st.write("- Strength: Moderate performance.\n- Improvement: Could benefit from targeted training.")
+                    st.write("- **Behavioral Reality:** Functional but inconsistent; shows moderate capability.")
+                    st.write("- **Growth Area:** Needs calibration for high-pressure scenarios.")
+                    st.write("- **Development Path:** Reinforce rhythm and foresight through structured coaching.")
                 else:
-                    st.write("- Strength: Strong capability.\n- Improvement: Maintain and refine for consistency.")
+                    st.write("- **Behavioral Reality:** High-functioning expression; demonstrates mastery under pressure.")
+                    st.write("- **Watch Out:** Overuse can drift into dysfunction (e.g., dominance, rigidity).")
+                    st.write("- **Development Path:** Maintain humility and balance; leverage as a leadership strength.")
+
                 st.markdown("---")
 
             st.markdown("**Notes:**")
             st.write(notes_input)
             st.markdown("📚 Buy the Book on Amazon: https://a.co/d/3nBKXXb")
 
-            # ✅ Radar Chart Visualization
             st.subheader("📊 5-Tool Employee Profile Radar")
             fig = px.line_polar(r=scores, theta=tools, line_close=True, title="5-Tool Employee Radar Chart")
             fig.update_traces(fill='toself')
             st.plotly_chart(fig)
         else:
             st.warning("Please add notes before generating the profile.")
-
-    # ✅ Clear History Button
-    if st.button("Clear History"):
-        st.session_state.chat_history = []
-        st.experimental_rerun()
-        
+            
 def render_module_5():
     import streamlit as st
 
