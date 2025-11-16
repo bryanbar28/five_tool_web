@@ -89,49 +89,6 @@ def unlock_page(page, price):
     st.button("Unlock Now")
 
 # -------------------------------
-# Navigation
-# -------------------------------
-PAGES = [
-    "Page 1: AI HR Assistant - Job Reviews",
-    "Page 2: Job Descriptions Generator",
-    "Page 3: Management Training",
-    "Page 4: The 5 Tool Employee Framework",
-    "Page 5: The 5 Tool Employee Framework: Deep Research Version",
-    "Page 6: Behavior Under Pressure Grid",
-    "Page 7: Behavioral Calibration Grid",
-    "Page 8: Toxicity in the Workplace",
-    "Page 9: SWOT 2.0",
-    "Page 10: M&A Intelligence",
-    "Page 11: Repository"
-]
-
-selected_page = st.sidebar.selectbox("Choose a page", PAGES)
-
-# ✅ Page rendering logic (unchanged for now)
-if selected_page == "Page 1: AI HR Assistant - Job Reviews":
-    render_module_1()
-elif selected_page == "Page 2: Job Descriptions Generator":
-    render_module_2()
-elif selected_page == "Page 3: Management Training":
-    render_module_3()
-elif selected_page == "Page 4: The 5 Tool Employee Framework":
-    render_module_4()
-elif selected_page == "Page 5: The 5 Tool Employee Framework: Deep Research Version":
-    render_module_5()
-elif selected_page == "Page 6: Behavior Under Pressure Grid":
-    render_module_6()
-elif selected_page == "Page 7: Behavioral Calibration Grid":
-    render_module_7()
-elif selected_page == "Page 8: Toxicity in the Workplace":
-    render_module_8()
-elif selected_page == "Page 9: SWOT 2.0":
-    render_module_9()
-elif selected_page == "Page 10: M&A Intelligence":
-    render_module_10()
-elif selected_page == "Page 11: Repository":
-    render_module_11()
-    
-# -------------------------------
 # 🔍 OpenAI Setup
 client = OpenAI()
 
@@ -1187,23 +1144,45 @@ def render_module_11():
     st.title("🚧 Page 12: Under Construction")
     st.markdown("This page is not yet implemented.")
 # -------------------------------
-# 🚀 Module Execution
+# Navigation
 # -------------------------------
-PAGE_RENDERERS = {
-    PAGES[0]: render_module_1,
-    PAGES[1]: render_module_2,
-    PAGES[2]: render_module_3,
-    PAGES[3]: render_module_4,
-    PAGES[4]: render_module_5,
-    PAGES[5]: render_module_6,
-    PAGES[6]: render_module_7,
-    PAGES[7]: render_module_8,
-    PAGES[8]: render_module_9,
-    PAGES[9]: render_module_10,
-    PAGES[10]: render_module_11,
-}
+PAGES = [
+    "Page 1: AI HR Assistant - Job Reviews",
+    "Page 2: Job Descriptions Generator",
+    "Page 3: Management Training",
+    "Page 4: The 5 Tool Employee Framework",
+    "Page 5: The 5 Tool Employee Framework: Deep Research Version",
+    "Page 6: Behavior Under Pressure Grid",
+    "Page 7: Behavioral Calibration Grid",
+    "Page 8: Toxicity in the Workplace",
+    "Page 9: SWOT 2.0",
+    "Page 10: M&A Intelligence",
+    "Page 11: Repository"
+]
 
-if selected_page in PAID_PAGES and not is_unlocked(selected_page):
-    unlock_page(selected_page, PAID_PAGES[selected_page])
-else:
-    PAGE_RENDERERS[selected_page]() 
+selected_page = st.sidebar.selectbox("Choose a page", PAGES)
+
+# ✅ Page rendering logic (unchanged for now)
+if selected_page == "Page 1: AI HR Assistant - Job Reviews":
+    render_module_1()
+elif selected_page == "Page 2: Job Descriptions Generator":
+    render_module_2()
+elif selected_page == "Page 3: Management Training":
+    render_module_3()
+elif selected_page == "Page 4: The 5 Tool Employee Framework":
+    render_module_4()
+elif selected_page == "Page 5: The 5 Tool Employee Framework: Deep Research Version":
+    render_module_5()
+elif selected_page == "Page 6: Behavior Under Pressure Grid":
+    render_module_6()
+elif selected_page == "Page 7: Behavioral Calibration Grid":
+    render_module_7()
+elif selected_page == "Page 8: Toxicity in the Workplace":
+    render_module_8()
+elif selected_page == "Page 9: SWOT 2.0":
+    render_module_9()
+elif selected_page == "Page 10: M&A Intelligence":
+    render_module_10()
+elif selected_page == "Page 11: Repository":
+    render_module_11()
+    
