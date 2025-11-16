@@ -494,7 +494,8 @@ def render_module_3():
     query_to_send = custom_query.strip() if custom_query.strip() else selected_topic
 
     # ✅ Expandable sections for all topics
-        # ✅ Dynamic expander for all other topics
+    
+    # ✅ Dynamic expander for all other topics
         with st.expander("📖 Explanation, Description & Practical Tips"):
             st.markdown(f"""
             **Explanation:**
