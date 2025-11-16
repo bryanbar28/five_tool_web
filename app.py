@@ -496,7 +496,7 @@ def render_module_3():
     # ✅ Expandable sections for all topics
     
     # ✅ Dynamic expander for all other topics
-        with st.expander("📖 Explanation, Description & Practical Tips"):
+    with st.expander("📖 Explanation, Description & Practical Tips"):
             st.markdown(f"""
             **Explanation:**
             This topic covers best practices and strategies for {selected_topic}.
