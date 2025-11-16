@@ -493,20 +493,20 @@ def render_module_3():
     custom_query = st.text_input("Or enter your own topic:")
     query_to_send = custom_query.strip() if custom_query.strip() else selected_topic
 
-    # ✅ Expandable sections for all topics
-    
-    # ✅ Dynamic expander for all other topics
+    # ✅ Dynamic expander for all topics with clean formatting
     with st.expander("📖 Explanation, Description & Practical Tips"):
-            st.markdown(f"""
-            **Explanation:**
-            This topic covers best practices and strategies for {selected_topic}.
-            **Description:**
-            {selected_topic} is a critical area in leadership and HR that helps improve team performance and organizational success.
-            **Practical Tips:**
-            - Apply proven frameworks and models
-            - Use case studies and real-world examples
-            - Leverage tools and templates for implementation
-            """)
+        st.markdown(f"""
+**Explanation:**  
+This topic covers best practices and strategies for {selected_topic}.  
+
+**Description:**  
+{selected_topic} is a critical area in leadership and HR that helps improve team performance and organizational success.  
+
+**Practical Tips:**  
+- Apply proven frameworks and models  
+- Use case studies and real-world examples  
+- Leverage tools and templates for implementation  
+""")
 
     # ✅ Send Query Button with structured AI response including links
     if st.button("Send Query"):
@@ -515,7 +515,7 @@ def render_module_3():
                 system_prompt = f"""
                 You are an AI resource curator for management and HR training. For ANY topic, respond in this structure:
                 1. **Explanation:** A short summary of the topic.
-                2. **Recommended Resources:** Include clickable links to relevant books, articles, videos, and training courses. If the topic is 'PACTD Model', 'Your Ego: The Real Reason Your Business is Failing', or '5-Tool Employee Framework', include Bryan Barrera's book link and YouTube channel link first.
+                2. **Recommended Resources:** Include clickable links to relevant books, articles, videos, and training courses.
                 3. **Practical Tips or Frameworks:** Provide actionable steps or frameworks related to the topic.
                 Example format:
                 **Explanation:** ...
@@ -553,7 +553,7 @@ def render_module_3():
     if st.button("Clear History"):
         st.session_state.training_chat_history = []
         st.success("✅ Conversation history cleared!")
-        st.rerun()   
+        st.rerun()    
         
 def render_module_4():
     # ✅ Title and intro first
