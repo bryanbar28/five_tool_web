@@ -564,6 +564,30 @@ def render_module_4():
         "Finding the Right Fit and check out our YouTube channel: www.youtube.com/@5toolemployeeframework "
     )
 
+    # ✅ Framework Section
+    st.markdown("#### 5 Tool Baseball Player")
+    st.markdown("""
+    - **Hitting for Average** – Consistently making contact and getting on base.
+    - **Hitting for Power** – Ability to drive the ball for extra bases or home runs.
+    - **Speed** – Quickness on the bases and in the field.
+    - **Fielding** – Defensive ability, including range and reaction time.
+    - **Arm Strength** – Throwing ability, especially for outfielders and infielders.
+    """)
+
+    st.markdown("#### Baseball Tools vs. Professional Skills")
+    st.markdown("""
+    - ⚾ **Hitting → Technical Competence**  
+      Just like hitting is fundamental for a baseball player, mastering core skills is crucial for a professional. Without solid technical ability, everything else suffers.
+    - 🛡 **Fielding → Problem-Solving Ability**  
+      A great fielder reacts quickly, adjusts to the situation, and prevents errors—just like a skilled problem solver who diagnoses inefficiencies and finds solutions before bigger issues arise.
+    - ⚡ **Speed → Adaptability & Continuous Learning**  
+      Speed gives a player a competitive edge, allowing them to react fast and adjust on the fly. In the business world, adaptability and continuous learning ensure professionals keep up with changes and remain ahead of the curve.
+    - 💪 **Arm Strength → Communication & Leadership**  
+      A powerful arm is necessary for making impactful plays—just like effective communication and leadership drive motivation, accountability, and team success.
+    - 🚀 **Power → Strategic Decision-Making**  
+      Power hitters change the game with big plays, just like leaders who think long-term and make high-impact decisions based on data and vision.
+    """)
+
     st.markdown("---")
 
     # ✅ Chatbox Section
@@ -575,33 +599,21 @@ def render_module_4():
 
     if st.button("Send Question"):
         if user_question.strip():
-            try:
-                system_prompt = """
-                You are an expert on the 5 Tool Employee Framework.
-                Always align answers with this mapping:
-                Baseball Tools → Professional Skills:
-                - Hitting for Average → Technical Competence
-                - Fielding → Problem-Solving Ability
-                - Speed → Adaptability & Continuous Learning
-                - Arm Strength → Communication & Leadership
-                - Power → Strategic Decision-Making
-                Respond in this format:
-                1. Tool → Skill
-                   - Short explanation of why this matters.
-                   - Video: https://www.youtube.com/@5toolemployeeframework
-                At the end, include:
-                Want to understand the framework further: **📚 Buy the Book on Amazon:** Finding the Right Fit: An AI Assisted HR Workbook Introducing the 5 Tool Employee Framework https://a.co/d/3nBKXXb
-                Do NOT include any other external links.
-                """
-                # Placeholder for AI call
-                ai_answer = f"(Simulated AI Response)\nQuestion: {user_question}\nVideo: https://www.youtube.com/@5toolemployeeframework"
-                st.session_state.chat_history.append((user_question, ai_answer))
-            except Exception as e:
-                st.error(f"❌ Error generating AI response: {e}")
+            ai_answer = f"""
+            Sure! The 5 Tool Employee Framework maps five core professional skills to a structured model for evaluating talent:
+
+            - Hitting for Average → Technical Competence
+            - Fielding → Problem-Solving Ability
+            - Speed → Adaptability & Continuous Learning
+            - Arm Strength → Communication & Leadership
+            - Power → Strategic Decision-Making
+
+            Want to understand the framework further? 📚 Buy the Book on Amazon: https://a.co/d/3nBKXXb
+            """
+            st.session_state.chat_history.append((user_question, ai_answer.strip()))
         else:
             st.warning("Please enter a question before sending.")
 
-    # ✅ Display chat history
     if st.session_state.chat_history:
         st.markdown("### 💬 Conversation History")
         for q, a in st.session_state.chat_history:
@@ -628,61 +640,57 @@ def render_module_4():
     # ✅ Generate Profile Button
     if st.button("Generate 5 Tool Employee"):
         if notes_input.strip():
-            try:
-                st.markdown("### 🧠 Your Custom 5 Tool Employee Profile")
+            st.markdown("### 🧠 Your Custom 5 Tool Employee Profile")
 
-                for tool, score in zip(TOOLS, scores):
-                    st.markdown(f"**{tool} (Score: {score}/10)**")
+            for tool, score in zip(TOOLS, scores):
+                st.markdown(f"**{tool} (Score: {score}/10)**")
 
-                    # ✅ Detailed interpretation based on your book
-                    if score <= 3:
-                        st.write("- **Behavioral Reality:** Needs Development.")
-                        if tool == "Technical Competence":
-                            st.write("  • Misses execution rhythm; avoids ambiguity; may disengage under pressure.")
-                            st.write("  • Risk: Reliability gaps erode trust and team cadence.")
-                            st.write("  • Development: Structured technical training and accountability systems.")
-                        elif tool == "Problem-Solving Ability":
-                            st.write("  • Reactive firefighting; freezes or blames others when overwhelmed.")
-                            st.write("  • Risk: Creates chaos instead of solutions.")
-                            st.write("  • Development: Build analytical discipline and scenario planning.")
-                        elif tool == "Adaptability & Continuous Learning":
-                            st.write("  • Resistant to change; lacks proactive learning habits.")
-                            st.write("  • Risk: Falls behind in dynamic environments.")
-                            st.write("  • Development: Micro-learning and resilience coaching.")
-                        elif tool == "Communication & Leadership":
-                            st.write("  • Communication lacks clarity; influence minimal.")
-                            st.write("  • Risk: Team misalignment and low morale.")
-                            st.write("  • Development: Authentic leadership coaching and feedback loops.")
-                        elif tool == "Strategic Decision-Making":
-                            st.write("  • Decisions lack foresight; may chase optics over substance.")
-                            st.write("  • Risk: High chance of costly missteps under pressure.")
-                            st.write("  • Development: Train in strategic frameworks and risk analysis.")
-                    elif score <= 6:
-                        st.write("- **Behavioral Reality:** Effective but inconsistent.")
-                        st.write("  • Strength: Handles routine tasks and moderate complexity.")
-                        st.write("  • Growth Area: Needs calibration for high-pressure scenarios.")
-                        st.write("  • Development Path: Reinforce rhythm and foresight through structured coaching.")
-                    else:
-                        st.write("- **Behavioral Reality:** Exceptional.")
-                        st.write("  • Strength: Demonstrates mastery under pressure; inspires confidence.")
-                        st.write("  • Watch Out: Overuse can drift into dysfunction (e.g., dominance, rigidity).")
-                        st.write("  • Development Path: Maintain humility and balance; leverage as a leadership strength.")
+                # ✅ Detailed interpretation based on your book
+                if score <= 3:
+                    st.write("- **Behavioral Reality:** Needs Development.")
+                    if tool == "Technical Competence":
+                        st.write("  • Misses execution rhythm; avoids ambiguity; may disengage under pressure.")
+                        st.write("  • Risk: Reliability gaps erode trust and team cadence.")
+                        st.write("  • Development: Structured technical training and accountability systems.")
+                    elif tool == "Problem-Solving Ability":
+                        st.write("  • Reactive firefighting; freezes or blames others when overwhelmed.")
+                        st.write("  • Risk: Creates chaos instead of solutions.")
+                        st.write("  • Development: Build analytical discipline and scenario planning.")
+                    elif tool == "Adaptability & Continuous Learning":
+                        st.write("  • Resistant to change; lacks proactive learning habits.")
+                        st.write("  • Risk: Falls behind in dynamic environments.")
+                        st.write("  • Development: Micro-learning and resilience coaching.")
+                    elif tool == "Communication & Leadership":
+                        st.write("  • Communication lacks clarity; influence minimal.")
+                        st.write("  • Risk: Team misalignment and low morale.")
+                        st.write("  • Development: Authentic leadership coaching and feedback loops.")
+                    elif tool == "Strategic Decision-Making":
+                        st.write("  • Decisions lack foresight; may chase optics over substance.")
+                        st.write("  • Risk: High chance of costly missteps under pressure.")
+                        st.write("  • Development: Train in strategic frameworks and risk analysis.")
+                elif score <= 6:
+                    st.write("- **Behavioral Reality:** Effective but inconsistent.")
+                    st.write("  • Strength: Handles routine tasks and moderate complexity.")
+                    st.write("  • Growth Area: Needs calibration for high-pressure scenarios.")
+                    st.write("  • Development Path: Reinforce rhythm and foresight through structured coaching.")
+                else:
+                    st.write("- **Behavioral Reality:** Exceptional.")
+                    st.write("  • Strength: Demonstrates mastery under pressure; inspires confidence.")
+                    st.write("  • Watch Out: Overuse can drift into dysfunction (e.g., dominance, rigidity).")
+                    st.write("  • Development Path: Maintain humility and balance; leverage as a leadership strength.")
 
-                    st.markdown("---")
+                st.markdown("---")
 
-                # ✅ Notes Section
-                st.markdown("**Notes:**")
-                st.write(notes_input)
-                st.markdown("📚 Buy the Book on Amazon: https://a.co/d/3nBKXXb")
+            # ✅ Notes Section
+            st.markdown("**Notes:**")
+            st.write(notes_input)
+            st.markdown("📚 Buy the Book on Amazon: https://a.co/d/3nBKXXb")
 
-                # ✅ Radar Chart Visualization
-                st.subheader("📊 5-Tool Employee Profile Radar")
-                fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="5-Tool Employee Radar Chart")
-                fig.update_traces(fill='toself')
-                st.plotly_chart(fig)
-
-            except Exception as e:
-                st.error(f"❌ Error generating profile: {e}")
+            # ✅ Radar Chart Visualization
+            st.subheader("📊 5-Tool Employee Profile Radar")
+            fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="5-Tool Employee Radar Chart")
+            fig.update_traces(fill='toself')
+            st.plotly_chart(fig)
         else:
             st.warning("Please add notes before generating the profile.")
 
