@@ -1072,28 +1072,28 @@ def render_module_7():
 
         if st.button("Get Answer"):
             if user_question.strip():
-            with st.spinner("Thinking..."):
-            response = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[
-                    {"role": "system", "content": "You are an expert on the 5-Tool Employee Framework. Provide detailed, practical, and psychologically rich insights. If the user asks for more detail, expand with examples, implications, and actionable recommendations."},
+                with st.spinner("Thinking..."):
+                    response = client.chat.completions.create(
+                        model="gpt-4o-mini",
+                        messages=[
+                            {"role": "system", "content": "You are an expert on the 5-Tool Employee Framework. Provide detailed, practical, and psychologically rich insights. If the user asks for more detail, expand with examples, implications, and actionable recommendations."},
                     {"role": "user", "content": f"Framework: {framework}\nQuestion: {user_question}"}
                 ]
-            )
-        answer_text = response.choices[0].message.content
-        st.markdown(f"**Answer:** {answer_text}")
+                    )
+                answer_text = response.choices[0].message.content
+                st.markdown(f"**Answer:** {answer_text}")
 
-        # ✅ Dynamic link injection
-        keywords = ["training", "course", "coaching", "resources", "links"]
-        if any(word in user_question.lower() for word in keywords):
-            st.markdown("**Recommended Training Links:**")
-            st.markdown("- Developing Emotional Intelligence – LinkedIn Learning")
-            st.markdown("- Time Management Fundamentals – LinkedIn Learning")
-            st.markdown("- Resilience Training – Coursera")
-            st.markdown("- Scenario-Based Leadership – Harvard Business Publishing")
-            st.markdown("- Watch tutorials on YouTube")
-    else:
-        st.warning("Please enter a question before clicking 'Get Answer'.")
+                # ✅ Dynamic link injection
+                keywords = ["training", "course", "coaching", "resources", "links"]
+                if any(word in user_question.lower() for word in keywords):
+                    st.markdown("**Recommended Training Links:**")
+                    st.markdown("- Developing Emotional Intelligence – LinkedIn Learning")
+                    st.markdown("- Time Management Fundamentals – LinkedIn Learning")
+                    st.markdown("- Resilience Training – Coursera")
+                    st.markdown("- Scenario-Based Leadership – Harvard Business Publishing")
+                    st.markdown("- Watch tutorials on YouTube")
+                else:
+                  st.warning("Please enter a question before clicking 'Get Answer'.")
 
     # Sliders
     st.subheader("Score the Employee on Each Tool (1-5)")
