@@ -1068,7 +1068,7 @@ def render_module_7():
         ])
 
     # ✅ Module 7 Content Placeholder
-    st.subheader("Module 7 Content Goes Here")
+    st.subheader("Dig Deep, Evaluation, and Scoring")
     st.write("This section will display additional insights or interactive content for Module 7.")
 
     # ✅ Q&A and notes
