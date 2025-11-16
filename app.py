@@ -1145,7 +1145,126 @@ def render_module_7():
                 st.markdown("- Watch tutorials on YouTube")
             else:
                 st.warning("Please enter a question before clicking 'Get AI Answer'.")
+def render_module_8():
+    import streamlit as st
+    import plotly.express as px
+    import docx
 
+    # Load book content for AI integration
+    book_files = ["The 5 Tool Employee Framework .docx", "Toxicity in the Workplace Scale & Scoring.docx"]
+    book_text = ""
+    for file in book_files:
+        try:
+            doc = docx.Document(file)
+            for para in doc.paragraphs:
+                book_text += para.text + "\n"
+        except:
+            pass
+
+    # --- AI response function with structured output ---
+    def get_ai_response(question):
+        relevant_sections = []
+        for line in book_text.split("\n"):
+            if any(word in line.lower() for word in question.lower().split()):
+                if len(line.strip()) > 20:
+                    relevant_sections.append(line)
+
+        explanation = ""
+        details = ""
+        tips = ""
+
+        if relevant_sections:
+            explanation = f"**Explanation:** {relevant_sections[0]}"
+            details = "**Detail:** " + " ".join(relevant_sections[1:3])
+            tips = "**Practical Tips:** Apply these insights in leadership evaluations, toxicity checks, and 360-degree feedback sessions."
+        else:
+            explanation = "**Explanation:** No direct match found in book."
+            details = "**Detail:** External authoritative sources would provide context here."
+            tips = "**Practical Tips:** Use structured observation and feedback loops to validate findings."
+
+        return f"{explanation}\n\n{details}\n\n{tips}"
+
+    # --- UI Layout ---
+    st.title("☢️ Toxicity in the Workplace")
+
+    # Educational Expanders
+    with st.expander("Padilla’s Toxic Triangle"):
+        st.write("Destructive Leaders, Susceptible Followers, and Conducive Environments create toxic conditions.")
+    with st.expander("Hogan’s Dark Side Derailers"):
+        st.write("Traits like Arrogance, Volatility, and Manipulativeness can derail leadership effectiveness.")
+    with st.expander("Machiavellianism & Dark Triad"):
+        st.write("Machiavellianism, Narcissism, and Psychopathy are key indicators of toxic tendencies.")
+    with st.expander("Behavioral Drift & 360-Degree Feedback"):
+        st.write("Behavioral drift occurs when employees gradually deviate from norms; 360-degree feedback helps detect early signs.")
+
+    # Display Toxicity Grid
+    st.subheader("Toxicity Scale")
+    st.markdown("""
+    <table style='width:100%; border:1px solid black;'>
+    <tr><th>Score Range</th><th>Risk Level</th><th>Description</th></tr>
+    <tr><td>15-20</td><td>Low Risk</td><td>Employee demonstrates strong alignment with organizational values.</td></tr>
+    <tr><td>10-14</td><td>Moderate Risk</td><td>Employee shows signs of disengagement or minor toxic behaviors.</td></tr>
+    <tr><td>Below 10</td><td>High Risk</td><td>Immediate intervention required; behaviors are harmful to team culture.</td></tr>
+    </table>
+    """, unsafe_allow_html=True)
+
+    # AI Chat
+    st.subheader("AI Chat: Ask about Toxic Leadership or Feedback")
+    ai_question = st.text_area("Ask a question (e.g., Tell me more about 360-degree feedback)")
+    if st.button("Get AI Response"):
+        response = get_ai_response(ai_question)
+        st.markdown(response)
+
+    # Scoring Sliders
+    st.subheader("Rate the Employee on Each Dimension")
+    speed = st.slider("Speed", 1, 5, 3)
+    power = st.slider("Power", 1, 5, 3)
+    fielding = st.slider("Fielding", 1, 5, 3)
+    hitting = st.slider("Hitting for Average", 1, 5, 3)
+    arm_strength = st.slider("Arm Strength", 1, 5, 3)
+
+    notes = st.text_area("Additional Notes")
+
+    # Generate Profile
+    if st.button("Generate Profile"):
+        total_score = speed + power + fielding + hitting + arm_strength
+        if total_score >= 15:
+            risk_level = "Low Risk"
+            action_plan = "Retain and support; encourage continued engagement."
+        elif 10 <= total_score < 15:
+            risk_level = "Moderate Risk"
+            action_plan = "Provide coaching and monitor closely for improvement."
+        else:
+            risk_level = "High Risk"
+            action_plan = "Immediate intervention required; consider reassignment or exit strategy."
+
+        st.write(f"**Total Score:** {total_score}")
+        st.write(f"**Risk Level:** {risk_level}")
+        st.write(f"**Action Plan:** {action_plan}")
+
+        # Interpretation Table
+        st.markdown("""
+        <h4>Total Score Interpretation</h4>
+        <table style='width:100%; border:1px solid black;'>
+        <tr><th>Score Range</th><th>Risk Level</th><th>Description</th></tr>
+        <tr><td>15-20</td><td>Low Risk</td><td>Employee demonstrates strong alignment with organizational values.</td></tr>
+        <tr><td>10-14</td><td>Moderate Risk</td><td>Employee shows signs of disengagement or minor toxic behaviors.</td></tr>
+        <tr><td>Below 10</td><td>High Risk</td><td>Immediate intervention required; behaviors are harmful to team culture.</td></tr>
+        </table>
+        """, unsafe_allow_html=True)
+
+        # Radar Chart
+        categories = ["Speed", "Power", "Fielding", "Hitting", "Arm Strength"]
+        scores = [speed, power, fielding, hitting, arm_strength]
+        fig = px.line_polar(r=scores, theta=categories, line_close=True)
+        fig.update_traces(fill='toself')
+        fig.update_layout(title="Toxicity Profile Radar Chart")
+        st.plotly_chart(fig)
+
+        # AI Insights
+        st.subheader("AI Insights")
+        st.markdown(get_ai_response("toxicity"))
+        
 def render_module_9():
     st.title("📊 SWOT 2.0 Strategic Framework")
     st.markdown("Designed by Bryan Barrera &amp; Microsoft Copilot")
