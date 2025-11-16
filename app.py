@@ -929,7 +929,6 @@ def render_module_6():
             st.warning("Please add comments before generating insights.")
             
 def render_module_7():
-    import plotly.express as px
 
     TOOLS = ["Speed", "Power", "Fielding", "Hitting for Average", "Arm Strength"]
 
