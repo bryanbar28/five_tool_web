@@ -91,34 +91,32 @@ PAGES = [
 # ✅ Correct selectbox (remove duplicate)
 selected_page = st.sidebar.selectbox("Choose a page", PAGES)
 
-# ✅ Page rendering logic
-if selected_page == "Page 1: AI HR Assistant - Job Reviews":
-    st.write("Page 1 content goes here...")
-elif selected_page == "Page 2: Job Descriptions Generator":
-    st.write("Page 2 content goes here...")
-elif selected_page == "Page 3: Management Training":
-    st.write("Page 3 content goes here...")
-elif selected_page == "Page 4: The 5 Tool Employee Framework":
-    st.write("Page 4 content goes here...")
-elif selected_page == "Page 5: The 5 Tool Employee Framework: Deep Research Version":
-    st.write("Page 5 content goes here...")
-elif selected_page == "Page 6: Behavior Under Pressure Grid":
-    st.write("Page 6 content goes here...")
-elif selected_page == "Page 7: Behavioral Calibration Grid":
-    st.write("Page 7 content goes here...")  # Replace with render_module_7() later
-elif selected_page == "Page 8: Toxicity in the Workplace":
-    st.write("Page 8 content goes here...")
-elif selected_page == "Page 9: SWOT 2.0":
-    st.write("Page 9 content goes here...")
-elif selected_page == "Page 10: M&A Intelligence":
-    st.write("Page 10 content goes here...")
-elif selected_page == "Page 11: Repository":
-    st.write("Page 11 content goes here...")
-
 # -------------------------------
 # 🔍 OpenAI Setup
 client = OpenAI()
-
+# ✅ Page rendering logic
+if selected_page == "Page 1: AI HR Assistant - Job Reviews":
+    render_module_1()
+elif selected_page == "Page 2: Job Descriptions Generator":
+    render_module_2()
+elif selected_page == "Page 3: Management Training":
+    render_module_3()
+elif selected_page == "Page 4: The 5 Tool Employee Framework":
+    render_module_4()
+elif selected_page == "Page 5: The 5 Tool Employee Framework: Deep Research Version":
+    render_module_5()
+elif selected_page == "Page 6: Behavior Under Pressure Grid":
+    render_module_6()
+elif selected_page == "Page 7: Behavioral Calibration Grid":
+    render_module_7()
+elif selected_page == "Page 8: Toxicity in the Workplace":
+    render_module_8()
+elif selected_page == "Page 9: SWOT 2.0":
+    render_module_9()
+elif selected_page == "Page 10: M&A Intelligence":
+    render_module_10()
+elif selected_page == "Page 11: Repository":
+    render_module_11()
 # -------------------------------
 # 🧠 Template Discovery Module
 # -------------------------------
