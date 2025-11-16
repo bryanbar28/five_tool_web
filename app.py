@@ -378,6 +378,8 @@ def render_module_2():
             st.stop()  # ✅ Stops execution cleanly instead of rerun
     
 def render_module_3():
+    import streamlit as st
+
     st.title("📚 Management Training: Intro to beginner, mid, and expert level leadership — AI Resource Finder")
     st.markdown("### Ask AI for any training, article, video, or resource in leadership, HR, or management topics.")
 
@@ -385,7 +387,7 @@ def render_module_3():
     if "training_chat_history" not in st.session_state:
         st.session_state.training_chat_history = []
 
-    # ✅ Full topic list (flattened)
+    # ✅ Full topic list
     topics = [
         "Transition from Individual Contributor to Leader",
         "Delegation 101",
@@ -485,12 +487,56 @@ def render_module_3():
         "Negotiation Mastery"
     ]
 
+    # ✅ Add special topics
+    topics += [
+        "PACTD Model (Pivot, Adapt, Create, Transcend, Disrupt)",
+        "Your Ego: The Real Reason Your Business is Failing",
+        "5-Tool Employee Framework"
+    ]
+
     # ✅ Dropdown + Text Input
     st.markdown("#### Select a topic or enter your own:")
     selected_topic = st.selectbox("Choose from HR topics:", topics)
     custom_query = st.text_input("Or enter your own topic:")
 
     query_to_send = custom_query.strip() if custom_query.strip() else selected_topic
+
+    # ✅ Show info only when clicked
+    if selected_topic == "PACTD Model (Pivot, Adapt, Create, Transcend, Disrupt)":
+        st.info("**PACTD Model** — A strategic guide to help businesses Pivot, Adapt, Create, Transcend, and Disrupt.")
+        with st.expander("📊 View PACTD Details"):
+            st.markdown("""
+            **PACTD Breakdown**
+            - **Pivot**: Quick moves to capture opportunities or avoid disaster  
+            - **Adapt**: Respond to external forces  
+            - **Create**: Build new strategies and culture  
+            - **Transcend**: Go beyond current limits  
+            - **Disrupt**: Innovate or avoid disruption  
+            📖 Learn More in Bryan Barrera's Book
+            """)
+
+    if selected_topic == "Your Ego: The Real Reason Your Business is Failing":
+        st.info("**Your Ego: The Real Reason Your Business is Failing** — A practical guide to overcoming ego-driven decisions.")
+        with st.expander("📖 View Book Highlights"):
+            st.markdown("""
+            - Covers **PACTD Model**, **Balanced Scorecard**, and **5-Tool Employee Framework**  
+            - Practical strategies for leadership and organizational success  
+            📖 Get the Book on Amazon
+            """)
+
+    if selected_topic == "5-Tool Employee Framework":
+        st.info("**5-Tool Employee Framework** — Inspired by baseball’s legendary 5-tool player concept.")
+        with st.expander("⚾ View 5-Tool Details"):
+            st.markdown("""
+            **Five Tools**
+            - **Speed**: Agility in learning and adapting  
+            - **Power**: Ability to influence and drive results  
+            - **Fielding**: Problem-solving and risk management  
+            - **Hitting for Average**: Consistent performance  
+            - **Arm Strength**: Communication and outreach  
+            📖 Read More in Bryan Barrera's Book  
+            ▶ Watch on YouTube
+            """)
 
     # ✅ Send Query Button
     if st.button("Send Query"):
@@ -535,12 +581,12 @@ def render_module_3():
             st.markdown(a)
             st.markdown("---")
 
-        # ✅ Clear History Button with immediate refresh
+        # ✅ Clear History Button
         if st.button("Clear History"):
             st.session_state.training_chat_history = []
             st.success("✅ Conversation history cleared!")
-            st.rerun() 
-
+            st.rerun()
+            
 def render_module_4():
     # ✅ Title and intro first
     st.title("The 5 Tool Employee Framework")
