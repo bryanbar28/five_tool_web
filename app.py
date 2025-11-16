@@ -501,7 +501,7 @@ def render_module_3():
 
     query_to_send = custom_query.strip() if custom_query.strip() else selected_topic
 
-    # ✅ Expandable sections for special topics with links
+    # ✅ Expandable sections for all topics
     if selected_topic == "PACTD Model (Pivot, Adapt, Create, Transcend, Disrupt)":
         st.info("**PACTD Model** — A strategic guide to help businesses Pivot, Adapt, Create, Transcend, and Disrupt.")
         with st.expander("📊 Explanation, Resources & Tips"):
@@ -521,7 +521,7 @@ def render_module_3():
             - Disrupt your industry or avoid being disrupted  
             """)
 
-    if selected_topic == "Your Ego: The Real Reason Your Business is Failing":
+    elif selected_topic == "Your Ego: The Real Reason Your Business is Failing":
         st.info("**Your Ego: The Real Reason Your Business is Failing** — A practical guide to overcoming ego-driven decisions.")
         with st.expander("📖 Explanation, Resources & Tips"):
             st.markdown("""
@@ -538,7 +538,7 @@ def render_module_3():
             - Foster continuous learning: Stay adaptable and open-minded  
             """)
 
-    if selected_topic == "5-Tool Employee Framework":
+    elif selected_topic == "5-Tool Employee Framework":
         st.info("**5-Tool Employee Framework** — Inspired by baseball’s legendary 5-tool player concept.")
         with st.expander("⚾ Explanation, Resources & Tips"):
             st.markdown("""
@@ -555,6 +555,24 @@ def render_module_3():
             - Fielding: Strengthen problem-solving and risk management  
             - Hitting for Average: Promote consistent performance  
             - Arm Strength: Improve communication and outreach  
+            """)
+
+    else:
+        # ✅ Dynamic expander for all other topics
+        with st.expander("📖 Explanation, Resources & Tips"):
+            st.markdown(f"""
+            **Explanation:**  
+            This topic covers best practices and strategies for {selected_topic}.  
+
+            **Recommended Resources:**  
+            - LinkedIn Learning Course on {selected_topic}  
+            - Harvard Business Review Article  
+            - Training Video on YouTube  
+
+            **Practical Tips:**  
+            - Apply proven frameworks and models  
+            - Use case studies and real-world examples  
+            - Leverage tools and templates for implementation  
             """)
 
     # ✅ Send Query Button with structured AI response including links
@@ -608,6 +626,7 @@ def render_module_3():
             st.session_state.training_chat_history = []
             st.success("✅ Conversation history cleared!")
             st.rerun()
+            
 def render_module_4():
     # ✅ Title and intro first
     st.title("The 5 Tool Employee Framework")
