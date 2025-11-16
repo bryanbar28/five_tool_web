@@ -559,10 +559,7 @@ def render_module_4():
     # ✅ Title and Intro
     st.title("The 5 Tool Employee Framework")
     st.markdown("### _Introduction into the 5 Tool Employee Framework_")
-    st.markdown(
-        "An Interchangeable Model. Book available on Amazon: https://a.co/d/91S2rTc "
-        "Finding the Right Fit and check out our YouTube channel: www.youtube.com/@5toolemployeeframework "
-    )
+    st.markdown("An Interchangeable Model. Finding the Right Fit.")
 
     # ✅ Framework Section
     st.markdown("#### 5 Tool Baseball Player")
@@ -577,15 +574,15 @@ def render_module_4():
     st.markdown("#### Baseball Tools vs. Professional Skills")
     st.markdown("""
     - ⚾ **Hitting → Technical Competence**  
-      Just like hitting is fundamental for a baseball player, mastering core skills is crucial for a professional. Without solid technical ability, everything else suffers.
+      Just like hitting is fundamental for a baseball player, mastering core skills is crucial for a professional.
     - 🛡 **Fielding → Problem-Solving Ability**  
-      A great fielder reacts quickly, adjusts to the situation, and prevents errors—just like a skilled problem solver who diagnoses inefficiencies and finds solutions before bigger issues arise.
+      A great fielder reacts quickly and prevents errors—just like a skilled problem solver.
     - ⚡ **Speed → Adaptability & Continuous Learning**  
-      Speed gives a player a competitive edge, allowing them to react fast and adjust on the fly. In the business world, adaptability and continuous learning ensure professionals keep up with changes and remain ahead of the curve.
+      Speed gives a player a competitive edge; adaptability ensures professionals stay relevant.
     - 💪 **Arm Strength → Communication & Leadership**  
-      A powerful arm is necessary for making impactful plays—just like effective communication and leadership drive motivation, accountability, and team success.
+      A powerful arm makes impactful plays—just like effective communication drives team success.
     - 🚀 **Power → Strategic Decision-Making**  
-      Power hitters change the game with big plays, just like leaders who think long-term and make high-impact decisions based on data and vision.
+      Power hitters change the game—just like leaders who make high-impact decisions.
     """)
 
     st.markdown("---")
@@ -607,8 +604,6 @@ def render_module_4():
             - Speed → Adaptability & Continuous Learning
             - Arm Strength → Communication & Leadership
             - Power → Strategic Decision-Making
-
-            Want to understand the framework further? 📚 Buy the Book on Amazon: https://a.co/d/3nBKXXb
             """
             st.session_state.chat_history.append((user_question, ai_answer.strip()))
         else:
@@ -684,7 +679,6 @@ def render_module_4():
             # ✅ Notes Section
             st.markdown("**Notes:**")
             st.write(notes_input)
-            st.markdown("📚 Buy the Book on Amazon: https://a.co/d/3nBKXXb")
 
             # ✅ Radar Chart Visualization
             st.subheader("📊 5-Tool Employee Profile Radar")
