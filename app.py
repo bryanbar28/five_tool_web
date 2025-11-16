@@ -956,25 +956,100 @@ def render_module_7():
         "Messaging to Mask Misalignment"
     ])
 
-    # Educational panels
+    # ✅ Display framework tables
+    if framework == "Behavioral Calibration Grid":
+        st.write("### Behavioral Calibration Grid")
+        st.table([
+            ["Tool", "High Expression", "Under Pressure Behavior", "Tension Theme"],
+            ["Speed", "Adaptive, intentional", "Performative, reactive", "Motion vs. Processing"],
+            ["Power", "Accountable, decisive", "Ego-driven, controlling", "Drive vs. Humility"],
+            ["Fielding", "Preventive, disciplined", "Rigid, overwhelmed", "Systems vs. Flexibility"],
+            ["Hitting for Avg.", "Reliable, resilient", "Passive, resentful", "Consistency vs. Innovation"],
+            ["Arm Strength", "Authentic, connective", "Theatrical, dominating", "Clarity vs. Performance"]
+        ])
+    elif framework == "Leadership Eligibility Filter":
+        st.write("### Leadership Eligibility Filter")
+        st.table([
+            ["Domain", "Behavioral Signal", "Eligibility Indicator"],
+            ["Fielding", "Responds with situational precision under ambiguity", "✅ Can manage tension without emotional leakage"],
+            ["Arm Strength", "Communicates clearly across hierarchy and function", "✅ Delivers signal—not noise—to any audience"],
+            ["Speed", "Adapts quickly without skipping strategic foresight", "✅ Demonstrates urgency with calibration"],
+            ["Power", "Holds conviction without overpowering or rigid framing", "✅ Anchored, not authoritarian"],
+            ["Hitting for Average", "Maintains team rhythm, trust, and consistency", "✅ Cultural glue; reduces friction organically"]
+        ])
+    elif framework == "SME Pitfall Table":
+        st.write("### SME Pitfall Table")
+        st.table([
+            ["Trait as SME", "Problem When Promoted", "Behavioral Impact"],
+            ["Execution Excellence", "Over-indexes on personal output", "Micromanagement, resistance to delegation"],
+            ["Deep Knowledge", "Weaponizes expertise to dominate", "Dismissiveness, lack of collaborative fluency"],
+            ["Busy Bee Mentality", "Equates busyness with impact", "Activity ≠ strategy, reactive leadership"],
+            ["Low Emotional Calibration", "Talks down, corrects instead of connects", "Erosion of trust, psychological safety drain"]
+        ])
+    elif framework == "Risk-Sensitive Execution Roles":
+        st.write("### Risk-Sensitive Execution Roles")
+        st.table([
+            ["Trait", "Description"],
+            ["Decision Load", "Frequent choices, each with layered impact"],
+            ["Pressure Tolerance", "Working amid tension without emotional leakage"],
+            ["Cost Awareness", "Knowing when speed amplifies risk vs when it mitigates it"],
+            ["Target Clarity", "Acting with precision even in ambiguous or shifting conditions"],
+            ["Behavioral Calibration", "Adapting communication and behavior based on changing risk signals"]
+        ])
+    elif framework == "Messaging to Mask Misalignment":
+        st.write("### Messaging to Mask Misalignment")
+        st.table([
+            ["Tactic", "Impact"],
+            ["Framing Over Function", "Creates illusion of unity while systems burn out"],
+            ["Overuse of Abstract Values", "Signals alignment without behavioral sync"],
+            ["Narrative Smoothing", "Hides disagreement or conflicting KPIs"],
+            ["Visual Optics vs Operational Truth", "Curates optics while reality erodes"],
+            ["Intentional Ambiguity", "Postpones reckoning, masks misalignment"]
+        ])
+
+    # ✅ Educational Panels
     st.subheader("Educational Panels")
     for title, content in educational_panels.items():
         with st.expander(title):
             st.write(content)
 
-    # Scoring sliders
+    # ✅ Original AI Q&A Box
+    st.subheader("Ask AI About the Framework")
+    user_question = st.text_area("Ask a question (e.g., 'Tell me more about this')")
+    if st.button("Send Question"):
+        if user_question.strip():
+            response = client.chat.completions.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": (
+                        "You are an expert on the 5-Tool Employee Framework. "
+                        "Always include a link to our YouTube channel: https://www.youtube.com/@5toolemployeeframework "
+                        "and add recommended training links."
+                    )},
+                    {"role": "user", "content": user_question}
+                ],
+                temperature=0.7,
+                max_tokens=700
+            )
+            st.markdown("### AI Answer")
+            st.write(response.choices[0].message.content)
+            st.markdown("**Recommended Training Links:**")
+            st.markdown("- Developing Emotional Intelligence – LinkedIn Learning")
+            st.markdown("- Time Management Fundamentals – LinkedIn Learning")
+            st.markdown("- Resilience Training – Coursera")
+            st.markdown("- Scenario-Based Leadership – Harvard Business Publishing")
+            st.markdown("- Watch tutorials on YouTube")
+        else:
+            st.warning("Please enter a question before sending.")
+
+    # ✅ Radar Scoring Section
     st.subheader("Score the Employee on Each Tool (1-5)")
     scores = [st.slider(tool, 1, 5, 3) for tool in TOOLS]
-
-    # Notes input
     employee_notes = st.text_area("Enter notes about the employee")
 
-    # Generate radar and analysis
     if st.button("Generate Scoring"):
         analysis = generate_analysis(scores, employee_notes, framework)
         st.markdown(analysis)
-
-        # Radar chart
         fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="Behavioral Tool Scoring Radar")
         fig.update_traces(fill='toself')
         st.plotly_chart(fig)
@@ -1000,8 +1075,6 @@ def render_module_7():
                 )
                 st.markdown("### AI Answer")
                 st.write(response.choices[0].message.content)
-
-                # ✅ Inject training links
                 st.markdown("**Recommended Training Links:**")
                 st.markdown("- Developing Emotional Intelligence – LinkedIn Learning")
                 st.markdown("- Time Management Fundamentals – LinkedIn Learning")
