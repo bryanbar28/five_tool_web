@@ -931,10 +931,8 @@ def render_module_6():
 def render_module_7():
     import plotly.express as px
 
-    # Define the five tools
     TOOLS = ["Speed", "Power", "Fielding", "Hitting for Average", "Arm Strength"]
 
-    # Educational panels
     educational_panels = {
         "Urgency vs Foresight": "Speed without foresight creates reactive chaos. Leaders must balance urgency with strategic anticipation.",
         "Leadership Eligibility Filter": "Evaluates readiness for management roles using 5-Tool scoring and behavioral calibration.",
@@ -943,7 +941,6 @@ def render_module_7():
         "Hidden Elements": "Anticipation, discipline, and preparation operate behind the scenes to prevent behavioral drift."
     }
 
-    # Interpretation logic for Leadership Eligibility Filter
     def interpret_score(total_score):
         if total_score >= 21:
             return "Leadership-Ready", "Promote to management. Provide light coaching on minor gaps to polish leadership skills."
@@ -952,16 +949,35 @@ def render_module_7():
         else:
             return "High-Risk", "Do not promote. Keep in current role or consider non-leadership growth. Focus on strengthening fundamentals before revisiting leadership readiness."
 
-    # Generate narrative analysis
-    def generate_analysis(scores, notes):
+    def generate_analysis(scores, notes, framework):
         total_score = sum(scores)
         category, action = interpret_score(total_score)
 
         analysis = f"### Evaluation Summary\n\n"
         analysis += f"**Total Score:** {total_score}/25\n"
-        analysis += f"**Leadership Category:** {category}\n"
-        analysis += f"**Recommended Action:** {action}\n\n"
 
+        # Dynamic interpretation based on framework
+        if framework == "Leadership Eligibility Filter":
+            analysis += f"**Leadership Category:** {category}\n"
+            analysis += f"**Recommended Action:** {action}\n\n"
+        elif framework == "Behavioral Calibration Grid":
+            analysis += "**Behavioral Calibration Insights:**\n"
+            analysis += "- Tension Themes: Motion vs Processing, Drive vs Humility, Systems vs Flexibility, Consistency vs Innovation, Clarity vs Performance.\n"
+            analysis += "- Coaching Focus: Reduce reactive behaviors under pressure; strengthen foresight and rhythm.\n\n"
+        elif framework == "SME Pitfall Table":
+            analysis += "**SME Pitfall Insights:**\n"
+            analysis += "- Watch for micromanagement, weaponized expertise, and reactive leadership.\n"
+            analysis += "- Development Path: Build relational fluency and delegation skills before promotion.\n\n"
+        elif framework == "Risk-Sensitive Execution Roles":
+            analysis += "**Risk Calibration Advice:**\n"
+            analysis += "- Ensure precision under pressure; balance speed with foresight.\n"
+            analysis += "- Train for scenario planning and emotional regulation in high-stakes contexts.\n\n"
+        elif framework == "Messaging to Mask Misalignment":
+            analysis += "**Communication Clarity Recommendations:**\n"
+            analysis += "- Avoid narrative smoothing and optics-only alignment.\n"
+            analysis += "- Anchor messaging in behavioral truth and operational transparency.\n\n"
+
+        # Tool-by-tool analysis
         analysis += "#### Tool-by-Tool Analysis:\n"
         for tool, score in zip(TOOLS, scores):
             if score <= 2:
@@ -985,10 +1001,9 @@ def render_module_7():
 
         return analysis
 
-    # Streamlit UI
+    # UI
     st.title("🧠 Behavioral Calibration & Leadership Readiness")
 
-    # Dropdown for frameworks
     framework = st.selectbox(
         "Select Framework",
         [
@@ -1000,7 +1015,7 @@ def render_module_7():
         ]
     )
 
-    # ✅ Render grids based on selection
+    # Render grids
     if framework == "Behavioral Calibration Grid":
         st.write("### Behavioral Calibration Grid")
         st.table([
@@ -1051,11 +1066,10 @@ def render_module_7():
             ["Intentional Ambiguity", "Postpones reckoning, masks misalignment"]
         ])
 
-    # Text areas for Q&A and notes
+    # Q&A and notes
     user_question = st.text_area("Ask a question about the framework")
     employee_notes = st.text_area("Enter notes about the employee")
 
-    # ✅ Q&A Button
     if st.button("Get Answer"):
         if user_question.strip():
             with st.spinner("Thinking..."):
@@ -1070,7 +1084,7 @@ def render_module_7():
         else:
             st.warning("Please enter a question before clicking 'Get Answer'.")
 
-    # Scoring sliders
+    # Sliders
     st.subheader("Score the Employee on Each Tool (1-5)")
     scores = [st.slider(tool, 1, 5, 3) for tool in TOOLS]
 
@@ -1080,12 +1094,11 @@ def render_module_7():
         with st.expander(title):
             st.write(content)
 
-    # Generate Scoring button
+    # Generate Scoring
     if st.button("Generate Scoring"):
-        analysis = generate_analysis(scores, employee_notes)
+        analysis = generate_analysis(scores, employee_notes, framework)
         st.markdown(analysis)
 
-        # Radar chart visualization
         fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="Behavioral Tool Scoring Radar")
         fig.update_traces(fill='toself')
         st.plotly_chart(fig)
