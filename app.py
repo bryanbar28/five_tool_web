@@ -1,26 +1,40 @@
+# -------------------------------
+# Imports
+# -------------------------------
+import os
 import pandas as pd
 import streamlit as st
-from openai import OpenAI
 import plotly.express as px
+from openai import OpenAI
 from googleapiclient.discovery import build
-import os
 
+# -------------------------------
+# Page Config
+# -------------------------------
 st.set_page_config(page_title="Five-Tool App", layout="wide")
 
-# ✅ Session state setup
+# -------------------------------
+# Session State Setup
+# -------------------------------
 if "initial_review" not in st.session_state:
     st.session_state.initial_review = ""
 if "show_repository" not in st.session_state:
     st.session_state.show_repository = False
 
-# ✅ OpenAI client setup
-client = OpenAI(api_key="your-openai-api-key")  # or use os.getenv("OPENAI_API_KEY")
+# -------------------------------
+# OpenAI Client Setup
+# -------------------------------
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))  # ✅ Use environment variable
 
-# ✅ API keys
+# -------------------------------
+# API Keys
+# -------------------------------
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 CHANNEL_ID = "YOUR_CHANNEL_ID"
 
-# ✅ Fetch videos from your channel
+# -------------------------------
+# Helper Functions
+# -------------------------------
 def fetch_youtube_videos():
     youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
     request = youtube.search().list(
@@ -37,7 +51,6 @@ def fetch_youtube_videos():
         videos.append({"title": video_title, "url": video_url})
     return videos
 
-# ✅ Map videos to 5 Tool categories
 def map_videos_to_tools(videos):
     mapping = {
         "Hitting for Average": None,
@@ -60,20 +73,24 @@ def map_videos_to_tools(videos):
             mapping["Power"] = video["url"]
     return mapping
 
-# ✅ Subscription logic
+# -------------------------------
+# Subscription Logic
+# -------------------------------
 PAID_PAGES = {
-    "Page 9: M&A Intelligence": "$19.99/mo",
-    "Page 12: Repository": "$9.99/mo"
+    "Page 10: M&A Intelligence": "$19.99/mo",  # ✅ Fixed mismatch
+    "Page 11: Repository": "$9.99/mo"
 }
 
 def is_unlocked(page):
-    return False
+    return False  # Placeholder for future subscription logic
 
 def unlock_page(page, price):
     st.warning(f"This page requires a subscription: {price}")
     st.button("Unlock Now")
 
-# ✅ Navigation
+# -------------------------------
+# Navigation
+# -------------------------------
 PAGES = [
     "Page 1: AI HR Assistant - Job Reviews",
     "Page 2: Job Descriptions Generator",
@@ -88,9 +105,9 @@ PAGES = [
     "Page 11: Repository"
 ]
 
-# ✅ Correct selectbox (remove duplicate)
 selected_page = st.sidebar.selectbox("Choose a page", PAGES)
-# ✅ Page rendering logic
+
+# ✅ Page rendering logic (unchanged for now)
 if selected_page == "Page 1: AI HR Assistant - Job Reviews":
     render_module_1()
 elif selected_page == "Page 2: Job Descriptions Generator":
