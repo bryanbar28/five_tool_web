@@ -944,19 +944,11 @@ def render_module_7():
     # Interpretation logic based on total score
     def interpret_score(total_score):
         if total_score >= 21:
-            return "Leadership-Ready", (
-                "Promote to management. Provide light coaching on minor gaps to polish leadership skills."
-            )
+            return "Leadership-Ready", "Promote to management. Provide light coaching on minor gaps to polish leadership skills."
         elif 15 <= total_score <= 20:
-            return "Stretch-Capable", (
-                "Consider promotion only with targeted development on low-scoring areas. "
-                "Assign trial leadership projects and monitor improvement."
-            )
+            return "Stretch-Capable", "Consider promotion only with targeted development on low-scoring areas. Assign trial leadership projects and monitor improvement."
         else:
-            return "High-Risk", (
-                "Do not promote. Keep in current role or consider non-leadership growth. "
-                "Focus on strengthening fundamentals before revisiting leadership readiness."
-            )
+            return "High-Risk", "Do not promote. Keep in current role or consider non-leadership growth. Focus on strengthening fundamentals before revisiting leadership readiness."
 
     # Generate narrative analysis
     def generate_analysis(scores, notes):
@@ -1006,31 +998,28 @@ def render_module_7():
         ]
     )
 
-   # Text areas for questions and notes
-user_question = st.text_area("Ask a question about the framework")
-employee_notes = st.text_area("Enter notes about the employee")
+    # Text areas for questions and notes
+    user_question = st.text_area("Ask a question about the framework")
+    employee_notes = st.text_area("Enter notes about the employee")
 
-# ✅ Add a button to process the question
-if st.button("Get Answer"):
-    if user_question.strip():
-        with st.spinner("Thinking..."):
-            response = client.chat.completions.create(
-                model="gpt-4o-mini",  # or your preferred model
-                messages=[
-                    {"role": "system", "content": "You are an expert on behavioral frameworks."},
-                    {"role": "user", "content": f"Framework: {framework}\nQuestion: {user_question}"}
-                ]
-            )
-        st.markdown(f"**Answer:** {response.choices[0].message.content}")
-    else:
-        st.warning("Please enter a question before clicking 'Get Answer'.")
+    # ✅ Q&A Button
+    if st.button("Get Answer"):
+        if user_question.strip():
+            with st.spinner("Thinking..."):
+                response = client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[
+                        {"role": "system", "content": "You are an expert on behavioral frameworks."},
+                        {"role": "user", "content": f"Framework: {framework}\nQuestion: {user_question}"}
+                    ]
+                )
+            st.markdown(f"**Answer:** {response.choices[0].message.content}")
+        else:
+            st.warning("Please enter a question before clicking 'Get Answer'.")
 
     # Sliders for scoring each tool
     st.subheader("Score the Employee on Each Tool (1-5)")
-    scores = []
-    for tool in TOOLS:
-        score = st.slider(tool, 1, 5, 3)
-        scores.append(score)
+    scores = [st.slider(tool, 1, 5, 3) for tool in TOOLS]
 
     # Educational panels
     st.subheader("Educational Panels")
@@ -1044,14 +1033,9 @@ if st.button("Get Answer"):
         st.markdown(analysis)
 
         # Radar chart visualization
-        fig = px.line_polar(
-            r=scores,
-            theta=TOOLS,
-            line_close=True,
-            title="Behavioral Tool Scoring Radar"
-        )
+        fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="Behavioral Tool Scoring Radar")
         fig.update_traces(fill='toself')
-        st.plotly_chart(fig)
+        st.plotly_chart(fig)          
 
 def render_module_8():
     st.title("☢️ Toxicity in the Workplace")
