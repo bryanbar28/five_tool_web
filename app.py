@@ -559,10 +559,7 @@ def render_module_4():
     # ✅ Title and Intro
     st.title("The 5 Tool Employee Framework")
     st.markdown("### _Introduction into the 5 Tool Employee Framework_")
-    st.markdown(
-        "An Interchangeable Model. Book available on Amazon: https://a.co/d/91S2rTc "
-        "Finding the Right Fit"
-    )
+    st.markdown("An Interchangeable Model. Book available on Amazon: https://a.co/d/91S2rTc Finding the Right Fit")
     st.markdown("---")
 
     # ✅ Chatbox Section
@@ -574,33 +571,21 @@ def render_module_4():
 
     if st.button("Send Question"):
         if user_question.strip():
-            try:
-                # ✅ Updated system prompt: Removed YouTube references
-                system_prompt = """
-                You are an expert on the 5 Tool Employee Framework.
-                Always align answers with this mapping:
-                Baseball Tools → Professional Skills:
-                - Hitting for Average → Technical Competence
-                - Fielding → Problem-Solving Ability
-                - Speed → Adaptability & Continuous Learning
-                - Arm Strength → Communication & Leadership
-                - Power → Strategic Decision-Making
-                Respond in this format:
-                1. Tool → Skill
-                   - Short explanation of why this matters.
-                At the end, include:
-                Want to understand the framework further: **📚 Buy the Book on Amazon:** Finding the Right Fit: An AI Assisted HR Workbook Introducing the 5 Tool Employee Framework https://a.co/d/3nBKXXb
-                Do NOT include any video links or other external links.
-                """
-                # Placeholder for AI call
-                ai_answer = f"(Simulated AI Response)\nQuestion: {user_question}\n\nAmazon Book: https://a.co/d/3nBKXXb"
-                st.session_state.chat_history.append((user_question, ai_answer))
-            except Exception as e:
-                st.error(f"❌ Error generating AI response: {e}")
+            ai_answer = f"""
+            Sure! The 5 Tool Employee Framework maps five core professional skills to a structured model for evaluating talent.
+
+            - Hitting for Average → Technical Competence
+            - Fielding → Problem-Solving Ability
+            - Speed → Adaptability & Continuous Learning
+            - Arm Strength → Communication & Leadership
+            - Power → Strategic Decision-Making
+
+            Want to understand the framework further? 📚 Buy the Book on Amazon: https://a.co/d/3nBKXXb
+            """
+            st.session_state.chat_history.append((user_question, ai_answer.strip()))
         else:
             st.warning("Please enter a question before sending.")
 
-    # ✅ Display chat history
     if st.session_state.chat_history:
         st.markdown("### 💬 Conversation History")
         for q, a in st.session_state.chat_history:
@@ -627,34 +612,26 @@ def render_module_4():
     # ✅ Generate Profile Button
     if st.button("Generate 5 Tool Employee"):
         if notes_input.strip():
-            try:
-                ratings_text = "\n".join([f"- {tool}: {score}/10" for tool, score in zip(tools, scores)])
-                prompt = f"""
-                Use the following framework to generate a layman-friendly, business-focused 5 Tool Employee profile:
-                Ratings:
-                {ratings_text}
-                Notes:
-                {notes_input}
-                Output should:
-                - Be clear and practical (avoid jargon).
-                - Include sections for: Technical Competence, Problem-Solving Ability, Adaptability & Continuous Learning, Communication & Leadership, Strategic Decision-Making.
-                - Provide strengths and improvement areas.
-                - Avoid baseball references completely.
-                Always include:
-                - Amazon Book: https://a.co/d/3nBKXXb
-                """
-                # Placeholder for AI call
-                st.markdown("### 🧠 Your Custom 5 Tool Employee Profile")
-                st.write("(Simulated AI Response)\n" + prompt)
+            st.markdown("### 🧠 Your Custom 5 Tool Employee Profile")
+            for tool, score in zip(tools, scores):
+                st.markdown(f"**{tool} (Score: {score}/10)**")
+                if score <= 3:
+                    st.write("- Strength: Basic capability.\n- Improvement: Needs significant development.")
+                elif score <= 6:
+                    st.write("- Strength: Moderate performance.\n- Improvement: Could benefit from targeted training.")
+                else:
+                    st.write("- Strength: Strong capability.\n- Improvement: Maintain and refine for consistency.")
+                st.markdown("---")
 
-                # ✅ Radar Chart Visualization
-                st.subheader("📊 5-Tool Employee Profile Radar")
-                fig = px.line_polar(r=scores, theta=tools, line_close=True, title="5-Tool Employee Radar Chart")
-                fig.update_traces(fill='toself')
-                st.plotly_chart(fig)
+            st.markdown("**Notes:**")
+            st.write(notes_input)
+            st.markdown("📚 Buy the Book on Amazon: https://a.co/d/3nBKXXb")
 
-            except Exception as e:
-                st.error(f"❌ Error generating profile: {e}")
+            # ✅ Radar Chart Visualization
+            st.subheader("📊 5-Tool Employee Profile Radar")
+            fig = px.line_polar(r=scores, theta=tools, line_close=True, title="5-Tool Employee Radar Chart")
+            fig.update_traces(fill='toself')
+            st.plotly_chart(fig)
         else:
             st.warning("Please add notes before generating the profile.")
 
