@@ -501,55 +501,75 @@ def render_module_3():
 
     query_to_send = custom_query.strip() if custom_query.strip() else selected_topic
 
-    # ✅ Show info only when clicked
+    # ✅ Expandable sections for special topics
     if selected_topic == "PACTD Model (Pivot, Adapt, Create, Transcend, Disrupt)":
         st.info("**PACTD Model** — A strategic guide to help businesses Pivot, Adapt, Create, Transcend, and Disrupt.")
-        with st.expander("📊 View PACTD Details"):
+        with st.expander("📊 Explanation, Resources & Tips"):
             st.markdown("""
-            **PACTD Breakdown**
-            - **Pivot**: Quick moves to capture opportunities or avoid disaster  
-            - **Adapt**: Respond to external forces  
-            - **Create**: Build new strategies and culture  
-            - **Transcend**: Go beyond current limits  
-            - **Disrupt**: Innovate or avoid disruption  
-            📖 Learn More in Bryan Barrera's Book
+            **Explanation:**  
+            The PACTD Model helps leaders navigate uncertainty by creating options and opportunities.  
+
+            **Recommended Resource:**  
+            - Your Ego: The Real Reason Your Business is Failing — Bryan Barrera  
+
+            **Practical Tips:**  
+            - Pivot quickly to capture low-hanging fruit or avoid disaster  
+            - Adapt to external forces like market shifts or regulations  
+            - Create new strategies and culture for long-term success  
+            - Transcend current limits by innovating and scaling  
+            - Disrupt your industry or avoid being disrupted  
             """)
 
     if selected_topic == "Your Ego: The Real Reason Your Business is Failing":
         st.info("**Your Ego: The Real Reason Your Business is Failing** — A practical guide to overcoming ego-driven decisions.")
-        with st.expander("📖 View Book Highlights"):
+        with st.expander("📖 Explanation, Resources & Tips"):
             st.markdown("""
-            - Covers **PACTD Model**, **Balanced Scorecard**, and **5-Tool Employee Framework**  
-            - Practical strategies for leadership and organizational success  
-            📖 Get the Book on Amazon
+            **Explanation:**  
+            This topic explores how ego-driven decisions harm businesses and how leaders can embrace humility and strategy.  
+
+            **Recommended Resource:**  
+            - Your Ego: The Real Reason Your Business is Failing — Bryan Barrera  
+
+            **Practical Tips:**  
+            - Practice self-awareness: Regular reflection and feedback  
+            - Embrace humility: Recognize team contributions  
+            - Control emotional reactions: Avoid ego-driven decisions  
+            - Foster continuous learning: Stay adaptable and open-minded  
             """)
 
     if selected_topic == "5-Tool Employee Framework":
         st.info("**5-Tool Employee Framework** — Inspired by baseball’s legendary 5-tool player concept.")
-        with st.expander("⚾ View 5-Tool Details"):
+        with st.expander("⚾ Explanation, Resources & Tips"):
             st.markdown("""
-            **Five Tools**
-            - **Speed**: Agility in learning and adapting  
-            - **Power**: Ability to influence and drive results  
-            - **Fielding**: Problem-solving and risk management  
-            - **Hitting for Average**: Consistent performance  
-            - **Arm Strength**: Communication and outreach  
-            📖 Read More in Bryan Barrera's Book  
-            ▶ Watch on YouTube
+            **Explanation:**  
+            The 5-Tool Employee Framework measures talent across five critical dimensions for organizational success.  
+
+            **Recommended Resource:**  
+            - Your Ego: The Real Reason Your Business is Failing — Bryan Barrera  
+
+            **Practical Tips:**  
+            - Speed: Encourage agility and adaptability  
+            - Power: Develop influence and leadership skills  
+            - Fielding: Strengthen problem-solving and risk management  
+            - Hitting for Average: Promote consistent performance  
+            - Arm Strength: Improve communication and outreach  
             """)
 
-    # ✅ Send Query Button
+    # ✅ Send Query Button with structured AI response
     if st.button("Send Query"):
         if query_to_send:
             try:
                 system_prompt = f"""
-                You are an AI resource curator for management and HR training. Match user queries to the closest topics
-                from this list and provide:
-                - A short explanation of the topic
-                - Recommended training resources (courses, articles, videos) with clickable Markdown links
-                - Practical tips or frameworks
-                Format resources like:
-                - Conflict Resolution Skills — Coursera
+                You are an AI resource curator for management and HR training. For ANY topic, respond in this structure:
+                1. **Explanation:** A short summary of the topic.
+                2. **Recommended Resources:** Suggest relevant books, articles, or courses. If the topic is 'PACTD Model', 'Your Ego: The Real Reason Your Business is Failing', or '5-Tool Employee Framework', ONLY recommend Bryan Barrera's book.
+                3. **Practical Tips or Frameworks:** Provide actionable steps or frameworks related to the topic.
+
+                Example format:
+                **Explanation:** ...
+                **Recommended Resources:** ...
+                **Practical Tips or Frameworks:** ...
+
                 Topic list:
                 {', '.join(topics)}
                 """
@@ -572,12 +592,12 @@ def render_module_3():
         else:
             st.warning("Please enter a query or select a topic.")
 
-    # ✅ Display chat history
+    # ✅ Display chat history with "Structured Response" header
     if st.session_state.training_chat_history:
         st.markdown("### 💬 Conversation History")
         for q, a in st.session_state.training_chat_history[-10:]:
             st.markdown(f"**You:** {q}")
-            st.markdown("**AI:**")
+            st.markdown("**AI (Structured Response):**")
             st.markdown(a)
             st.markdown("---")
 
