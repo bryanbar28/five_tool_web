@@ -90,10 +90,6 @@ PAGES = [
 
 # ✅ Correct selectbox (remove duplicate)
 selected_page = st.sidebar.selectbox("Choose a page", PAGES)
-
-# -------------------------------
-# 🔍 OpenAI Setup
-client = OpenAI()
 # ✅ Page rendering logic
 if selected_page == "Page 1: AI HR Assistant - Job Reviews":
     render_module_1()
@@ -117,6 +113,11 @@ elif selected_page == "Page 10: M&A Intelligence":
     render_module_10()
 elif selected_page == "Page 11: Repository":
     render_module_11()
+    
+# -------------------------------
+# 🔍 OpenAI Setup
+client = OpenAI()
+
 # -------------------------------
 # 🧠 Template Discovery Module
 # -------------------------------
