@@ -927,12 +927,14 @@ def render_module_6():
             st.write(response.choices[0].message.content)
         else:
             st.warning("Please add comments before generating insights.")
-            
+                    
 def render_module_7():
+    import plotly.express as px
+
     # Define the five tools
     TOOLS = ["Speed", "Power", "Fielding", "Hitting for Average", "Arm Strength"]
 
-    # Educational content for collapsible panels
+    # Educational panels
     educational_panels = {
         "Urgency vs Foresight": "Speed without foresight creates reactive chaos. Leaders must balance urgency with strategic anticipation.",
         "Leadership Eligibility Filter": "Evaluates readiness for management roles using 5-Tool scoring and behavioral calibration.",
@@ -941,7 +943,7 @@ def render_module_7():
         "Hidden Elements": "Anticipation, discipline, and preparation operate behind the scenes to prevent behavioral drift."
     }
 
-    # Interpretation logic based on total score
+    # Interpretation logic for Leadership Eligibility Filter
     def interpret_score(total_score):
         if total_score >= 21:
             return "Leadership-Ready", "Promote to management. Provide light coaching on minor gaps to polish leadership skills."
@@ -955,12 +957,12 @@ def render_module_7():
         total_score = sum(scores)
         category, action = interpret_score(total_score)
 
-        analysis = f"**Evaluation Summary**\n\n"
+        analysis = f"### Evaluation Summary\n\n"
         analysis += f"**Total Score:** {total_score}/25\n"
         analysis += f"**Leadership Category:** {category}\n"
         analysis += f"**Recommended Action:** {action}\n\n"
 
-        analysis += "**Tool-by-Tool Analysis:**\n"
+        analysis += "#### Tool-by-Tool Analysis:\n"
         for tool, score in zip(TOOLS, scores):
             if score <= 2:
                 status = "Needs Development"
@@ -973,10 +975,10 @@ def render_module_7():
                 implication = "Strong leadership trait; leverage as a core strength."
             analysis += f"- **{tool}:** Score {score} ({status}) → {implication}\n"
 
-        analysis += "\n**Employee Notes:**\n"
+        analysis += "\n#### Employee Notes:\n"
         analysis += f"{notes if notes else 'No additional notes provided.'}\n\n"
 
-        analysis += "**Development Recommendations:**\n"
+        analysis += "#### Development Recommendations:\n"
         analysis += "- Strengthen anticipation, discipline, and preparation to prevent behavioral drift.\n"
         analysis += "- Address gaps with targeted coaching and scenario-based training.\n"
         analysis += "- Monitor for signs of reactive behavior or inconsistency under pressure.\n"
@@ -984,7 +986,7 @@ def render_module_7():
         return analysis
 
     # Streamlit UI
-    st.title("🧠 Behavioral Calibration Grid")
+    st.title("🧠 Behavioral Calibration & Leadership Readiness")
 
     # Dropdown for frameworks
     framework = st.selectbox(
@@ -998,7 +1000,58 @@ def render_module_7():
         ]
     )
 
-    # Text areas for questions and notes
+    # ✅ Render grids based on selection
+    if framework == "Behavioral Calibration Grid":
+        st.write("### Behavioral Calibration Grid")
+        st.table([
+            ["Tool", "High Expression", "Under Pressure Behavior", "Tension Theme"],
+            ["Speed", "Adaptive, intentional", "Performative, reactive", "Motion vs. Processing"],
+            ["Power", "Accountable, decisive", "Ego-driven, controlling", "Drive vs. Humility"],
+            ["Fielding", "Preventive, disciplined", "Rigid, overwhelmed", "Systems vs. Flexibility"],
+            ["Hitting for Avg.", "Reliable, resilient", "Passive, resentful", "Consistency vs. Innovation"],
+            ["Arm Strength", "Authentic, connective", "Theatrical, dominating", "Clarity vs. Performance"]
+        ])
+    elif framework == "Leadership Eligibility Filter":
+        st.write("### Leadership Eligibility Filter")
+        st.table([
+            ["Domain", "Behavioral Signal", "Eligibility Indicator"],
+            ["Fielding", "Responds with situational precision under ambiguity", "✅ Can manage tension without emotional leakage"],
+            ["Arm Strength", "Communicates clearly across hierarchy and function", "✅ Delivers signal—not noise—to any audience"],
+            ["Speed", "Adapts quickly without skipping strategic foresight", "✅ Demonstrates urgency with calibration"],
+            ["Power", "Holds conviction without overpowering or rigid framing", "✅ Anchored, not authoritarian"],
+            ["Hitting for Average", "Maintains team rhythm, trust, and consistency", "✅ Cultural glue; reduces friction organically"]
+        ])
+    elif framework == "SME Pitfall Table":
+        st.write("### SME Pitfall Table")
+        st.table([
+            ["Trait as SME", "Problem When Promoted", "Behavioral Impact"],
+            ["Execution Excellence", "Over-indexes on personal output", "Micromanagement, resistance to delegation"],
+            ["Deep Knowledge", "Weaponizes expertise to dominate", "Dismissiveness, lack of collaborative fluency"],
+            ["Busy Bee Mentality", "Equates busyness with impact", "Activity ≠ strategy, reactive leadership"],
+            ["Low Emotional Calibration", "Talks down, corrects instead of connects", "Erosion of trust, psychological safety drain"]
+        ])
+    elif framework == "Risk-Sensitive Execution Roles":
+        st.write("### Risk-Sensitive Execution Roles")
+        st.table([
+            ["Trait", "Description"],
+            ["Decision Load", "Frequent choices, each with layered impact"],
+            ["Pressure Tolerance", "Working amid tension without emotional leakage"],
+            ["Cost Awareness", "Knowing when speed amplifies risk vs when it mitigates it"],
+            ["Target Clarity", "Acting with precision even in ambiguous or shifting conditions"],
+            ["Behavioral Calibration", "Adapting communication and behavior based on changing risk signals"]
+        ])
+    elif framework == "Messaging to Mask Misalignment":
+        st.write("### Messaging to Mask Misalignment")
+        st.table([
+            ["Tactic", "Impact"],
+            ["Framing Over Function", "Creates illusion of unity while systems burn out"],
+            ["Overuse of Abstract Values", "Signals alignment without behavioral sync"],
+            ["Narrative Smoothing", "Hides disagreement or conflicting KPIs"],
+            ["Visual Optics vs Operational Truth", "Curates optics while reality erodes"],
+            ["Intentional Ambiguity", "Postpones reckoning, masks misalignment"]
+        ])
+
+    # Text areas for Q&A and notes
     user_question = st.text_area("Ask a question about the framework")
     employee_notes = st.text_area("Enter notes about the employee")
 
@@ -1009,7 +1062,7 @@ def render_module_7():
                 response = client.chat.completions.create(
                     model="gpt-4o-mini",
                     messages=[
-                        {"role": "system", "content": "You are an expert on behavioral frameworks."},
+                        {"role": "system", "content": "You are an expert on the 5-Tool Employee Framework. Provide detailed, practical, and psychologically rich insights. If the user asks for more detail, expand with examples, implications, and actionable recommendations."},
                         {"role": "user", "content": f"Framework: {framework}\nQuestion: {user_question}"}
                     ]
                 )
@@ -1017,7 +1070,7 @@ def render_module_7():
         else:
             st.warning("Please enter a question before clicking 'Get Answer'.")
 
-    # Sliders for scoring each tool
+    # Scoring sliders
     st.subheader("Score the Employee on Each Tool (1-5)")
     scores = [st.slider(tool, 1, 5, 3) for tool in TOOLS]
 
@@ -1035,8 +1088,8 @@ def render_module_7():
         # Radar chart visualization
         fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="Behavioral Tool Scoring Radar")
         fig.update_traces(fill='toself')
-        st.plotly_chart(fig)          
-
+        st.plotly_chart(fig)
+        
 def render_module_8():
     st.title("☢️ Toxicity in the Workplace")
     st.image("images/module6_toxicity_scale.png")
