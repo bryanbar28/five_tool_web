@@ -501,7 +501,7 @@ def render_module_3():
 
     query_to_send = custom_query.strip() if custom_query.strip() else selected_topic
 
-    # ✅ Expandable sections for special topics
+    # ✅ Expandable sections for special topics with links
     if selected_topic == "PACTD Model (Pivot, Adapt, Create, Transcend, Disrupt)":
         st.info("**PACTD Model** — A strategic guide to help businesses Pivot, Adapt, Create, Transcend, and Disrupt.")
         with st.expander("📊 Explanation, Resources & Tips"):
@@ -509,8 +509,9 @@ def render_module_3():
             **Explanation:**  
             The PACTD Model helps leaders navigate uncertainty by creating options and opportunities.  
 
-            **Recommended Resource:**  
-            - Your Ego: The Real Reason Your Business is Failing — Bryan Barrera  
+            **Recommended Resources:**  
+            - Your Ego: The Real Reason Your Business is Failing (Amazon)  
+            - Watch on YouTube  
 
             **Practical Tips:**  
             - Pivot quickly to capture low-hanging fruit or avoid disaster  
@@ -527,8 +528,8 @@ def render_module_3():
             **Explanation:**  
             This topic explores how ego-driven decisions harm businesses and how leaders can embrace humility and strategy.  
 
-            **Recommended Resource:**  
-            - Your Ego: The Real Reason Your Business is Failing — Bryan Barrera  
+            **Recommended Resources:**  
+            - Your Ego: The Real Reason Your Business is Failing (Amazon)  
 
             **Practical Tips:**  
             - Practice self-awareness: Regular reflection and feedback  
@@ -544,8 +545,9 @@ def render_module_3():
             **Explanation:**  
             The 5-Tool Employee Framework measures talent across five critical dimensions for organizational success.  
 
-            **Recommended Resource:**  
-            - Your Ego: The Real Reason Your Business is Failing — Bryan Barrera  
+            **Recommended Resources:**  
+            - Your Ego: The Real Reason Your Business is Failing (Amazon)  
+            - Watch on YouTube  
 
             **Practical Tips:**  
             - Speed: Encourage agility and adaptability  
@@ -555,14 +557,14 @@ def render_module_3():
             - Arm Strength: Improve communication and outreach  
             """)
 
-    # ✅ Send Query Button with structured AI response
+    # ✅ Send Query Button with structured AI response including links
     if st.button("Send Query"):
         if query_to_send:
             try:
                 system_prompt = f"""
                 You are an AI resource curator for management and HR training. For ANY topic, respond in this structure:
                 1. **Explanation:** A short summary of the topic.
-                2. **Recommended Resources:** Suggest relevant books, articles, or courses. If the topic is 'PACTD Model', 'Your Ego: The Real Reason Your Business is Failing', or '5-Tool Employee Framework', ONLY recommend Bryan Barrera's book.
+                2. **Recommended Resources:** Include clickable links to relevant books, articles, videos, and training courses. If the topic is 'PACTD Model', 'Your Ego: The Real Reason Your Business is Failing', or '5-Tool Employee Framework', include Bryan Barrera's book link and YouTube channel link first.
                 3. **Practical Tips or Frameworks:** Provide actionable steps or frameworks related to the topic.
 
                 Example format:
@@ -606,7 +608,6 @@ def render_module_3():
             st.session_state.training_chat_history = []
             st.success("✅ Conversation history cleared!")
             st.rerun()
-            
 def render_module_4():
     # ✅ Title and intro first
     st.title("The 5 Tool Employee Framework")
