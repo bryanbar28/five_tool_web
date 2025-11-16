@@ -487,13 +487,6 @@ def render_module_3():
         "Negotiation Mastery"
     ]
 
-    # ✅ Add special topics
-    topics += [
-        "PACTD Model (Pivot, Adapt, Create, Transcend, Disrupt)",
-        "Your Ego: The Real Reason Your Business is Failing",
-        "5-Tool Employee Framework"
-    ]
-
     # ✅ Dropdown + Text Input
     st.markdown("#### Select a topic or enter your own:")
     selected_topic = st.selectbox("Choose from HR topics:", topics)
@@ -501,51 +494,6 @@ def render_module_3():
     query_to_send = custom_query.strip() if custom_query.strip() else selected_topic
 
     # ✅ Expandable sections for all topics
-    if selected_topic == "PACTD Model (Pivot, Adapt, Create, Transcend, Disrupt)":
-        st.info("**PACTD Model** — A strategic guide to help businesses Pivot, Adapt, Create, Transcend, and Disrupt.")
-        with st.expander("📖 Explanation, Description & Practical Tips"):
-            st.markdown("""
-            **Explanation:**
-            The PACTD Model helps leaders navigate uncertainty by creating options and opportunities.
-            **Description:**
-            This model focuses on five strategic actions: Pivot, Adapt, Create, Transcend, and Disrupt, enabling organizations to remain agile and innovative.
-            **Practical Tips:**
-            - Pivot quickly to capture low-hanging fruit or avoid disaster
-            - Adapt to external forces like market shifts or regulations
-            - Create new strategies and culture for long-term success
-            - Transcend current limits by innovating and scaling
-            - Disrupt your industry or avoid being disrupted
-            """)
-    elif selected_topic == "Your Ego: The Real Reason Your Business is Failing":
-        st.info("**Your Ego: The Real Reason Your Business is Failing** — A practical guide to overcoming ego-driven decisions.")
-        with st.expander("📖 Explanation, Resources & Tips"):
-            st.markdown("""
-            **Explanation:**
-            This topic explores how ego-driven decisions harm businesses and how leaders can embrace humility and strategy.
-            **Recommended Resources:**
-            - Your Ego: The Real Reason Your Business is Failing (Amazon)
-            **Practical Tips:**
-            - Practice self-awareness: Regular reflection and feedback
-            - Embrace humility: Recognize team contributions
-            - Control emotional reactions: Avoid ego-driven decisions
-            - Foster continuous learning: Stay adaptable and open-minded
-            """)
-    elif selected_topic == "5-Tool Employee Framework":
-        st.info("**5-Tool Employee Framework** — Inspired by baseball’s legendary 5-tool player concept.")
-        with st.expander("⚾ Explanation, Resources & Tips"):
-            st.markdown("""
-            **Explanation:**
-            The 5-Tool Employee Framework measures talent across five critical dimensions for organizational success.
-            **Recommended Resources:**
-            - Your Ego: The Real Reason Your Business is Failing (Amazon)
-            - Watch on YouTube
-            **Practical Tips:**
-            - Speed: Encourage agility and adaptability
-            - Power: Develop influence and leadership skills
-            - Fielding: Strengthen problem-solving and risk management
-            - Hitting for Average: Promote consistent performance
-            - Arm Strength: Improve communication and outreach
-            """)
     else:
         # ✅ Dynamic expander for all other topics
         with st.expander("📖 Explanation, Description & Practical Tips"):
@@ -605,7 +553,8 @@ def render_module_3():
     if st.button("Clear History"):
         st.session_state.training_chat_history = []
         st.success("✅ Conversation history cleared!")
-        st.rerun()            
+        st.rerun()   
+        
 def render_module_4():
     # ✅ Title and intro first
     st.title("The 5 Tool Employee Framework")
