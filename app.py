@@ -555,77 +555,49 @@ This topic covers best practices and strategies for {selected_topic}.
         st.success("✅ Conversation history cleared!")
         st.rerun()    
         
+
 def render_module_4():
-    # ✅ Title and intro first
+    # ✅ Title and Intro
     st.title("The 5 Tool Employee Framework")
     st.markdown("### _Introduction into the 5 Tool Employee Framework_")
-    st.markdown("An Interchangeable Model. Book available on Amazon https://a.co/d/08TRigO and check out YouTube channel explaining every detail of the 5 tool: www.youtube.com/@5toolemployeeframework")
-
-    st.markdown("#### 5 Tool Baseball Player")
-    st.markdown("""
-    - **Hitting for Average** – Consistently making contact and getting on base.
-    - **Hitting for Power** – Ability to drive the ball for extra bases or home runs.
-    - **Speed** – Quickness on the bases and in the field.
-    - **Fielding** – Defensive ability, including range and reaction time.
-    - **Arm Strength** – Throwing ability, especially for outfielders and infielders.
-    """)
-
-    st.markdown("#### Baseball Tools vs. Professional Skills")
-    st.markdown("""
-    - ⚾ **Hitting → Technical Competence**
-    - 🧠 **Fielding → Problem-Solving Ability**
-    - ⚡ **Speed → Adaptability & Continuous Learning**
-    - 💪 **Arm Strength → Communication & Leadership**
-    - 🚀 **Power → Strategic Decision-Making**
-    """)
+    st.markdown(
+        "An Interchangeable Model. Book available on Amazon: "
+        "Finding the Right Fit and check out our YouTube channel: "
+        "[5 Tool EmployeeFramework"
+    )
 
     st.markdown("---")
 
-    # ✅ Chatbox section AFTER intro
+    # ✅ Chatbox Section
     st.subheader("🤖 Ask AI About the Framework")
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
 
     user_question = st.text_input("Ask a question (e.g., 'Tell me more about the framework', 'Can you recommend trainings?')")
 
-    # ✅ Updated Send Question logic (fallback version)
     if st.button("Send Question"):
         if user_question.strip():
             try:
                 system_prompt = """
-                You are an expert on the 5 Tool Employee Framework. Always align answers with this mapping:
-
+                You are an expert on the 5 Tool Employee Framework.
+                Always align answers with this mapping:
                 Baseball Tools → Professional Skills:
                 - Hitting for Average → Technical Competence
                 - Fielding → Problem-Solving Ability
                 - Speed → Adaptability & Continuous Learning
                 - Arm Strength → Communication & Leadership
                 - Power → Strategic Decision-Making
-
                 Respond in this format:
                 1. Tool → Skill
                    - Short explanation of why this matters.
-                   - Link to a YouTube video from this channel: https://www.youtube.com/@5toolemployeeframework
-
+                   - Video: https://www.youtube.com/@5toolemployeeframework
                 At the end, include:
-                Want to understand the framework further: **📚 Buy the Book on Amazon:** Finding the Right Fit: An AI Assisted HR Workbook Introducing the 5 Tool Employee Framework https://a.co/d/3nBKXXb 
-
+                Want to understand the framework further: **📚 Buy the Book on Amazon:** Finding the Right Fit: An AI Assisted HR Workbook Introducing the 5 Tool Employee Framework https://a.co/d/3nBKXXb
                 Do NOT include any other external links.
                 """
-
-                response = client.chat.completions.create(
-                    model="gpt-4",
-                    messages=[
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": user_question}
-                    ],
-                    temperature=0.7,
-                    max_tokens=700
-                )
-
-                ai_answer = response.choices[0].message.content
+                # Placeholder for AI call
+                ai_answer = f"(Simulated AI Response)\nQuestion: {user_question}\nVideo: https://www.youtube.com/@5toolemployeeframework"
                 st.session_state.chat_history.append((user_question, ai_answer))
-
             except Exception as e:
                 st.error(f"❌ Error generating AI response: {e}")
         else:
@@ -641,52 +613,52 @@ def render_module_4():
 
     st.markdown("---")
 
-    # ✅ Notes section stays at the bottom
-    st.subheader("🛠 Add notes to create your own 5 Tool Employee")
+    # ✅ Notes and Sliders Section
+    st.subheader("🛠 Create Your Own 5 Tool Employee")
     notes_input = st.text_area("Enter notes about your ideal employee or evaluation criteria", placeholder="e.g., strong leadership, adaptable, great communicator")
 
+    st.subheader("Rate the Employee on Each Tool (1–10)")
+    scores = [st.slider(tool, 1, 10, 5) for tool in TOOLS]
+
+    # ✅ Generate Profile Button
     if st.button("Generate 5 Tool Employee"):
         if notes_input.strip():
             try:
-                deep_research_framework = """
-                The Deep-Research 5-Tool Employee Framework:
-                - Speed: Cognitive & Behavioral Agility
-                - Power: Ownership, Initiative & Decisiveness
-                - Fielding: Strategic Foresight & System Protection
-                - Hitting for Average: Reliability, Rhythm & Repeatability
-                - Arm Strength: Communication Reach & Influence
-                """
-
+                ratings_text = "\n".join([f"- {tool}: {score}/10" for tool, score in zip(TOOLS, scores)])
                 prompt = f"""
                 Use the following framework to generate a layman-friendly, business-focused 5 Tool Employee profile:
-                {deep_research_framework}
-
-                User notes: {notes_input}
-
+                Ratings:
+                {ratings_text}
+                Notes:
+                {notes_input}
                 Output should:
                 - Be clear and practical (avoid jargon).
                 - Include sections for: Technical Competence, Problem-Solving Ability, Adaptability & Continuous Learning, Communication & Leadership, Strategic Decision-Making.
                 - Provide strengths and improvement areas.
                 - Avoid baseball references completely.
+                Always include:
+                - YouTube: https://www.youtube.com/@5toolemployeeframework
+                - Amazon Book: https://a.co/d/3nBKXXb
                 """
+                # Placeholder for AI call
+                st.markdown("### 🧠 Your Custom 5 Tool Employee Profile")
+                st.write("(Simulated AI Response)\n" + prompt)
 
-                response = client.chat.completions.create(
-                    model="gpt-4",
-                    messages=[
-                        {"role": "system", "content": "You are an HR strategist using a behavioral framework to create practical employee profiles."},
-                        {"role": "user", "content": prompt}
-                    ],
-                    temperature=0.7,
-                    max_tokens=700
-                )
+                # ✅ Radar Chart Visualization
+                st.subheader("📊 5-Tool Employee Profile Radar")
+                fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="5-Tool Employee Radar Chart")
+                fig.update_traces(fill='toself')
+                st.plotly_chart(fig)
 
-                profile = response.choices[0].message.content
-                st.markdown("### 🧾 Your Custom 5 Tool Employee Profile")
-                st.write(profile)
             except Exception as e:
                 st.error(f"❌ Error generating profile: {e}")
         else:
             st.warning("Please add notes before generating the profile.")
+
+    # ✅ Clear History Button
+    if st.button("Clear History"):
+        st.session_state.chat_history = []
+        st.experimental_rerun()
             
 def render_module_5():
     import streamlit as st
