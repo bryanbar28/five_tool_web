@@ -555,16 +555,14 @@ This topic covers best practices and strategies for {selected_topic}.
         st.success("✅ Conversation history cleared!")
         st.rerun()    
         
-
 def render_module_4():
     # ✅ Title and Intro
     st.title("The 5 Tool Employee Framework")
     st.markdown("### _Introduction into the 5 Tool Employee Framework_")
     st.markdown(
         "An Interchangeable Model. Book available on Amazon: https://a.co/d/91S2rTc "
-        "Finding the Right Fit and check out our YouTube channel: www.youtube.com/@5toolemployeeframework "
+        "Finding the Right Fit"
     )
-
     st.markdown("---")
 
     # ✅ Chatbox Section
@@ -577,6 +575,7 @@ def render_module_4():
     if st.button("Send Question"):
         if user_question.strip():
             try:
+                # ✅ Updated system prompt: Removed YouTube references
                 system_prompt = """
                 You are an expert on the 5 Tool Employee Framework.
                 Always align answers with this mapping:
@@ -589,13 +588,12 @@ def render_module_4():
                 Respond in this format:
                 1. Tool → Skill
                    - Short explanation of why this matters.
-                   - Video: https://www.youtube.com/@5toolemployeeframework
                 At the end, include:
                 Want to understand the framework further: **📚 Buy the Book on Amazon:** Finding the Right Fit: An AI Assisted HR Workbook Introducing the 5 Tool Employee Framework https://a.co/d/3nBKXXb
-                Do NOT include any other external links.
+                Do NOT include any video links or other external links.
                 """
                 # Placeholder for AI call
-                ai_answer = f"(Simulated AI Response)\nQuestion: {user_question}\nVideo: https://www.youtube.com/@5toolemployeeframework"
+                ai_answer = f"(Simulated AI Response)\nQuestion: {user_question}\n\nAmazon Book: https://a.co/d/3nBKXXb"
                 st.session_state.chat_history.append((user_question, ai_answer))
             except Exception as e:
                 st.error(f"❌ Error generating AI response: {e}")
@@ -617,13 +615,20 @@ def render_module_4():
     notes_input = st.text_area("Enter notes about your ideal employee or evaluation criteria", placeholder="e.g., strong leadership, adaptable, great communicator")
 
     st.subheader("Rate the Employee on Each Tool (1–10)")
-    scores = [st.slider(tool, 1, 10, 5) for tool in TOOLS]
+    tools = [
+        "Technical Competence",
+        "Problem-Solving Ability",
+        "Adaptability & Continuous Learning",
+        "Communication & Leadership",
+        "Strategic Decision-Making"
+    ]
+    scores = [st.slider(tool, 1, 10, 5) for tool in tools]
 
     # ✅ Generate Profile Button
     if st.button("Generate 5 Tool Employee"):
         if notes_input.strip():
             try:
-                ratings_text = "\n".join([f"- {tool}: {score}/10" for tool, score in zip(TOOLS, scores)])
+                ratings_text = "\n".join([f"- {tool}: {score}/10" for tool, score in zip(tools, scores)])
                 prompt = f"""
                 Use the following framework to generate a layman-friendly, business-focused 5 Tool Employee profile:
                 Ratings:
@@ -636,7 +641,6 @@ def render_module_4():
                 - Provide strengths and improvement areas.
                 - Avoid baseball references completely.
                 Always include:
-                - YouTube: https://www.youtube.com/@5toolemployeeframework
                 - Amazon Book: https://a.co/d/3nBKXXb
                 """
                 # Placeholder for AI call
@@ -645,7 +649,7 @@ def render_module_4():
 
                 # ✅ Radar Chart Visualization
                 st.subheader("📊 5-Tool Employee Profile Radar")
-                fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="5-Tool Employee Radar Chart")
+                fig = px.line_polar(r=scores, theta=tools, line_close=True, title="5-Tool Employee Radar Chart")
                 fig.update_traces(fill='toself')
                 st.plotly_chart(fig)
 
@@ -658,7 +662,7 @@ def render_module_4():
     if st.button("Clear History"):
         st.session_state.chat_history = []
         st.experimental_rerun()
-            
+        
 def render_module_5():
     import streamlit as st
 
