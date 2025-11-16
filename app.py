@@ -1145,14 +1145,6 @@ def render_module_7():
                 st.markdown("- Watch tutorials on YouTube")
             else:
                 st.warning("Please enter a question before clicking 'Get AI Answer'.")
-                
-def render_module_8():
-    st.title("☢️ Toxicity in the Workplace")
-    st.image("images/module6_toxicity_scale.png")
-    st.image("images/module6_toxicity_scoring.png")
-    st.text_area("AI Chat: Ask about Padilla, Hogan, Kaiser, Machiavellianism")
-    st.text_area("Additional Notes")
-    st.button("Generate Profile")
 
 def render_module_9():
     st.title("📊 SWOT 2.0 Strategic Framework")
