@@ -605,7 +605,7 @@ def render_module_4():
                 Respond in this format:
                 1. Tool → Skill
                    - Short explanation of why this matters.
-                   - Link to a YouTube video from this channel: https://www.youtube.com/@5toolemployeeframeworkchannel
+                   - Link to a YouTube video from this channel: https://www.youtube.com/@5toolemployeeframework
 
                 At the end, include:
                 Want to understand the framework further: **📚 Buy the Book on Amazon:** Finding the Right Fit: An AI Assisted HR Workbook Introducing the 5 Tool Employee Framework https://a.co/d/3nBKXXb 
