@@ -1414,8 +1414,10 @@ def render_module_9():
             roadmap_df = generate_roadmap(df)
             st.dataframe(roadmap_df)
 
-# Run the module
-render_module_9()
+# Integrate with your app navigation
+# Example:
+# if selected_page == "Module 9":
+#     render_module_9()
 
 def render_module_10():
     st.title("🏢 M&amp;A Intelligence (Premium)")
