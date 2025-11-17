@@ -77,8 +77,8 @@ def map_videos_to_tools(videos):
 # Subscription Logic
 # -------------------------------
 PAID_PAGES = {
-    "Page 10: M&A Intelligence": "$19.99/mo",  # ✅ Fixed mismatch
-    "Page 11: Repository": "$9.99/mo"
+    "Page 7: M&A Intelligence": "$19.99/mo",  # ✅ Fixed mismatch
+    "Page 8: Repository": "$9.99/mo"
 }
 
 def is_unlocked(page):
@@ -179,383 +179,6 @@ def generate_job_review(role, notes=None):
 # ✅ Module 1 Wrapper
 # -------------------------------
 def render_module_1():
-    st.title("🤖 AI HR Assistant — Job Reviews")
-    st.markdown("⚠️ **Disclaimer:** All work generated on this page will not be saved unless you subscribe to Repository Access.")
-
-    # 1️⃣ Conversational Discovery
-    role_query = st.text_input("Ask me anything about job reviews, templates, or phrases", placeholder="e.g., steel machinist, mechanic, I need help writing a review")
-    if role_query:
-        st.markdown(f"🔍 You asked: **{role_query}**")
-        role = role_query.lower()
-
-        if "what is a job review" in role or "define job review" in role:
-            st.markdown("### 📘 What Is a Job Review?")
-            st.markdown("""
-            A **job review** is a structured evaluation of an employee's performance, responsibilities, and contributions in a specific role. It often includes:
-            - A summary of duties and expectations  
-            - Feedback on strengths and areas for improvement  
-            - Discussion of goals, compensation, or promotion potential  
-            - A record for HR and future reference  
-            """)
-            return
-
-        if "help" in role or "phrases" in role or "statements" in role:
-            st.markdown("### 💬 Helpful Job Review Phrases & Comments")
-            st.markdown("- [Status.net: Job Knowledge Phrases](https://status.net/articles/job-knowledge-performance-review-phrases-paragraphs-examples/)")
-            st.markdown("- [BuddiesHR: 75 Review Phrases](https://blog.buddieshr.com/75-effective-performance-review-phrases-examples/)")
-            st.markdown("- [Engage & Manage: 120 Review Comments](https://engageandmanage.com/blog/performance-review-example-phrases-comments/)")
-            return
-
-        st.markdown("### 🌐 General Review Templates and Examples")
-        st.markdown("- [Native Teams: 30 Role-Based Review Examples](https://nativeteams.com/blog/performance-review-examples)")
-        st.markdown("- [BetterUp: 53 Performance Review Examples](https://www.betterup.com/blog/performance-review-examples)")
-        st.markdown("- [Indeed: Review Template Library](https://www.indeed.com/career-advice/career-development/performance-review-template)")
-
-    # 2️⃣ Role Input
-    review_input = st.text_input("Enter a role to generate a custom review", placeholder="e.g., diesel mechanic, federal grant writer")
-
-    # 3️⃣ Generate Review Button
-    if st.button("Generate Review"):
-        if review_input:
-            review_text = generate_job_review(review_input)
-            st.session_state.initial_review = review_text
-            st.session_state.show_repository = True
-        else:
-            st.warning("Please enter a role to generate a review.")
-
-    # 4️⃣ Notes Input
-    notes_input = st.text_area("Notes to add or restructure (optional)", placeholder="e.g., I work second shift, handle QA reports, and train new hires")
-
-    # 5️⃣ Regenerate Review Button
-    if st.button("Regenerate Review"):
-        if review_input:
-            combined_notes = f"{st.session_state.initial_review}\n\nAdditional notes:\n{notes_input}"
-            generate_job_review(review_input, combined_notes)
-            st.session_state.show_repository = True
-        else:
-            st.warning("Please enter a role to regenerate the review.")
-        
-# -------------------------------
-# 🎬 Job Description Generator (Page 2)
-# -------------------------------
-def generate_job_description(role, notes=None):
-    st.info(f"🔍 Generating job description for: **{role}**")
-
-    prompt = f"""
-    Write a detailed, professional job description for the role: {role}.
-    Include:
-    - Job Title
-    - Job Summary
-    - Key Responsibilities
-    - Required Skills & Qualifications
-    - Preferred Experience
-    - Compensation & Benefits
-    - Work Schedule
-    - Career Path
-    """
-
-    if notes:
-        prompt += f"\n\nIncorporate these user-provided notes:\n{notes}"
-
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are an HR specialist writing accurate and engaging job descriptions."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.7,
-            max_tokens=900
-        )
-
-        description_text = response.choices[0].message.content
-        st.markdown("### 🧾 Generated Job Description")
-        st.write(description_text)
-        return description_text
-
-    except Exception as e:
-        st.error(f"❌ Error generating job description: {e}")
-        
-def render_module_2():
-    st.title("📄 Job Description Generator")
-    st.markdown("⚠️ **Disclaimer:** All work generated on this page will not be saved unless you subscribe to Repository Access.")
-        
-    # ✅ Initialize history
-    if "job_desc_chat_history" not in st.session_state:
-        st.session_state.job_desc_chat_history = []
-
-    # 1️⃣ Conversational Discovery
-    query = st.text_input(
-        "Ask me anything about creating a job description",
-        placeholder="e.g., how to write a job description for a project manager",
-        key="job_desc_query"
-    )
-
-    if query:
-        st.markdown(f"🔍 You asked: **{query}**")
-        q_lower = query.lower()
-
-        if "what is a job description" in q_lower or "define job description" in q_lower:
-            ai_answer = """
-            A **job description** is a formal document outlining the duties, responsibilities, qualifications, and expectations for a specific role. It helps:
-            - Attract qualified candidates
-            - Set clear performance standards
-            - Align hiring with organizational goals
-            """
-            st.markdown("### 📘 What Is a Job Description?")
-            st.markdown(ai_answer)
-            st.session_state.job_desc_chat_history.append((query, ai_answer))  # ✅ Save to history
-        elif "help" in q_lower or "examples" in q_lower or "templates" in q_lower:
-            ai_answer = """
-            ### 🌐 Helpful Job Description Resources
-            - Indeed: Job Description Samples
-            - BetterTeam: Job Description Templates
-            - SHRM: Writing Effective Job Descriptions
-            """
-            st.markdown(ai_answer)
-            st.session_state.job_desc_chat_history.append((query, ai_answer))  # ✅ Save to history
-        else:
-            # ✅ AI fallback
-            try:
-                response = client.chat.completions.create(
-                    model="gpt-4",
-                    messages=[
-                        {"role": "system", "content": "You are an HR expert answering questions about job descriptions."},
-                        {"role": "user", "content": query}
-                    ],
-                    temperature=0.7,
-                    max_tokens=500
-                )
-                ai_answer = response.choices[0].message.content
-                st.markdown("### 🤖 AI Response")
-                st.write(ai_answer)
-                st.session_state.job_desc_chat_history.append((query, ai_answer))  # ✅ Save to history
-
-            except Exception as e:
-                st.error(f"❌ Error generating AI response: {e}")
-
-    # ✅ Other UI elements
-    role_input = st.text_input(
-        "Enter a generic role to create a skeleton of the job description",
-        placeholder="e.g., software engineer, HR manager",
-        key="job_desc_role"
-    )
-
-    if st.button("Generate Job Description", key="generate_job_desc"):
-        if role_input:
-            description_text = generate_job_description(role_input)
-            st.session_state.initial_description = description_text
-            st.session_state.show_repository = True
-        else:
-            st.warning("Please enter a role to generate a job description.")
-
-    notes_input = st.text_area(
-        "Notes to add (optional)",
-        placeholder="e.g., remote work, bilingual preferred, experience with ERP systems",
-        key="job_desc_notes"
-    )
-
-    if st.button("Regenerate Job Description", key="regenerate_job_desc"):
-        if role_input:
-            combined_notes = f"{st.session_state.initial_description}\n\nAdditional notes:\n{notes_input}"
-            generate_job_description(role_input, combined_notes)
-            st.session_state.show_repository = True
-        else:
-            st.warning("Please enter a role to regenerate the job description.")
-
-    # ✅ Clear History Section at Bottom
-    if st.session_state.job_desc_chat_history:
-        st.markdown("### 💬 Conversation History")
-        for q, a in st.session_state.job_desc_chat_history[-10:]:
-            st.markdown(f"**You:** {q}")
-            st.markdown("**AI:**")
-            st.markdown(a)
-            st.markdown("---")
-
-        if st.button("Clear History"):
-            st.session_state.job_desc_chat_history = []
-            st.success("✅ Conversation history cleared!")
-            st.stop()  # ✅ Stops execution cleanly instead of rerun
-    
-def render_module_3():
-    import streamlit as st
-
-    st.title("📚 Management Training: Intro to beginner, mid, and expert level leadership — AI Resource Finder")
-    st.markdown("### Ask AI for any training, article, video, or resource in leadership, HR, or management topics.")
-
-    # ✅ Initialize chat history
-    if "training_chat_history" not in st.session_state:
-        st.session_state.training_chat_history = []
-
-    # ✅ Full topic list
-    topics = [
-        "Transition from Individual Contributor to Leader",
-        "Delegation 101",
-        "Time Management for New Managers",
-        "Giving & Receiving Feedback (SBI model)",
-        "Running Effective 1:1s",
-        "Basic Goal Setting (SMART)",
-        "Intro to Emotional Intelligence",
-        "Active Listening",
-        "Motivation Hygiene Theory (Herzberg)",
-        "Recognizing Burnout Signs",
-        "Anti-Harassment Basics",
-        "FMLA Overview",
-        "Payroll & Overtime Rules",
-        "Documenting Performance Conversations",
-        "Tuckman Stages",
-        "Running Your First Team Meeting",
-        "Ice-Breakers & Psychological Safety",
-        "Situational Leadership II",
-        "Coaching vs. Mentoring",
-        "Crucial Conversations",
-        "Managing Up & Across",
-        "Setting OKRs",
-        "Calibration Sessions",
-        "PIP Design & Legal Safety",
-        "360 Feedback Systems",
-        "Bias in Performance Reviews",
-        "Job Analysis & Competency Modeling",
-        "Selection Interview Techniques",
-        "Validity & Reliability of Assessments",
-        "Employee Engagement Surveys",
-        "Change Management (Kotter 8-Step)",
-        "Conflict Resolution Styles (Thomas-Kilmann)",
-        "Team Decision-Making Biases",
-        "Culture Audits",
-        "IDP Creation",
-        "Succession Planning Basics",
-        "Learning Agility",
-        "Micro-Learning Design",
-        "EEOC, ADA, Title VII Case Studies",
-        "Global Mobility & Expat Packages",
-        "Data Privacy (GDPR/CCPA)",
-        "Balanced Scorecard",
-        "Leadership Pipeline",
-        "Stakeholder Mapping",
-        "Scenario Planning",
-        "Predictive Turnover Models",
-        "Network Analysis of Collaboration",
-        "Diversity Metrics & ROI",
-        "Skills Ontology & Gap Analysis",
-        "Matrix vs. Functional Structures",
-        "Agile @ Scale for Non-Tech",
-        "Span of Control Optimization",
-        "M&A Cultural Integration",
-        "Leadership Assessment Centers",
-        "Psychometric Validation Studies",
-        "Counterproductive Work Behavior",
-        "High-Potential Identification",
-        "ADKAR Deep Dive",
-        "Prosci Certification Modules",
-        "Resistance Typology",
-        "Transformation Playbooks",
-        "Pay Equity Analysis",
-        "LTI Design",
-        "Clawback Policies",
-        "Say-on-Pay Prep",
-        "Works Council Negotiation",
-        "International Assignment Policy",
-        "Cultural Intelligence (CQ)",
-        "HR as Business Partner",
-        "Workforce Planning @ Board Level",
-        "ESG & Human Capital Reporting",
-        "CEO Succession",
-        "Executive Termination Protocols",
-        "Whistleblower Systems",
-        "DEI Crisis Comms",
-        "Labor Union Strategy",
-        "AI-Augmented Workforce",
-        "Gig Economy Governance",
-        "Remote/Hybrid Operating Models",
-        "Skills-Based Org",
-        "Comp Committee Charter",
-        "Human Capital Metrics in 10-K",
-        "Say-on-Pay Defense",
-        "Activist Investor Prep",
-        "Executive Derailers",
-        "Dark Triad Screening",
-        "Neuroscience of Decision-Making",
-        "Cultural Due Diligence Playbook",
-        "Retention Bonus Modeling",
-        "Synergy Capture via People",
-        "Inclusive Leadership & Allyship",
-        "Mental Health First Aid",
-        "Data Literacy for Managers",
-        "AI Ethics in HR",
-        "Storytelling with Data",
-        "Negotiation Mastery"
-    ]
-
-    # ✅ Dropdown + Text Input
-    st.markdown("#### Select a topic or enter your own:")
-    selected_topic = st.selectbox("Choose from HR topics:", topics)
-    custom_query = st.text_input("Or enter your own topic:")
-    query_to_send = custom_query.strip() if custom_query.strip() else selected_topic
-
-    # ✅ Dynamic expander for all topics with clean formatting
-    with st.expander("📖 Explanation, Description & Practical Tips"):
-        st.markdown(f"""
-**Explanation:**  
-This topic covers best practices and strategies for {selected_topic}.  
-
-**Description:**  
-{selected_topic} is a critical area in leadership and HR that helps improve team performance and organizational success.  
-
-**Practical Tips:**  
-- Apply proven frameworks and models  
-- Use case studies and real-world examples  
-- Leverage tools and templates for implementation  
-""")
-
-    # ✅ Send Query Button with structured AI response including links
-    if st.button("Send Query"):
-        if query_to_send:
-            try:
-                system_prompt = f"""
-                You are an AI resource curator for management and HR training. For ANY topic, respond in this structure:
-                1. **Explanation:** A short summary of the topic.
-                2. **Recommended Resources:** Include clickable links to relevant books, articles, videos, and training courses.
-                3. **Practical Tips or Frameworks:** Provide actionable steps or frameworks related to the topic.
-                Example format:
-                **Explanation:** ...
-                **Recommended Resources:** ...
-                **Practical Tips or Frameworks:** ...
-                Topic list:
-                {', '.join(topics)}
-                """
-                response = client.chat.completions.create(
-                    model="gpt-4",
-                    messages=[
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": query_to_send}
-                    ],
-                    temperature=0.7,
-                    max_tokens=700
-                )
-                ai_answer = response.choices[0].message.content
-                st.session_state.training_chat_history.append((query_to_send, ai_answer))
-            except Exception as e:
-                st.error(f"❌ Error generating AI response: {e}")
-        else:
-            st.warning("Please enter a query or select a topic.")
-
-    # ✅ Display chat history with "Structured Response" header
-    if st.session_state.training_chat_history:
-        st.markdown("### 💬 Conversation History")
-        for q, a in st.session_state.training_chat_history[-10:]:
-            st.markdown(f"**You:** {q}")
-            st.markdown("**AI (Structured Response):**")
-            st.markdown(a)
-            st.markdown("---")
-
-    # ✅ Clear History Button
-    if st.button("Clear History"):
-        st.session_state.training_chat_history = []
-        st.success("✅ Conversation history cleared!")
-        st.rerun()    
-        
-def render_module_4():
     # ✅ Title and Intro
     st.title("The 5 Tool Employee Framework")
     st.markdown("### _Introduction into the 5 Tool Employee Framework_")
@@ -736,7 +359,7 @@ def render_module_4():
         st.session_state.chat_history = []
         st.experimental_rerun()
         
-def render_module_5():
+def render_module_2():
     import streamlit as st
 
     st.title("Advanced Deep Research — The 5 Tool Employee Framework")
@@ -908,7 +531,7 @@ def render_module_5():
         else:
             st.warning("Please enter a question before diving further.")
 
-def render_module_6():
+def render_module_3():
     st.title("Behavior Under Pressure")
     st.markdown("### What is the Behavior Under Pressure Grid? An evaluation tool for the behavior that leaders, both current, and potentially, showcase when under stress or pressure")
     st.markdown("""
@@ -963,7 +586,7 @@ def render_module_6():
         else:
             st.warning("Please add comments before generating insights.")
                     
-def render_module_7():
+def render_module_4():
     import plotly.express as px
 
     TOOLS = ["Speed", "Power", "Fielding", "Hitting for Average", "Arm Strength"]
@@ -1146,7 +769,7 @@ def render_module_7():
             else:
                 st.warning("Please enter a question before clicking 'Get AI Answer'.")
                 
-def render_module_8():
+def render_module_5():
     import streamlit as st
     import plotly.express as px
     from openai import OpenAI
@@ -1360,12 +983,11 @@ def generate_roadmap(df):
     return pd.DataFrame(roadmap)
 
 # --- Streamlit UI ---
-def render_module_9():
+def render_module_6():
     st.title("📊 SWOT 2.0 Strategic Framework")
     st.markdown("Designed by Bryan Barrera & Microsoft Copilot")
 
     notes = st.text_area("Additional Notes and Input")
-    ai_chat = st.text_area("AI Chat: Ask for SWOT templates, Lean tools, Fishbone diagrams")
 
     view_mode = st.radio("Select View Mode", ["Basic SWOT", "Advanced SWOT 2.0"])
 
@@ -1416,13 +1038,15 @@ def render_module_9():
 
 # Integrate with your app navigation
 # Example:
-# if selected_page == "Module 9":
-#     render_module_9()
+# if selected_page == "Module 6":
+#     render_module_6()
 
-def render_module_10():
+def render_module_7():
     import streamlit as st
     import pandas as pd
     import plotly.express as px
+    import seaborn as sns
+    import matplotlib.pyplot as plt
     from io import BytesIO
     import xlsxwriter
     from reportlab.lib.pagesizes import letter
@@ -1439,7 +1063,7 @@ def render_module_10():
     LEADERSHIP_THRESHOLD = 21
     RISK_THRESHOLD = 18
 
-    # Helper: Generate KPIs
+    # KPI generation
     def generate_kpis(top_employees, top_branches, roles):
         kpis = []
         if top_employees:
@@ -1450,7 +1074,7 @@ def render_module_10():
             kpis.append(f"Focus on top branch: {top_branches[0]} for strategic growth")
         return kpis
 
-    # Behavioral Drift Analysis
+    # Drift analysis
     def analyze_behavioral_drift(current_df, historical_df=None):
         drift_report = []
         if historical_df is not None:
@@ -1464,7 +1088,7 @@ def render_module_10():
                             drift_report.append(f"{emp}: Significant drift in {tool} ({drift:+})")
         return drift_report
 
-    # Interview Question Generator
+    # Interview questions
     def generate_interview_questions(low_tools):
         questions = {
             "Speed": "Tell me about a time you had to adapt quickly under pressure. How did you handle it?",
@@ -1490,7 +1114,6 @@ def render_module_10():
         c = canvas.Canvas(output, pagesize=letter)
         width, height = letter
         c.setFont("Helvetica", 12)
-
         c.drawString(30, height - 30, "M&A Performance Report with 5-Tool Framework")
         y = height - 60
         c.drawString(30, y, "Top Employees:")
@@ -1498,21 +1121,18 @@ def render_module_10():
         for _, row in df_employees.iterrows():
             c.drawString(30, y, f"{row['Employee']} - Total Score: {row['Total Score']:.2f}")
             y -= 15
-
         y -= 20
         c.drawString(30, y, "Top Branches:")
         y -= 20
         for _, row in df_branches.iterrows():
             c.drawString(30, y, f"{row['Branch']} - Avg Score: {row['Avg Score']:.2f}")
             y -= 15
-
         y -= 20
         c.drawString(30, y, "KPIs:")
         y -= 20
         for kpi in kpis:
             c.drawString(30, y, f"- {kpi}")
             y -= 15
-
         if drift_report:
             y -= 20
             c.drawString(30, y, "Behavioral Drift Alerts:")
@@ -1520,7 +1140,6 @@ def render_module_10():
             for drift in drift_report:
                 c.drawString(30, y, f"- {drift}")
                 y -= 15
-
         if interview_questions:
             y -= 20
             c.drawString(30, y, "Interview Questions for Low-Scoring Tools:")
@@ -1528,7 +1147,6 @@ def render_module_10():
             for q in interview_questions:
                 c.drawString(30, y, f"- {q}")
                 y -= 15
-
         c.save()
         output.seek(0)
         return output
@@ -1562,96 +1180,110 @@ def render_module_10():
             df_branches["Avg Score"] = df_branches[TOOLS].mean(axis=1)
             df_branches = df_branches.sort_values(by="Avg Score", ascending=False)
 
-            st.write("### Employee Rankings")
-            st.dataframe(df_employees)
+            if st.button("Generate Analysis"):
+                st.write("### Employee Rankings")
+                st.dataframe(df_employees)
 
-            st.write("### Branch Rankings")
-            st.dataframe(df_branches)
+                st.write("### Branch Rankings")
+                st.dataframe(df_branches)
 
-            fig_emp = px.bar(df_employees, x="Employee", y="Total Score", color="Branch", title="Employee Rankings by Total Score", text="Total Score")
-            st.plotly_chart(fig_emp)
+                # Bar charts
+                fig_emp = px.bar(df_employees, x="Employee", y="Total Score", color="Branch", title="Employee Rankings by Total Score", text="Total Score")
+                st.plotly_chart(fig_emp)
 
-            fig_branch = px.bar(df_branches, x="Branch", y="Avg Score", title="Branch Rankings by Avg Score", text="Avg Score")
-            st.plotly_chart(fig_branch)
+                fig_branch = px.bar(df_branches, x="Branch", y="Avg Score", title="Branch Rankings by Avg Score", text="Avg Score")
+                st.plotly_chart(fig_branch)
 
-            roles = dict(zip(df_employees["Employee"], df_employees["Role"]))
-            top_employees = df_employees["Employee"].tolist()
-            top_branches = df_branches["Branch"].tolist()
-            kpis = generate_kpis(top_employees, top_branches, roles)
-            st.write("### Suggested KPIs")
-            for kpi in kpis:
-                st.write(f"- {kpi}")
+                # Radar chart for top employee
+                st.subheader("Radar Chart: Top Employee")
+                top_emp = df_employees.iloc[0]
+                fig_radar_emp = px.line_polar(r=[top_emp[t] for t in TOOLS], theta=TOOLS, line_close=True, title=f"Radar Profile: {top_emp['Employee']}")
+                fig_radar_emp.update_traces(fill='toself')
+                st.plotly_chart(fig_radar_emp)
 
-            drift_report = []
-            if historical_file:
-                historical_df = pd.read_csv(historical_file)
-                drift_report = analyze_behavioral_drift(df, historical_df)
-                if drift_report:
-                    st.write("### Behavioral Drift Alerts")
-                    for drift in drift_report:
-                        st.write(f"- {drift}")
+                # Radar chart for branch averages
+                st.subheader("Radar Chart: Branch Averages")
+                fig_radar_branch = px.line_polar(r=df_branches[TOOLS].mean().tolist(), theta=TOOLS, line_close=True, title="Radar Profile: Branch Averages")
+                fig_radar_branch.update_traces(fill='toself')
+                st.plotly_chart(fig_radar_branch)
 
-            low_tools = [tool for tool in TOOLS if df[tool].mean() < 3]
-            interview_questions = generate_interview_questions(low_tools)
-            if interview_questions:
-                st.write("### Interview Questions for Low-Scoring Tools")
-                for q in interview_questions:
-                    st.write(f"- {q}")
+                # Heatmap for consistency analysis
+                st.subheader("Heatmap: Tool Scores by Branch")
+                heatmap_data = df.groupby("Branch")[TOOLS].mean()
+                fig, ax = plt.subplots(figsize=(8, 6))
+                sns.heatmap(heatmap_data, annot=True, cmap="coolwarm", ax=ax)
+                st.pyplot(fig)
 
-            excel_file = export_to_excel(df_employees, df_branches)
-            st.download_button("Download Excel Report", excel_file, file_name="MA_5Tool_Report.xlsx")
+                # Variance analysis
+                st.subheader("Variance Analysis Across Branches")
+                variance = heatmap_data.var()
+                st.write("Tools with highest variance (inconsistency across branches):")
+                st.write(variance.sort_values(ascending=False))
 
-            pdf_file = export_to_pdf(df_employees, df_branches, kpis, drift_report, interview_questions)
-            st.download_button("Download PDF Report", pdf_file, file_name="MA_5Tool_Report.pdf")
+                # Behavioral Drift Analysis
+                drift_report = []
+                if historical_file:
+                    historical_df = pd.read_csv(historical_file)
+                    drift_report = analyze_behavioral_drift(df, historical_df)
+                    if drift_report:
+                        st.write("### Behavioral Drift Alerts")
+                        for drift in drift_report:
+                            st.write(f"- {drift}")
+
+                # Interview Question Generator
+                low_tools = [tool for tool in TOOLS if df[tool].mean() < 3]
+                interview_questions = generate_interview_questions(low_tools)
+                if interview_questions:
+                    st.write("### Interview Questions for Low-Scoring Tools")
+                    for q in interview_questions:
+                        st.write(f"- {q}")
+
+                # Export options
+                excel_file = export_to_excel(df_employees, df_branches)
+                st.download_button("Download Excel Report", excel_file, file_name="MA_5Tool_Report.xlsx")
+
+                pdf_file = export_to_pdf(df_employees, df_branches, kpis, drift_report, interview_questions)
+                st.download_button("Download PDF Report", pdf_file, file_name="MA_5Tool_Report.pdf")
         else:
             st.error(f"CSV must contain columns: {', '.join(required_cols)}")
     else:
         st.info("Please upload a CSV file to proceed.")
-
-def render_module_11():
-    st.title("🚧 Page 12: Under Construction")
+        
+def render_module_8():
+    st.title("🚧 Page 8: Under Construction")
     st.markdown("This page is not yet implemented.")
     
 # -------------------------------
 # Navigation
 # -------------------------------
 PAGES = [
-    "Page 1: AI HR Assistant - Job Reviews",
-    "Page 2: Job Descriptions Generator",
-    "Page 3: Management Training",
-    "Page 4: The 5 Tool Employee Framework",
-    "Page 5: The 5 Tool Employee Framework: Deep Research Version",
-    "Page 6: Behavior Under Pressure Grid",
-    "Page 7: Behavioral Calibration Grid",
-    "Page 8: Toxicity in the Workplace",
-    "Page 9: SWOT 2.0",
-    "Page 10: M&A Intelligence",
-    "Page 11: Repository"
+    "Page 1: The 5 Tool Employee Framework",
+    "Page 2: The 5 Tool Employee Framework: Deep Research Version",
+    "Page 3: Behavior Under Pressure Grid",
+    "Page 4: Behavioral Calibration Grid",
+    "Page 5: Toxicity in the Workplace",
+    "Page 6: SWOT 2.0",
+    "Page 7: M&A Intelligence",
+    "Page 8: Repository"
 ]
 
 selected_page = st.sidebar.selectbox("Choose a page", PAGES)
 
 # ✅ Page rendering logic (unchanged for now)
-if selected_page == "Page 1: AI HR Assistant - Job Reviews":
-    render_module_1()
-elif selected_page == "Page 2: Job Descriptions Generator":
-    render_module_2()
-elif selected_page == "Page 3: Management Training":
-    render_module_3()
-elif selected_page == "Page 4: The 5 Tool Employee Framework":
+if selected_page == "Page 1: The 5 Tool Employee Framework":
     render_module_4()
-elif selected_page == "Page 5: The 5 Tool Employee Framework: Deep Research Version":
+elif selected_page == "Page 2: The 5 Tool Employee Framework: Deep Research Version":
     render_module_5()
-elif selected_page == "Page 6: Behavior Under Pressure Grid":
+elif selected_page == "Page 3: Behavior Under Pressure Grid":
     render_module_6()
-elif selected_page == "Page 7: Behavioral Calibration Grid":
+elif selected_page == "Page 4: Behavioral Calibration Grid":
     render_module_7()
-elif selected_page == "Page 8: Toxicity in the Workplace":
+elif selected_page == "Page 5: Toxicity in the Workplace":
     render_module_8()
-elif selected_page == "Page 9: SWOT 2.0":
+elif selected_page == "Page 6: SWOT 2.0":
     render_module_9()
-elif selected_page == "Page 10: M&A Intelligence":
+elif selected_page == "Page 7: M&A Intelligence":
     render_module_10()
-elif selected_page == "Page 11: Repository":
+elif selected_page == "Page 8: Repository":
     render_module_11()
     
