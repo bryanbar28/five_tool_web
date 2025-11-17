@@ -1149,26 +1149,31 @@ def render_module_7():
 def render_module_8():
     import streamlit as st
     import plotly.express as px
+    import requests
 
-    # Embed book content for AI integration
-    book_text = """
-    [Insert relevant sections from your book and toxicity scale here for AI insights]
-    """
-
-    # AI response function
+    # --- Helper: AI response using web search ---
     def get_ai_response(question):
-        relevant_sections = []
-        for line in book_text.split("\n"):
-            if any(word in line.lower() for word in question.lower().split()):
-                if len(line.strip()) > 20:
-                    relevant_sections.append(line)
+        # Bing Web Search API (replace with your key)
+        search_url = "https://api.bing.microsoft.com/v7.0/search"
+        headers = {"Ocp-Apim-Subscription-Key": "YOUR_BING_API_KEY"}  # Replace with your Bing API key
+        params = {"q": question, "textDecorations": True, "textFormat": "HTML"}
+        try:
+            response = requests.get(search_url, headers=headers, params=params)
+            data = response.json()
+            snippets = []
+            for item in data.get("webPages", {}).get("value", []):
+                snippets.append(item.get("snippet", ""))
+            combined_text = " ".join(snippets[:3]) if snippets else "No web data found."
+        except:
+            combined_text = "No web data available."
 
-        explanation = f"**Explanation:** {relevant_sections[0]}" if relevant_sections else "**Explanation:** No direct match found."
-        details = "**Detail:** " + " ".join(relevant_sections[1:3]) if len(relevant_sections) > 1 else "**Detail:** External authoritative sources would provide context."
+        # Structure response
+        explanation = f"**Explanation:** {combined_text.split('.')[0]}."
+        details = f"**Detail:** {' '.join(combined_text.split('.')[1:3])}"
         tips = "**Practical Tips:** Apply these insights in leadership evaluations, toxicity checks, and 360-degree feedback sessions."
         return f"{explanation}\n\n{details}\n\n{tips}"
 
-    # UI Layout
+    # --- UI Layout ---
     st.title("☢️ Toxicity in the Workplace")
 
     # Educational Expanders
@@ -1181,16 +1186,16 @@ def render_module_8():
     with st.expander("Behavioral Drift & 360-Degree Feedback"):
         st.write("Behavioral drift occurs when employees gradually deviate from norms; 360-degree feedback helps detect early signs.")
 
-    # Detailed Rubric Table (Visible at Top)
+    # Detailed Rubric Table
     st.subheader("Toxicity Rubric")
     st.markdown("""
     <table style='width:100%; border:1px solid black; font-size:14px;'>
-    <tr><th>Tool</th><th>Low Risk (3-4)</th><th>Moderate Risk (2)</th><th>High Risk (1)</th><th>Toxicity Triggers (Padilla/Hogan & Behavioral Drift)</th></tr>
-    <tr><td>Speed (Cognitive & Behavioral Agility)</td><td>Adapts quickly to challenges with clarity; integrates feedback without ego; fosters team momentum.</td><td>Slow to adapt or reacts impulsively under pressure; performs for optics or resists feedback.</td><td>Freezes, disengages, or acts erratically; ignores feedback, showing volatility (Hogan).</td><td>Drift: Sudden disengagement or erratic decisions under pressure. Padilla: Susceptible followers enable erratic leaders by not challenging volatility. Hogan: Volatility derailer—impulsive or withdrawn behavior disrupts team flow.</td></tr>
-    <tr><td>Power (Ownership, Initiative & Decisiveness)</td><td>Owns outcomes, makes decisive calls without alienating others; drives progress humbly.</td><td>Hesitates to own mistakes; bulldozes collaboration or deflects blame occasionally.</td><td>Blames others, avoids accountability, or acts arrogantly; manipulates to dodge responsibility (Hogan).</td><td>Drift: Slacking or shirking responsibility when unsupervised. Padilla: Destructive leader manipulates or shirks; conducive environment (e.g., nepotism) enables it. Hogan: Arrogance derailer—self-centered decisions harm trust.</td></tr>
-    <tr><td>Fielding (Strategic Foresight & System Protection)</td><td>Anticipates risks (e.g., team morale issues); builds robust systems; stays proactive under uncertainty.</td><td>Misses some risks or becomes rigid; builds partial systems but may blame others when stressed.</td><td>Ignores risks, pushes untested changes, or blames team; fosters chaos (Padilla).</td><td>Drift: Neglecting risks or pushing reckless changes, causing team disruption. Padilla: Conducive environment allows unchecked risk-taking; followers don’t push back. Hogan: Overconfidence derailer—reckless changes without foresight.</td></tr>
-    <tr><td>Hitting for Average (Reliability, Rhythm & Repeatability)</td><td>Delivers consistently, documents work, builds trust; anchors team rhythm without drama.</td><td>Inconsistent or skips documentation; resents lack of recognition or disengages occasionally.</td><td>Unreliable, undocumented work, or silent quitting; disrespects staff, erodes trust (Padilla).</td><td>Drift: Sudden unreliability or disengagement, risking team stability. Padilla: Susceptible followers disengage, enabling toxic culture. Hogan: Detachment derailer—apathy or unreliability disrupts team rhythm.</td></tr>
-    <tr><td>Arm Strength (Communication Reach & Influence)</td><td>Communicates clearly, inspires buy-in; open to feedback, aligns team without divisiveness.</td><td>Communicates adequately but may dominate or charm without substance; partially open to feedback.</td><td>Charms manipulatively, dismisses feedback, or disrespects staff; creates division (Hogan).</td><td>Drift: Shift to divisive or manipulative communication, alienating team. Padilla: Destructive leader manipulates via charisma; conducive environment tolerates it. Hogan: Manipulativeness derailer—self-serving communication divides team.</td></tr>
+    <tr><th>Tool</th><th>Low Risk (3-4)</th><th>Moderate Risk (2)</th><th>High Risk (1)</th><th>Toxicity Triggers</th></tr>
+    <tr><td>Speed</td><td>Adapts quickly; integrates feedback without ego.</td><td>Slow to adapt; reacts impulsively.</td><td>Freezes or disengages; ignores feedback.</td><td>Erratic decisions under pressure; volatility derailer.</td></tr>
+    <tr><td>Power</td><td>Owns outcomes; decisive and humble.</td><td>Hesitates; deflects blame occasionally.</td><td>Blames others; manipulates responsibility.</td><td>Arrogance derailer; shirking accountability.</td></tr>
+    <tr><td>Fielding</td><td>Anticipates risks; builds robust systems.</td><td>Misses risks; rigid under stress.</td><td>Ignores risks; fosters chaos.</td><td>Unchecked risk-taking; overconfidence derailer.</td></tr>
+    <tr><td>Hitting for Average</td><td>Delivers consistently; builds trust.</td><td>Inconsistent; skips documentation.</td><td>Silent quitting; erodes trust.</td><td>Detachment derailer; cultural drift.</td></tr>
+    <tr><td>Arm Strength</td><td>Communicates clearly; inspires buy-in.</td><td>Dominates or charms without substance.</td><td>Manipulative; dismisses feedback.</td><td>Divisive communication; manipulativeness derailer.</td></tr>
     </table>
     """, unsafe_allow_html=True)
 
@@ -1235,7 +1240,7 @@ def render_module_8():
         fig.update_layout(title="Toxicity Profile Radar Chart")
         st.plotly_chart(fig)
 
-        # Embed Attachment Content (Interpretation Table)
+        # Interpretation Table
         st.markdown("""
         <h4>Total Score Interpretation</h4>
         <table style='width:100%; border:1px solid black;'>
