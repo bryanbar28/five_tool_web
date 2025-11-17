@@ -1163,24 +1163,26 @@ def render_module_7():
     st.sidebar.header("Adjust Tool Weights")
     weights = {tool: st.sidebar.slider(f"Weight for {tool}", 0.5, 2.0, DEFAULT_WEIGHTS[tool], 0.1) for tool in TOOLS}
 
-    if uploaded_file:
-        # Detect file type and parse
-        if uploaded_file.name.endswith(".csv"):
-            df = pd.read_csv(uploaded_file)
-        elif uploaded_file.name.endswith(".pdf"):
-            with pdfplumber.open(uploaded_file) as pdf:
-                first_page = pdf.pages[0]
-                table = first_page.extract_table()
-                df = pd.DataFrame(table[1:], columns=table[0])
-        elif uploaded_file.name.endswith(".docx"):
-            doc = Document(uploaded_file)
-            data = []
-            for table in doc.tables:
-                for row in table.rows:
-                    data.append([cell.text for cell in row.cells])
+if uploaded_file:
+    if uploaded_file.name.endswith(".csv"):
+        df = pd.read_csv(uploaded_file)
+    elif uploaded_file.name.endswith(".docx"):
+        from docx import Document
+        doc = Document(uploaded_file)
+        data = [p.text.split(",") for p in doc.paragraphs if p.text.strip()]
+        if len(data) > 1:
             df = pd.DataFrame(data[1:], columns=data[0])
         else:
-            st.error("Unsupported file format.")
+            st.error("Word file does not contain tabular data.")
+    elif uploaded_file.name.endswith(".pdf"):
+        import pdfplumber
+        with pdfplumber.open(uploaded_file) as pdf:
+            text = "\n".join(page.extract_text() for page in pdf.pages if page.extract_text())
+        st.write("PDF content:", text)
+        # You need custom parsing logic here
+    else:
+        st.error("Unsupported file type.")
+
             return
 
         st.write("### Uploaded Data Preview")
