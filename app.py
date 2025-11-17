@@ -1064,6 +1064,31 @@ def render_module_7():
     LEADERSHIP_THRESHOLD = 21
     RISK_THRESHOLD = 18
 
+    KEYWORDS = {
+        "leadership": "Leadership Strength",
+        "risk": "Potential Risk",
+        "efficiency": "Operational Efficiency",
+        "innovation": "Innovation Potential",
+        "communication": "Collaboration Strength"
+    }
+
+    def extract_text_from_files(word_file, pdf_file):
+        text_content = ""
+        if word_file:
+            doc = Document(word_file)
+            text_content += "\n".join([p.text for p in doc.paragraphs if p.text.strip()])
+        if pdf_file:
+            with pdfplumber.open(pdf_file) as pdf:
+                text_content += "\n".join(page.extract_text() for page in pdf.pages if page.extract_text())
+        return text_content.lower()
+
+    def analyze_text(text):
+        insights = []
+        for keyword, meaning in KEYWORDS.items():
+            if keyword in text:
+                insights.append(meaning)
+        return insights if insights else ["No significant themes detected"]
+
     def generate_kpis(top_employees, top_branches, roles):
         kpis = []
         if top_employees:
@@ -1074,16 +1099,6 @@ def render_module_7():
             kpis.append(f"Focus on top branch: {top_branches[0]} for strategic growth")
         return kpis
 
-    def generate_interview_questions(low_tools):
-        questions = {
-            "Speed": "Tell me about a time you had to adapt quickly under pressure. How did you handle it?",
-            "Power": "Describe a situation where you had to take ownership and make a tough decision. What was the outcome?",
-            "Fielding": "How do you anticipate risks in your work? Give an example of preventing an issue before it escalated.",
-            "Hitting for Average": "Explain how you maintain consistency and reliability in your role. Can you share a recent example?",
-            "Arm Strength": "How do you communicate complex ideas to your team or clients? Share an example of influencing others effectively."
-        }
-        return [questions[tool] for tool in low_tools if tool in questions]
-
     def export_to_excel(df_employees, df_branches):
         output = BytesIO()
         with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
@@ -1092,7 +1107,7 @@ def render_module_7():
         output.seek(0)
         return output
 
-    def export_to_pdf(df_employees, df_branches, kpis, interview_questions):
+    def export_to_pdf(df_employees, df_branches, kpis, interview_questions, text_insights):
         output = BytesIO()
         c = canvas.Canvas(output, pagesize=letter)
         width, height = letter
@@ -1116,13 +1131,12 @@ def render_module_7():
         for kpi in kpis:
             c.drawString(30, y, f"- {kpi}")
             y -= 15
-        if interview_questions:
-            y -= 20
-            c.drawString(30, y, "Interview Questions for Low-Scoring Tools:")
-            y -= 20
-            for q in interview_questions:
-                c.drawString(30, y, f"- {q}")
-                y -= 15
+        y -= 20
+        c.drawString(30, y, "Text Insights:")
+        y -= 20
+        for insight in text_insights:
+            c.drawString(30, y, f"- {insight}")
+            y -= 15
         c.save()
         output.seek(0)
         return output
@@ -1130,31 +1144,15 @@ def render_module_7():
     st.title("🏢 M&A Analyzer with 5-Tool Employee Framework")
     st.write("Upload employee performance data and evaluate using the 5-Tool Framework.")
 
-    uploaded_file = st.file_uploader("Upload file (CSV, PDF, Word)", type=["csv", "pdf", "docx"])
+    uploaded_csv = st.file_uploader("Upload CSV file", type=["csv"])
+    uploaded_word = st.file_uploader("Optional: Upload Word file", type=["docx"])
+    uploaded_pdf = st.file_uploader("Optional: Upload PDF file", type=["pdf"])
+
     st.sidebar.header("Adjust Tool Weights")
     weights = {tool: st.sidebar.slider(f"Weight for {tool}", 0.5, 2.0, DEFAULT_WEIGHTS[tool], 0.1) for tool in TOOLS}
 
-    if uploaded_file:
-        if uploaded_file.name.endswith(".csv"):
-            df = pd.read_csv(uploaded_file)
-        elif uploaded_file.name.endswith(".docx"):
-            doc = Document(uploaded_file)
-            data = [p.text.split(",") for p in doc.paragraphs if p.text.strip()]
-            # ✅ Validation for consistent columns
-            if len(data) > 1 and all(len(row) == len(data[0]) for row in data[1:]):
-                df = pd.DataFrame(data[1:], columns=data[0])
-            else:
-                st.error("Word file must contain comma-separated values with consistent columns.")
-                return
-        elif uploaded_file.name.endswith(".pdf"):
-            with pdfplumber.open(uploaded_file) as pdf:
-                text = "\n".join(page.extract_text() for page in pdf.pages if page.extract_text())
-            st.write("PDF content:", text)
-            return
-        else:
-            st.error("Unsupported file type.")
-            return
-
+    if uploaded_csv:
+        df = pd.read_csv(uploaded_csv)
         st.write("### Uploaded Data Preview")
         st.dataframe(df.head())
 
@@ -1207,22 +1205,28 @@ def render_module_7():
                 st.write("Tools with highest variance (inconsistency across branches):")
                 st.write(variance.sort_values(ascending=False))
 
-                low_tools = [tool for tool in TOOLS if df[tool].astype(float).mean() < 3]
-                interview_questions = generate_interview_questions(low_tools)
-                if interview_questions:
-                    st.write("### Interview Questions for Low-Scoring Tools")
-                    for q in interview_questions:
-                        st.write(f"- {q}")
+                # ✅ Text Analysis Section
+                text_content = extract_text_from_files(uploaded_word, uploaded_pdf)
+                text_insights = analyze_text(text_content)
 
+                st.subheader("Summary of Findings")
+                st.write("**Insights from Uploaded Documents:**")
+                for insight in text_insights:
+                    st.write(f"- {insight}")
+
+                st.write("**Overall Recommendations:**")
+                st.write("Focus on improving tools with highest variance and addressing themes detected in documents.")
+
+                # ✅ Export Reports
                 excel_file = export_to_excel(df_employees, df_branches)
                 st.download_button("Download Excel Report", excel_file, file_name="MA_5Tool_Report.xlsx")
 
-                pdf_file = export_to_pdf(df_employees, df_branches, generate_kpis(df_employees["Employee"].tolist(), df_branches["Branch"].tolist(), dict(zip(df_employees["Employee"], df_employees["Role"]))), interview_questions)
+                pdf_file = export_to_pdf(df_employees, df_branches, generate_kpis(df_employees["Employee"].tolist(), df_branches["Branch"].tolist(), dict(zip(df_employees["Employee"], df_employees["Role"]))), [], text_insights)
                 st.download_button("Download PDF Report", pdf_file, file_name="MA_5Tool_Report.pdf")
         else:
-            st.error(f"File must contain columns: {', '.join(required_cols)}")
+            st.error(f"CSV must contain columns: {', '.join(required_cols)}")
     else:
-        st.info("Please upload a file to proceed.")
+        st.info("Please upload a CSV file to proceed.")
         
 def render_module_8():
     st.title("🚧 Page 8: Under Construction")
