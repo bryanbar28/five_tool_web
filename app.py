@@ -1145,7 +1145,7 @@ def render_module_7():
                 st.markdown("- Watch tutorials on YouTube")
             else:
                 st.warning("Please enter a question before clicking 'Get AI Answer'.")
-
+                
 def render_module_8():
     import streamlit as st
     import plotly.express as px
@@ -1155,28 +1155,49 @@ def render_module_8():
     # Initialize OpenAI client
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-    # --- Helper: AI response using OpenAI ---
+    # --- Helper: AI response for general questions ---
     def get_ai_response(question):
-        try:
-            system_prompt = """
-            You are an expert in organizational psychology and leadership.
-            Provide a structured response for any workplace-related concept in this format:
-            **Explanation:** A clear summary of the concept.
-            **Detail:** Key insights, research-based context, and why it matters.
-            **Practical Tips:** Actionable steps for applying this concept in real-world leadership or HR scenarios.
-            """
-            response = client.chat.completions.create(
-                model="gpt-4",
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": question}
-                ],
-                temperature=0.7,
-                max_tokens=700
-            )
-            return response.choices[0].message.content
-        except Exception as e:
-            return f"❌ Error generating AI response: {e}"
+        system_prompt = """
+        You are an expert in organizational psychology and leadership.
+        Provide a structured response in this format:
+        **Explanation:** Summary of the concept.
+        **Detail:** Key insights and why it matters.
+        **Practical Tips:** Actionable steps for real-world application.
+        """
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": question}
+            ],
+            temperature=0.7,
+            max_tokens=700
+        )
+        return response.choices[0].message.content
+
+    # --- Helper: Contextual Insight combining notes and score ---
+    def get_contextual_insight(notes, score, risk_level):
+        contextual_prompt = f"""
+        Analyze this scenario:
+        Notes: {notes}
+        Numeric Score: {score}
+        Risk Level: {risk_level}
+
+        Determine if notes indicate toxic intent or cultural risk even if numeric score suggests low risk.
+        Provide:
+        **Contextual Insight:** Explain toxicity risk based on notes.
+        **Recommendation:** Suggest actions considering both score and notes.
+        """
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are an expert in leadership assessment and organizational culture."},
+                {"role": "user", "content": contextual_prompt}
+            ],
+            temperature=0.7,
+            max_tokens=500
+        )
+        return response.choices[0].message.content
 
     # --- UI Layout ---
     st.title("☢️ Toxicity in the Workplace")
@@ -1259,7 +1280,12 @@ def render_module_8():
         # AI Insights
         st.subheader("AI Insights")
         st.markdown(get_ai_response("toxicity in workplace"))
-        
+
+        # Contextual Insight
+        if notes.strip():
+            st.subheader("Contextual Insight")
+            st.markdown(get_contextual_insight(notes, total_score, risk_level))
+
 def render_module_9():
     st.title("📊 SWOT 2.0 Strategic Framework")
     st.markdown("Designed by Bryan Barrera &amp; Microsoft Copilot")
