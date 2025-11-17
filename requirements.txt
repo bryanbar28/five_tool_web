@@ -7,3 +7,5 @@ requests
 google-api-python-client
 plotly
 pandas
+xlsxwriter
+reportlab
