@@ -77,8 +77,7 @@ def map_videos_to_tools(videos):
 # Subscription Logic
 # -------------------------------
 PAID_PAGES = {
-    "Page 7: M&A Intelligence": "$19.99/mo",  # ✅ Fixed mismatch
-    "Page 8: Repository": "$9.99/mo"
+    "Page 7: Repository": "$9.99/mo"
 }
 
 def is_unlocked(page):
@@ -983,6 +982,7 @@ def generate_roadmap(df):
     return pd.DataFrame(roadmap)
 
 # --- Streamlit UI ---
+
 def render_module_6():
     st.title("📊 SWOT 2.0 Strategic Framework")
     st.markdown("Designed by Bryan Barrera & Microsoft Copilot")
