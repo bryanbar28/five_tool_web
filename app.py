@@ -1159,7 +1159,7 @@ def render_module_7():
 
     user_notes = st.text_area("Add your notes or observations here:")
 
-    if uploaded_csv:
+ if uploaded_csv:
         df = pd.read_csv(uploaded_csv)
         st.write("### Uploaded Data Preview")
         st.dataframe(df.head())
@@ -1239,6 +1239,7 @@ def render_module_7():
     else:
         st.info("Please upload a CSV file to proceed.")
         
+
 def render_module_8():
     st.title("🚧 Page 8: Under Construction")
     st.markdown("This page is not yet implemented.")
