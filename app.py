@@ -1271,19 +1271,19 @@ selected_page = st.sidebar.selectbox("Choose a page", PAGES)
 
 # ✅ Page rendering logic (unchanged for now)
 if selected_page == "Page 1: The 5 Tool Employee Framework":
-    render_module_4()
+    render_module_1()
 elif selected_page == "Page 2: The 5 Tool Employee Framework: Deep Research Version":
-    render_module_5()
+    render_module_2()
 elif selected_page == "Page 3: Behavior Under Pressure Grid":
-    render_module_6()
+    render_module_3()
 elif selected_page == "Page 4: Behavioral Calibration Grid":
-    render_module_7()
+    render_module_4()
 elif selected_page == "Page 5: Toxicity in the Workplace":
-    render_module_8()
+    render_module_5()
 elif selected_page == "Page 6: SWOT 2.0":
-    render_module_9()
+    render_module_6()
 elif selected_page == "Page 7: M&A Intelligence":
-    render_module_10()
+    render_module_7()
 elif selected_page == "Page 8: Repository":
-    render_module_11()
+    render_module_8()
     
