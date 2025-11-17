@@ -1074,5 +1074,5 @@ elif selected_page == "Page 5: Toxicity in the Workplace":
 elif selected_page == "Page 6: SWOT 2.0":
     render_module_6()
 elif selected_page == "Page 7: Repository":
-    render_module_7())
+    render_module_7()
     
