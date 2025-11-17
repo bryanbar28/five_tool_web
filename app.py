@@ -1409,7 +1409,7 @@ def render_module_9():
             df = pd.DataFrame(data)
             st.dataframe(df.sort_values(by="Total Score", ascending=False))
 
-            st.subheader("🛠 Dynamic Roadmap")
+            st.subheader("🛠 Dynamic KPIs")
             st.write("Actionable steps with milestones, ownership, and scenario planning.")
             roadmap_df = generate_roadmap(df)
             st.dataframe(roadmap_df)
