@@ -1145,16 +1145,17 @@ def render_module_7():
                 st.markdown("- Watch tutorials on YouTube")
             else:
                 st.warning("Please enter a question before clicking 'Get AI Answer'.")
+
 def render_module_8():
     import streamlit as st
     import plotly.express as px
 
-    # Embed book content and toxicity scale text
+    # Embed book content for AI integration
     book_text = """
-    [Insert the relevant sections from your book and toxicity scale here, e.g. Padilla’s Toxic Triangle, Hogan derailers, Machiavellianism, Behavioral Drift, 360-degree feedback, and toxicity scoring rubric.]
+    [Insert relevant sections from your book and toxicity scale here for AI insights]
     """
 
-    # --- AI response function with structured output ---
+    # AI response function
     def get_ai_response(question):
         relevant_sections = []
         for line in book_text.split("\n"):
@@ -1162,22 +1163,12 @@ def render_module_8():
                 if len(line.strip()) > 20:
                     relevant_sections.append(line)
 
-        explanation = ""
-        details = ""
-        tips = ""
-
-        if relevant_sections:
-            explanation = f"**Explanation:** {relevant_sections[0]}"
-            details = "**Detail:** " + " ".join(relevant_sections[1:3])
-            tips = "**Practical Tips:** Apply these insights in leadership evaluations, toxicity checks, and 360-degree feedback sessions."
-        else:
-            explanation = "**Explanation:** No direct match found in book."
-            details = "**Detail:** External authoritative sources would provide context here."
-            tips = "**Practical Tips:** Use structured observation and feedback loops to validate findings."
-
+        explanation = f"**Explanation:** {relevant_sections[0]}" if relevant_sections else "**Explanation:** No direct match found."
+        details = "**Detail:** " + " ".join(relevant_sections[1:3]) if len(relevant_sections) > 1 else "**Detail:** External authoritative sources would provide context."
+        tips = "**Practical Tips:** Apply these insights in leadership evaluations, toxicity checks, and 360-degree feedback sessions."
         return f"{explanation}\n\n{details}\n\n{tips}"
 
-    # --- UI Layout ---
+    # UI Layout
     st.title("☢️ Toxicity in the Workplace")
 
     # Educational Expanders
@@ -1190,14 +1181,16 @@ def render_module_8():
     with st.expander("Behavioral Drift & 360-Degree Feedback"):
         st.write("Behavioral drift occurs when employees gradually deviate from norms; 360-degree feedback helps detect early signs.")
 
-    # Display Toxicity Grid
-    st.subheader("Toxicity Scale")
+    # Detailed Rubric Table (Visible at Top)
+    st.subheader("Toxicity Rubric")
     st.markdown("""
-    <table style='width:100%; border:1px solid black;'>
-    <tr><th>Score Range</th><th>Risk Level</th><th>Description</th></tr>
-    <tr><td>15-20</td><td>Low Risk</td><td>Employee demonstrates strong alignment with organizational values.</td></tr>
-    <tr><td>10-14</td><td>Moderate Risk</td><td>Employee shows signs of disengagement or minor toxic behaviors.</td></tr>
-    <tr><td>Below 10</td><td>High Risk</td><td>Immediate intervention required; behaviors are harmful to team culture.</td></tr>
+    <table style='width:100%; border:1px solid black; font-size:14px;'>
+    <tr><th>Tool</th><th>Low Risk (3-4)</th><th>Moderate Risk (2)</th><th>High Risk (1)</th><th>Toxicity Triggers (Padilla/Hogan & Behavioral Drift)</th></tr>
+    <tr><td>Speed (Cognitive & Behavioral Agility)</td><td>Adapts quickly to challenges with clarity; integrates feedback without ego; fosters team momentum.</td><td>Slow to adapt or reacts impulsively under pressure; performs for optics or resists feedback.</td><td>Freezes, disengages, or acts erratically; ignores feedback, showing volatility (Hogan).</td><td>Drift: Sudden disengagement or erratic decisions under pressure. Padilla: Susceptible followers enable erratic leaders by not challenging volatility. Hogan: Volatility derailer—impulsive or withdrawn behavior disrupts team flow.</td></tr>
+    <tr><td>Power (Ownership, Initiative & Decisiveness)</td><td>Owns outcomes, makes decisive calls without alienating others; drives progress humbly.</td><td>Hesitates to own mistakes; bulldozes collaboration or deflects blame occasionally.</td><td>Blames others, avoids accountability, or acts arrogantly; manipulates to dodge responsibility (Hogan).</td><td>Drift: Slacking or shirking responsibility when unsupervised. Padilla: Destructive leader manipulates or shirks; conducive environment (e.g., nepotism) enables it. Hogan: Arrogance derailer—self-centered decisions harm trust.</td></tr>
+    <tr><td>Fielding (Strategic Foresight & System Protection)</td><td>Anticipates risks (e.g., team morale issues); builds robust systems; stays proactive under uncertainty.</td><td>Misses some risks or becomes rigid; builds partial systems but may blame others when stressed.</td><td>Ignores risks, pushes untested changes, or blames team; fosters chaos (Padilla).</td><td>Drift: Neglecting risks or pushing reckless changes, causing team disruption. Padilla: Conducive environment allows unchecked risk-taking; followers don’t push back. Hogan: Overconfidence derailer—reckless changes without foresight.</td></tr>
+    <tr><td>Hitting for Average (Reliability, Rhythm & Repeatability)</td><td>Delivers consistently, documents work, builds trust; anchors team rhythm without drama.</td><td>Inconsistent or skips documentation; resents lack of recognition or disengages occasionally.</td><td>Unreliable, undocumented work, or silent quitting; disrespects staff, erodes trust (Padilla).</td><td>Drift: Sudden unreliability or disengagement, risking team stability. Padilla: Susceptible followers disengage, enabling toxic culture. Hogan: Detachment derailer—apathy or unreliability disrupts team rhythm.</td></tr>
+    <tr><td>Arm Strength (Communication Reach & Influence)</td><td>Communicates clearly, inspires buy-in; open to feedback, aligns team without divisiveness.</td><td>Communicates adequately but may dominate or charm without substance; partially open to feedback.</td><td>Charms manipulatively, dismisses feedback, or disrespects staff; creates division (Hogan).</td><td>Drift: Shift to divisive or manipulative communication, alienating team. Padilla: Destructive leader manipulates via charisma; conducive environment tolerates it. Hogan: Manipulativeness derailer—self-serving communication divides team.</td></tr>
     </table>
     """, unsafe_allow_html=True)
 
@@ -1205,8 +1198,7 @@ def render_module_8():
     st.subheader("AI Chat: Ask about Toxic Leadership or Feedback")
     ai_question = st.text_area("Ask a question (e.g., Tell me more about 360-degree feedback)")
     if st.button("Get AI Response"):
-        response = get_ai_response(ai_question)
-        st.markdown(response)
+        st.markdown(get_ai_response(ai_question))
 
     # Scoring Sliders
     st.subheader("Rate the Employee on Each Dimension")
@@ -1235,7 +1227,15 @@ def render_module_8():
         st.write(f"**Risk Level:** {risk_level}")
         st.write(f"**Action Plan:** {action_plan}")
 
-        # Interpretation Table
+        # Radar Chart
+        categories = ["Speed", "Power", "Fielding", "Hitting", "Arm Strength"]
+        scores = [speed, power, fielding, hitting, arm_strength]
+        fig = px.line_polar(r=scores, theta=categories, line_close=True)
+        fig.update_traces(fill='toself')
+        fig.update_layout(title="Toxicity Profile Radar Chart")
+        st.plotly_chart(fig)
+
+        # Embed Attachment Content (Interpretation Table)
         st.markdown("""
         <h4>Total Score Interpretation</h4>
         <table style='width:100%; border:1px solid black;'>
@@ -1245,14 +1245,6 @@ def render_module_8():
         <tr><td>Below 10</td><td>High Risk</td><td>Immediate intervention required; behaviors are harmful to team culture.</td></tr>
         </table>
         """, unsafe_allow_html=True)
-
-        # Radar Chart
-        categories = ["Speed", "Power", "Fielding", "Hitting", "Arm Strength"]
-        scores = [speed, power, fielding, hitting, arm_strength]
-        fig = px.line_polar(r=scores, theta=categories, line_close=True)
-        fig.update_traces(fill='toself')
-        fig.update_layout(title="Toxicity Profile Radar Chart")
-        st.plotly_chart(fig)
 
         # AI Insights
         st.subheader("AI Insights")
