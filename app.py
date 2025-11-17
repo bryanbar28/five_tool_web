@@ -1074,14 +1074,15 @@ def render_module_7():
     }
 
     # Helper functions
-    def extract_text_from_files(word_file, pdf_file):
+    def extract_text_from_files(uploaded_docs):
         text_content = ""
-        if word_file:
-            doc = Document(word_file)
-            text_content += "\n".join([p.text for p in doc.paragraphs if p.text.strip()])
-        if pdf_file:
-            with pdfplumber.open(pdf_file) as pdf:
-                text_content += "\n".join(page.extract_text() for page in pdf.pages if page.extract_text())
+        for doc in uploaded_docs:
+            if doc.name.endswith(".docx"):
+                d = Document(doc)
+                text_content += "\n".join([p.text for p in d.paragraphs if p.text.strip()])
+            elif doc.name.endswith(".pdf"):
+                with pdfplumber.open(doc) as pdf:
+                    text_content += "\n".join(page.extract_text() for page in pdf.pages if page.extract_text())
         return text_content.lower()
 
     def analyze_text(text):
@@ -1146,7 +1147,7 @@ def render_module_7():
         c.drawString(30, y, "User Notes:")
         y -= 20
         for line in user_notes.split("\n"):
-            c.drawString(30, y, f"- {line}")
+            c.drawString(30, y, f"- {line[:90]}")  # Wrap long lines
             y -= 15
         c.save()
         output.seek(0)
@@ -1157,8 +1158,7 @@ def render_module_7():
     st.write("Upload employee performance data and evaluate using the 5-Tool Framework.")
 
     uploaded_csv = st.file_uploader("Upload CSV file", type=["csv"])
-    uploaded_word = st.file_uploader("Optional: Upload Word file", type=["docx"])
-    uploaded_pdf = st.file_uploader("Optional: Upload PDF file", type=["pdf"])
+    uploaded_docs = st.file_uploader("Upload Word/PDF files", type=["docx", "pdf"], accept_multiple_files=True)
 
     st.sidebar.header("Adjust Tool Weights")
     weights = {tool: st.sidebar.slider(f"Weight for {tool}", 0.5, 2.0, DEFAULT_WEIGHTS[tool], 0.1) for tool in TOOLS}
@@ -1169,7 +1169,7 @@ def render_module_7():
     generate = st.button("Generate Analysis")
 
     if generate:
-        if uploaded_csv or uploaded_word or uploaded_pdf:
+        if uploaded_csv or uploaded_docs:
             df_employees = pd.DataFrame()
             df_branches = pd.DataFrame()
             kpis = []
@@ -1232,15 +1232,15 @@ def render_module_7():
                     kpis = generate_kpis(df_employees["Employee"].tolist(), df_branches["Branch"].tolist(), dict(zip(df_employees["Employee"], df_employees["Role"])))
                 else:
                     st.error(f"CSV must contain columns: {', '.join(required_cols)}")
-
             else:
                 st.warning("No CSV uploaded. Numeric charts and rankings skipped.")
 
-            # ✅ Text Analysis
-            text_content = extract_text_from_files(uploaded_word, uploaded_pdf)
+            # ✅ Text Analysis for multiple docs
+            text_content = extract_text_from_files(uploaded_docs)
             text_insights = analyze_text(text_content)
 
             st.subheader("Summary of Findings")
+            st.write(f"**Analyzed {len(uploaded_docs)} documents. Detected {len(text_insights)} themes.**")
             st.write("**Insights from Uploaded Documents:**")
             for insight in text_insights:
                 st.write(f"- {insight}")
@@ -1260,7 +1260,7 @@ def render_module_7():
             st.download_button("Download PDF Report", pdf_file, file_name="MA_5Tool_Report.pdf")
         else:
             st.error("Please upload at least one file (CSV, Word, or PDF) to generate analysis.")
-
+            
 def render_module_8():
     st.title("🚧 Page 8: Under Construction")
     st.markdown("This page is not yet implemented.")
