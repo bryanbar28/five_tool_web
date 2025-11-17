@@ -1116,24 +1116,27 @@ def render_module_7():
         c.setFont("Helvetica", 12)
         c.drawString(30, height - 30, "M&A Performance Report with 5-Tool Framework")
         y = height - 60
-        c.drawString(30, y, "Top Employees:")
-        y -= 20
-        for _, row in df_employees.iterrows():
-            c.drawString(30, y, f"{row['Employee']} - Total Score: {row['Total Score']:.2f}")
-            y -= 15
-        y -= 20
-        c.drawString(30, y, "Top Branches:")
-        y -= 20
-        for _, row in df_branches.iterrows():
-            c.drawString(30, y, f"{row['Branch']} - Avg Score: {row['Avg Score']:.2f}")
-            y -= 15
-        y -= 20
-        c.drawString(30, y, "KPIs:")
-        y -= 20
-        for kpi in kpis:
-            c.drawString(30, y, f"- {kpi}")
-            y -= 15
-        y -= 20
+        if not df_employees.empty:
+            c.drawString(30, y, "Top Employees:")
+            y -= 20
+            for _, row in df_employees.iterrows():
+                c.drawString(30, y, f"{row['Employee']} - Total Score: {row['Total Score']:.2f}")
+                y -= 15
+            y -= 20
+        if not df_branches.empty:
+            c.drawString(30, y, "Top Branches:")
+            y -= 20
+            for _, row in df_branches.iterrows():
+                c.drawString(30, y, f"{row['Branch']} - Avg Score: {row['Avg Score']:.2f}")
+                y -= 15
+            y -= 20
+        if kpis:
+            c.drawString(30, y, "KPIs:")
+            y -= 20
+            for kpi in kpis:
+                c.drawString(30, y, f"- {kpi}")
+                y -= 15
+            y -= 20
         c.drawString(30, y, "Text Insights:")
         y -= 20
         for insight in text_insights:
@@ -1166,87 +1169,97 @@ def render_module_7():
     generate = st.button("Generate Analysis")
 
     if generate:
-        if uploaded_csv:
-            df = pd.read_csv(uploaded_csv)
-            st.write("### Uploaded Data Preview")
-            st.dataframe(df.head())
+        if uploaded_csv or uploaded_word or uploaded_pdf:
+            df_employees = pd.DataFrame()
+            df_branches = pd.DataFrame()
+            kpis = []
 
-            required_cols = ["Employee", "Branch", "Role"] + TOOLS
-            if all(col in df.columns for col in required_cols):
-                # Weighted scores
-                for tool in TOOLS:
-                    df[f"Weighted_{tool}"] = df[tool].astype(float) * weights[tool]
-                df["Total Score"] = df[[f"Weighted_{tool}" for tool in TOOLS]].sum(axis=1)
+            # ✅ Numeric analysis if CSV is present
+            if uploaded_csv:
+                df = pd.read_csv(uploaded_csv)
+                st.write("### Uploaded Data Preview")
+                st.dataframe(df.head())
 
-                # Rankings
-                df_employees = df.sort_values(by="Total Score", ascending=False)[["Employee", "Branch", "Role", "Total Score"] + TOOLS]
-                df_employees["Leadership Ready"] = df_employees["Total Score"] >= LEADERSHIP_THRESHOLD
-                df_employees["90-Day Risk"] = df_employees["Total Score"] < RISK_THRESHOLD
+                required_cols = ["Employee", "Branch", "Role"] + TOOLS
+                if all(col in df.columns for col in required_cols):
+                    for tool in TOOLS:
+                        df[f"Weighted_{tool}"] = df[tool].astype(float) * weights[tool]
+                    df["Total Score"] = df[[f"Weighted_{tool}" for tool in TOOLS]].sum(axis=1)
 
-                df_branches = df.groupby("Branch").agg({tool: 'mean' for tool in TOOLS}).reset_index()
-                df_branches["Avg Score"] = df_branches[TOOLS].mean(axis=1)
-                df_branches = df_branches.sort_values(by="Avg Score", ascending=False)
+                    df_employees = df.sort_values(by="Total Score", ascending=False)[["Employee", "Branch", "Role", "Total Score"] + TOOLS]
+                    df_employees["Leadership Ready"] = df_employees["Total Score"] >= LEADERSHIP_THRESHOLD
+                    df_employees["90-Day Risk"] = df_employees["Total Score"] < RISK_THRESHOLD
 
-                # Charts
-                st.write("### Employee Rankings")
-                st.dataframe(df_employees)
+                    df_branches = df.groupby("Branch").agg({tool: 'mean' for tool in TOOLS}).reset_index()
+                    df_branches["Avg Score"] = df_branches[TOOLS].mean(axis=1)
+                    df_branches = df_branches.sort_values(by="Avg Score", ascending=False)
 
-                st.write("### Branch Rankings")
-                st.dataframe(df_branches)
+                    # Charts
+                    st.write("### Employee Rankings")
+                    st.dataframe(df_employees)
 
-                fig_emp = px.bar(df_employees, x="Employee", y="Total Score", color="Branch", title="Employee Rankings by Total Score", text="Total Score")
-                st.plotly_chart(fig_emp)
+                    st.write("### Branch Rankings")
+                    st.dataframe(df_branches)
 
-                fig_branch = px.bar(df_branches, x="Branch", y="Avg Score", title="Branch Rankings by Avg Score", text="Avg Score")
-                st.plotly_chart(fig_branch)
+                    fig_emp = px.bar(df_employees, x="Employee", y="Total Score", color="Branch", title="Employee Rankings by Total Score", text="Total Score")
+                    st.plotly_chart(fig_emp)
 
-                st.subheader("Radar Chart: Top Employee")
-                top_emp = df_employees.iloc[0]
-                fig_radar_emp = px.line_polar(r=[float(top_emp[t]) for t in TOOLS], theta=TOOLS, line_close=True, title=f"Radar Profile: {top_emp['Employee']}")
-                fig_radar_emp.update_traces(fill='toself')
-                st.plotly_chart(fig_radar_emp)
+                    fig_branch = px.bar(df_branches, x="Branch", y="Avg Score", title="Branch Rankings by Avg Score", text="Avg Score")
+                    st.plotly_chart(fig_branch)
 
-                st.subheader("Radar Chart: Branch Averages")
-                fig_radar_branch = px.line_polar(r=df_branches[TOOLS].mean().tolist(), theta=TOOLS, line_close=True, title="Radar Profile: Branch Averages")
-                fig_radar_branch.update_traces(fill='toself')
-                st.plotly_chart(fig_radar_branch)
+                    st.subheader("Radar Chart: Top Employee")
+                    top_emp = df_employees.iloc[0]
+                    fig_radar_emp = px.line_polar(r=[float(top_emp[t]) for t in TOOLS], theta=TOOLS, line_close=True, title=f"Radar Profile: {top_emp['Employee']}")
+                    fig_radar_emp.update_traces(fill='toself')
+                    st.plotly_chart(fig_radar_emp)
 
-                st.subheader("Heatmap: Tool Scores by Branch")
-                heatmap_data = df.groupby("Branch")[TOOLS].mean()
-                fig, ax = plt.subplots(figsize=(8, 6))
-                sns.heatmap(heatmap_data, annot=True, cmap="coolwarm", ax=ax)
-                st.pyplot(fig)
+                    st.subheader("Radar Chart: Branch Averages")
+                    fig_radar_branch = px.line_polar(r=df_branches[TOOLS].mean().tolist(), theta=TOOLS, line_close=True, title="Radar Profile: Branch Averages")
+                    fig_radar_branch.update_traces(fill='toself')
+                    st.plotly_chart(fig_radar_branch)
 
-                st.subheader("Variance Analysis Across Branches")
-                variance = heatmap_data.var()
-                st.write("Tools with highest variance (inconsistency across branches):")
-                st.write(variance.sort_values(ascending=False))
+                    st.subheader("Heatmap: Tool Scores by Branch")
+                    heatmap_data = df.groupby("Branch")[TOOLS].mean()
+                    fig, ax = plt.subplots(figsize=(8, 6))
+                    sns.heatmap(heatmap_data, annot=True, cmap="coolwarm", ax=ax)
+                    st.pyplot(fig)
 
-                # ✅ Text Analysis
-                text_content = extract_text_from_files(uploaded_word, uploaded_pdf)
-                text_insights = analyze_text(text_content)
+                    st.subheader("Variance Analysis Across Branches")
+                    variance = heatmap_data.var()
+                    st.write("Tools with highest variance (inconsistency across branches):")
+                    st.write(variance.sort_values(ascending=False))
 
-                st.subheader("Summary of Findings")
-                st.write("**Insights from Uploaded Documents:**")
-                for insight in text_insights:
-                    st.write(f"- {insight}")
+                    kpis = generate_kpis(df_employees["Employee"].tolist(), df_branches["Branch"].tolist(), dict(zip(df_employees["Employee"], df_employees["Role"])))
+                else:
+                    st.error(f"CSV must contain columns: {', '.join(required_cols)}")
 
-                st.write("**User Notes:**")
-                st.write(user_notes if user_notes else "No notes added.")
+            else:
+                st.warning("No CSV uploaded. Numeric charts and rankings skipped.")
 
-                st.write("**Overall Recommendations:**")
-                st.write("Focus on improving tools with highest variance and addressing themes detected in documents.")
+            # ✅ Text Analysis
+            text_content = extract_text_from_files(uploaded_word, uploaded_pdf)
+            text_insights = analyze_text(text_content)
 
-                # ✅ Export Reports
+            st.subheader("Summary of Findings")
+            st.write("**Insights from Uploaded Documents:**")
+            for insight in text_insights:
+                st.write(f"- {insight}")
+
+            st.write("**User Notes:**")
+            st.write(user_notes if user_notes else "No notes added.")
+
+            st.write("**Overall Recommendations:**")
+            st.write("Focus on improving tools with highest variance and addressing themes detected in documents.")
+
+            # ✅ Export Reports
+            if not df_employees.empty and not df_branches.empty:
                 excel_file = export_to_excel(df_employees, df_branches)
                 st.download_button("Download Excel Report", excel_file, file_name="MA_5Tool_Report.xlsx")
 
-                pdf_file = export_to_pdf(df_employees, df_branches, generate_kpis(df_employees["Employee"].tolist(), df_branches["Branch"].tolist(), dict(zip(df_employees["Employee"], df_employees["Role"]))), text_insights, user_notes)
-                st.download_button("Download PDF Report", pdf_file, file_name="MA_5Tool_Report.pdf")
-            else:
-                st.error(f"CSV must contain columns: {', '.join(required_cols)}")
+            pdf_file = export_to_pdf(df_employees, df_branches, kpis, text_insights, user_notes)
+            st.download_button("Download PDF Report", pdf_file, file_name="MA_5Tool_Report.pdf")
         else:
-            st.error("Please upload a CSV file to generate analysis.")   
+            st.error("Please upload at least one file (CSV, Word, or PDF) to generate analysis.")
 
 def render_module_8():
     st.title("🚧 Page 8: Under Construction")
