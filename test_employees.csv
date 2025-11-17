@@ -1,1 +1,6 @@
-
+Employee,Branch,Role,Speed,Power,Fielding,Hitting for Average,Arm Strength
+Alice,West,Sales,4,5,3,4,5
+Bob,East,Engineering,3,4,4,5,3
+Charlie,West,Operations,5,3,4,3,4
+Diana,North,Sales,2,3,5,4,2
+Ethan,South,Engineering,4,4,3,3,4
