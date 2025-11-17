@@ -1051,6 +1051,8 @@ def render_module_7():
     import xlsxwriter
     from reportlab.lib.pagesizes import letter
     from reportlab.pdfgen import canvas
+    from docx import Document
+    import pdfplumber
 
     # Define 5-Tool Framework
     TOOLS = ["Speed", "Power", "Fielding", "Hitting for Average", "Arm Strength"]
@@ -1155,21 +1157,39 @@ def render_module_7():
     st.title("🏢 M&A Analyzer with 5-Tool Employee Framework")
     st.write("Upload employee performance data and evaluate using the 5-Tool Framework.")
 
-    uploaded_file = st.file_uploader("Upload CSV file (Employee, Branch, Role, Speed, Power, Fielding, Hitting for Average, Arm Strength)", type=["csv"])
+    uploaded_file = st.file_uploader("Upload file (CSV, PDF, Word)", type=["csv", "pdf", "docx"])
     historical_file = st.file_uploader("Optional: Upload historical CSV for Behavioral Drift Analysis", type=["csv"])
 
     st.sidebar.header("Adjust Tool Weights")
     weights = {tool: st.sidebar.slider(f"Weight for {tool}", 0.5, 2.0, DEFAULT_WEIGHTS[tool], 0.1) for tool in TOOLS}
 
     if uploaded_file:
-        df = pd.read_csv(uploaded_file)
+        # Detect file type and parse
+        if uploaded_file.name.endswith(".csv"):
+            df = pd.read_csv(uploaded_file)
+        elif uploaded_file.name.endswith(".pdf"):
+            with pdfplumber.open(uploaded_file) as pdf:
+                first_page = pdf.pages[0]
+                table = first_page.extract_table()
+                df = pd.DataFrame(table[1:], columns=table[0])
+        elif uploaded_file.name.endswith(".docx"):
+            doc = Document(uploaded_file)
+            data = []
+            for table in doc.tables:
+                for row in table.rows:
+                    data.append([cell.text for cell in row.cells])
+            df = pd.DataFrame(data[1:], columns=data[0])
+        else:
+            st.error("Unsupported file format.")
+            return
+
         st.write("### Uploaded Data Preview")
         st.dataframe(df.head())
 
         required_cols = ["Employee", "Branch", "Role"] + TOOLS
         if all(col in df.columns for col in required_cols):
             for tool in TOOLS:
-                df[f"Weighted_{tool}"] = df[tool] * weights[tool]
+                df[f"Weighted_{tool}"] = df[tool].astype(float) * weights[tool]
             df["Total Score"] = df[[f"Weighted_{tool}" for tool in TOOLS]].sum(axis=1)
 
             df_employees = df.sort_values(by="Total Score", ascending=False)[["Employee", "Branch", "Role", "Total Score"] + TOOLS]
@@ -1197,7 +1217,7 @@ def render_module_7():
                 # Radar chart for top employee
                 st.subheader("Radar Chart: Top Employee")
                 top_emp = df_employees.iloc[0]
-                fig_radar_emp = px.line_polar(r=[top_emp[t] for t in TOOLS], theta=TOOLS, line_close=True, title=f"Radar Profile: {top_emp['Employee']}")
+                fig_radar_emp = px.line_polar(r=[float(top_emp[t]) for t in TOOLS], theta=TOOLS, line_close=True, title=f"Radar Profile: {top_emp['Employee']}")
                 fig_radar_emp.update_traces(fill='toself')
                 st.plotly_chart(fig_radar_emp)
 
@@ -1231,7 +1251,7 @@ def render_module_7():
                             st.write(f"- {drift}")
 
                 # Interview Question Generator
-                low_tools = [tool for tool in TOOLS if df[tool].mean() < 3]
+                low_tools = [tool for tool in TOOLS if df[tool].astype(float).mean() < 3]
                 interview_questions = generate_interview_questions(low_tools)
                 if interview_questions:
                     st.write("### Interview Questions for Low-Scoring Tools")
@@ -1242,13 +1262,12 @@ def render_module_7():
                 excel_file = export_to_excel(df_employees, df_branches)
                 st.download_button("Download Excel Report", excel_file, file_name="MA_5Tool_Report.xlsx")
 
-                pdf_file = export_to_pdf(df_employees, df_branches, kpis, drift_report, interview_questions)
+                pdf_file = export_to_pdf(df_employees, df_branches, generate_kpis(df_employees["Employee"].tolist(), df_branches["Branch"].tolist(), dict(zip(df_employees["Employee"], df_employees["Role"]))), drift_report, interview_questions)
                 st.download_button("Download PDF Report", pdf_file, file_name="MA_5Tool_Report.pdf")
         else:
-            st.error(f"CSV must contain columns: {', '.join(required_cols)}")
+            st.error(f"File must contain columns: {', '.join(required_cols)}")
     else:
-        st.info("Please upload a CSV file to proceed.")
-        
+        st.info("Please upload a file to proceed.")
 def render_module_8():
     st.title("🚧 Page 8: Under Construction")
     st.markdown("This page is not yet implemented.")
