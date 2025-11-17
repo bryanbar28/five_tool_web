@@ -11,3 +11,5 @@ xlsxwriter
 reportlab
 seaborn
 matplotlib
+python-docx
+Pillow
