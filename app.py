@@ -1149,29 +1149,34 @@ def render_module_7():
 def render_module_8():
     import streamlit as st
     import plotly.express as px
-    import requests
+    from openai import OpenAI
+    import os
 
-    # --- Helper: AI response using web search ---
+    # Initialize OpenAI client
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+    # --- Helper: AI response using OpenAI ---
     def get_ai_response(question):
-        # Bing Web Search API (replace with your key)
-        search_url = "https://api.bing.microsoft.com/v7.0/search"
-        headers = {"Ocp-Apim-Subscription-Key": "YOUR_BING_API_KEY"}  # Replace with your Bing API key
-        params = {"q": question, "textDecorations": True, "textFormat": "HTML"}
         try:
-            response = requests.get(search_url, headers=headers, params=params)
-            data = response.json()
-            snippets = []
-            for item in data.get("webPages", {}).get("value", []):
-                snippets.append(item.get("snippet", ""))
-            combined_text = " ".join(snippets[:3]) if snippets else "No web data found."
-        except:
-            combined_text = "No web data available."
-
-        # Structure response
-        explanation = f"**Explanation:** {combined_text.split('.')[0]}."
-        details = f"**Detail:** {' '.join(combined_text.split('.')[1:3])}"
-        tips = "**Practical Tips:** Apply these insights in leadership evaluations, toxicity checks, and 360-degree feedback sessions."
-        return f"{explanation}\n\n{details}\n\n{tips}"
+            system_prompt = """
+            You are an expert in organizational psychology and leadership.
+            Provide a structured response for any workplace-related concept in this format:
+            **Explanation:** A clear summary of the concept.
+            **Detail:** Key insights, research-based context, and why it matters.
+            **Practical Tips:** Actionable steps for applying this concept in real-world leadership or HR scenarios.
+            """
+            response = client.chat.completions.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": question}
+                ],
+                temperature=0.7,
+                max_tokens=700
+            )
+            return response.choices[0].message.content
+        except Exception as e:
+            return f"❌ Error generating AI response: {e}"
 
     # --- UI Layout ---
     st.title("☢️ Toxicity in the Workplace")
@@ -1253,7 +1258,7 @@ def render_module_8():
 
         # AI Insights
         st.subheader("AI Insights")
-        st.markdown(get_ai_response("toxicity"))
+        st.markdown(get_ai_response("toxicity in workplace"))
         
 def render_module_9():
     st.title("📊 SWOT 2.0 Strategic Framework")
