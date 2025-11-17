@@ -1182,7 +1182,7 @@ if uploaded_file:
         # You need custom parsing logic here
     else:
         st.error("Unsupported file type.")
-            return
+        return
 
         st.write("### Uploaded Data Preview")
         st.dataframe(df.head())
