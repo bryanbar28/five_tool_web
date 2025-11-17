@@ -1053,6 +1053,7 @@ def render_module_7():
     from reportlab.pdfgen import canvas
     from docx import Document
     import pdfplumber
+    from collections import Counter
 
     # Constants
     TOOLS = ["Speed", "Power", "Fielding", "Hitting for Average", "Arm Strength"]
@@ -1092,6 +1093,12 @@ def render_module_7():
                 insights.append(meaning)
         return insights if insights else ["No significant themes detected"]
 
+    def keyword_frequency(text):
+        freq = Counter()
+        for keyword in KEYWORDS.keys():
+            freq[keyword] = text.count(keyword)
+        return freq
+
     def generate_kpis(top_employees, top_branches, roles):
         kpis = []
         if top_employees:
@@ -1110,7 +1117,7 @@ def render_module_7():
         output.seek(0)
         return output
 
-    def export_to_pdf(df_employees, df_branches, kpis, text_insights, user_notes):
+    def export_to_pdf(df_employees, df_branches, kpis, text_insights, user_notes, keyword_freq):
         output = BytesIO()
         c = canvas.Canvas(output, pagesize=letter)
         width, height = letter
@@ -1144,10 +1151,16 @@ def render_module_7():
             c.drawString(30, y, f"- {insight}")
             y -= 15
         y -= 20
+        c.drawString(30, y, "Keyword Frequency:")
+        y -= 20
+        for k, v in keyword_freq.items():
+            c.drawString(30, y, f"{k.capitalize()}: {v}")
+            y -= 15
+        y -= 20
         c.drawString(30, y, "User Notes:")
         y -= 20
         for line in user_notes.split("\n"):
-            c.drawString(30, y, f"- {line[:90]}")  # Wrap long lines
+            c.drawString(30, y, f"- {line[:90]}")
             y -= 15
         c.save()
         output.seek(0)
@@ -1165,7 +1178,6 @@ def render_module_7():
 
     user_notes = st.text_area("Add your notes or observations here:")
 
-    # ✅ Always show button
     generate = st.button("Generate Analysis")
 
     if generate:
@@ -1174,7 +1186,7 @@ def render_module_7():
             df_branches = pd.DataFrame()
             kpis = []
 
-            # ✅ Numeric analysis if CSV is present
+            # ✅ Numeric analysis if CSV exists
             if uploaded_csv:
                 df = pd.read_csv(uploaded_csv)
                 st.write("### Uploaded Data Preview")
@@ -1238,6 +1250,13 @@ def render_module_7():
             # ✅ Text Analysis for multiple docs
             text_content = extract_text_from_files(uploaded_docs)
             text_insights = analyze_text(text_content)
+            keyword_freq = keyword_frequency(text_content)
+
+            # Trend chart for keyword frequency
+            st.subheader("Keyword Frequency Across Documents")
+            freq_df = pd.DataFrame(keyword_freq.items(), columns=["Keyword", "Count"])
+            fig_freq = px.bar(freq_df, x="Keyword", y="Count", title="Keyword Frequency Trend")
+            st.plotly_chart(fig_freq)
 
             st.subheader("Summary of Findings")
             st.write(f"**Analyzed {len(uploaded_docs)} documents. Detected {len(text_insights)} themes.**")
@@ -1256,7 +1275,7 @@ def render_module_7():
                 excel_file = export_to_excel(df_employees, df_branches)
                 st.download_button("Download Excel Report", excel_file, file_name="MA_5Tool_Report.xlsx")
 
-            pdf_file = export_to_pdf(df_employees, df_branches, kpis, text_insights, user_notes)
+            pdf_file = export_to_pdf(df_employees, df_branches, kpis, text_insights, user_notes, keyword_freq)
             st.download_button("Download PDF Report", pdf_file, file_name="MA_5Tool_Report.pdf")
         else:
             st.error("Please upload at least one file (CSV, Word, or PDF) to generate analysis.")
