@@ -1420,18 +1420,198 @@ def render_module_9():
 #     render_module_9()
 
 def render_module_10():
-    st.title("🏢 M&amp;A Intelligence (Premium)")
-    st.warning("Subscription required")
-    st.file_uploader("Upload Resumes", accept_multiple_files=True)
-    st.file_uploader("Upload Job Descriptions", accept_multiple_files=True)
-    st.file_uploader("Upload Performance Reviews", accept_multiple_files=True)
-    st.file_uploader("Upload Training &amp; Education Records", accept_multiple_files=True)
-    st.text_area("Branch Data: Name, Location, Benefits")
-    st.button("Generate Analysis")
+    import streamlit as st
+    import pandas as pd
+    import plotly.express as px
+    from io import BytesIO
+    import xlsxwriter
+    from reportlab.lib.pagesizes import letter
+    from reportlab.pdfgen import canvas
+
+    # Define 5-Tool Framework
+    TOOLS = ["Speed", "Power", "Fielding", "Hitting for Average", "Arm Strength"]
+    DEFAULT_WEIGHTS = {tool: 1.0 for tool in TOOLS}
+    ROLE_KPIS = {
+        "Sales": ["Increase revenue by 15%", "Boost new account acquisition by 10%"],
+        "Engineering": ["Improve process efficiency by 12%", "Reduce defect rate by 8%"],
+        "Operations": ["Enhance throughput by 10%", "Cut downtime by 5%"]
+    }
+    LEADERSHIP_THRESHOLD = 21
+    RISK_THRESHOLD = 18
+
+    # Helper: Generate KPIs
+    def generate_kpis(top_employees, top_branches, roles):
+        kpis = []
+        if top_employees:
+            emp_role = roles.get(top_employees[0], "General")
+            role_kpis = ROLE_KPIS.get(emp_role, ["Drive team performance", "Maintain cultural alignment"])
+            kpis.append(f"Top Performer: {top_employees[0]} - KPIs: {', '.join(role_kpis)}")
+        if top_branches:
+            kpis.append(f"Focus on top branch: {top_branches[0]} for strategic growth")
+        return kpis
+
+    # Behavioral Drift Analysis
+    def analyze_behavioral_drift(current_df, historical_df=None):
+        drift_report = []
+        if historical_df is not None:
+            for idx, row in current_df.iterrows():
+                emp = row['Employee']
+                if emp in historical_df['Employee'].values:
+                    hist_row = historical_df[historical_df['Employee'] == emp].iloc[0]
+                    for tool in TOOLS:
+                        drift = row[tool] - hist_row[tool]
+                        if abs(drift) >= 2:
+                            drift_report.append(f"{emp}: Significant drift in {tool} ({drift:+})")
+        return drift_report
+
+    # Interview Question Generator
+    def generate_interview_questions(low_tools):
+        questions = {
+            "Speed": "Tell me about a time you had to adapt quickly under pressure. How did you handle it?",
+            "Power": "Describe a situation where you had to take ownership and make a tough decision. What was the outcome?",
+            "Fielding": "How do you anticipate risks in your work? Give an example of preventing an issue before it escalated.",
+            "Hitting for Average": "Explain how you maintain consistency and reliability in your role. Can you share a recent example?",
+            "Arm Strength": "How do you communicate complex ideas to your team or clients? Share an example of influencing others effectively."
+        }
+        return [questions[tool] for tool in low_tools if tool in questions]
+
+    # Export to Excel
+    def export_to_excel(df_employees, df_branches):
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+            df_employees.to_excel(writer, sheet_name='Employee Rankings', index=False)
+            df_branches.to_excel(writer, sheet_name='Branch Rankings', index=False)
+        output.seek(0)
+        return output
+
+    # Export to PDF
+    def export_to_pdf(df_employees, df_branches, kpis, drift_report, interview_questions):
+        output = BytesIO()
+        c = canvas.Canvas(output, pagesize=letter)
+        width, height = letter
+        c.setFont("Helvetica", 12)
+
+        c.drawString(30, height - 30, "M&A Performance Report with 5-Tool Framework")
+        y = height - 60
+        c.drawString(30, y, "Top Employees:")
+        y -= 20
+        for _, row in df_employees.iterrows():
+            c.drawString(30, y, f"{row['Employee']} - Total Score: {row['Total Score']:.2f}")
+            y -= 15
+
+        y -= 20
+        c.drawString(30, y, "Top Branches:")
+        y -= 20
+        for _, row in df_branches.iterrows():
+            c.drawString(30, y, f"{row['Branch']} - Avg Score: {row['Avg Score']:.2f}")
+            y -= 15
+
+        y -= 20
+        c.drawString(30, y, "KPIs:")
+        y -= 20
+        for kpi in kpis:
+            c.drawString(30, y, f"- {kpi}")
+            y -= 15
+
+        if drift_report:
+            y -= 20
+            c.drawString(30, y, "Behavioral Drift Alerts:")
+            y -= 20
+            for drift in drift_report:
+                c.drawString(30, y, f"- {drift}")
+                y -= 15
+
+        if interview_questions:
+            y -= 20
+            c.drawString(30, y, "Interview Questions for Low-Scoring Tools:")
+            y -= 20
+            for q in interview_questions:
+                c.drawString(30, y, f"- {q}")
+                y -= 15
+
+        c.save()
+        output.seek(0)
+        return output
+
+    # UI
+    st.title("🏢 M&A Analyzer with 5-Tool Employee Framework")
+    st.write("Upload employee performance data and evaluate using the 5-Tool Framework.")
+
+    uploaded_file = st.file_uploader("Upload CSV file (Employee, Branch, Role, Speed, Power, Fielding, Hitting for Average, Arm Strength)", type=["csv"])
+    historical_file = st.file_uploader("Optional: Upload historical CSV for Behavioral Drift Analysis", type=["csv"])
+
+    st.sidebar.header("Adjust Tool Weights")
+    weights = {tool: st.sidebar.slider(f"Weight for {tool}", 0.5, 2.0, DEFAULT_WEIGHTS[tool], 0.1) for tool in TOOLS}
+
+    if uploaded_file:
+        df = pd.read_csv(uploaded_file)
+        st.write("### Uploaded Data Preview")
+        st.dataframe(df.head())
+
+        required_cols = ["Employee", "Branch", "Role"] + TOOLS
+        if all(col in df.columns for col in required_cols):
+            for tool in TOOLS:
+                df[f"Weighted_{tool}"] = df[tool] * weights[tool]
+            df["Total Score"] = df[[f"Weighted_{tool}" for tool in TOOLS]].sum(axis=1)
+
+            df_employees = df.sort_values(by="Total Score", ascending=False)[["Employee", "Branch", "Role", "Total Score"] + TOOLS]
+            df_employees["Leadership Ready"] = df_employees["Total Score"] >= LEADERSHIP_THRESHOLD
+            df_employees["90-Day Risk"] = df_employees["Total Score"] < RISK_THRESHOLD
+
+            df_branches = df.groupby("Branch").agg({tool: 'mean' for tool in TOOLS}).reset_index()
+            df_branches["Avg Score"] = df_branches[TOOLS].mean(axis=1)
+            df_branches = df_branches.sort_values(by="Avg Score", ascending=False)
+
+            st.write("### Employee Rankings")
+            st.dataframe(df_employees)
+
+            st.write("### Branch Rankings")
+            st.dataframe(df_branches)
+
+            fig_emp = px.bar(df_employees, x="Employee", y="Total Score", color="Branch", title="Employee Rankings by Total Score", text="Total Score")
+            st.plotly_chart(fig_emp)
+
+            fig_branch = px.bar(df_branches, x="Branch", y="Avg Score", title="Branch Rankings by Avg Score", text="Avg Score")
+            st.plotly_chart(fig_branch)
+
+            roles = dict(zip(df_employees["Employee"], df_employees["Role"]))
+            top_employees = df_employees["Employee"].tolist()
+            top_branches = df_branches["Branch"].tolist()
+            kpis = generate_kpis(top_employees, top_branches, roles)
+            st.write("### Suggested KPIs")
+            for kpi in kpis:
+                st.write(f"- {kpi}")
+
+            drift_report = []
+            if historical_file:
+                historical_df = pd.read_csv(historical_file)
+                drift_report = analyze_behavioral_drift(df, historical_df)
+                if drift_report:
+                    st.write("### Behavioral Drift Alerts")
+                    for drift in drift_report:
+                        st.write(f"- {drift}")
+
+            low_tools = [tool for tool in TOOLS if df[tool].mean() < 3]
+            interview_questions = generate_interview_questions(low_tools)
+            if interview_questions:
+                st.write("### Interview Questions for Low-Scoring Tools")
+                for q in interview_questions:
+                    st.write(f"- {q}")
+
+            excel_file = export_to_excel(df_employees, df_branches)
+            st.download_button("Download Excel Report", excel_file, file_name="MA_5Tool_Report.xlsx")
+
+            pdf_file = export_to_pdf(df_employees, df_branches, kpis, drift_report, interview_questions)
+            st.download_button("Download PDF Report", pdf_file, file_name="MA_5Tool_Report.pdf")
+        else:
+            st.error(f"CSV must contain columns: {', '.join(required_cols)}")
+    else:
+        st.info("Please upload a CSV file to proceed.")
 
 def render_module_11():
     st.title("🚧 Page 12: Under Construction")
     st.markdown("This page is not yet implemented.")
+    
 # -------------------------------
 # Navigation
 # -------------------------------
