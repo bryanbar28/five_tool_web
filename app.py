@@ -1107,7 +1107,7 @@ def render_module_7():
         output.seek(0)
         return output
 
-    def export_to_pdf(df_employees, df_branches, kpis, interview_questions, text_insights):
+    def export_to_pdf(df_employees, df_branches, kpis, text_insights, user_notes):
         output = BytesIO()
         c = canvas.Canvas(output, pagesize=letter)
         width, height = letter
@@ -1137,6 +1137,12 @@ def render_module_7():
         for insight in text_insights:
             c.drawString(30, y, f"- {insight}")
             y -= 15
+        y -= 20
+        c.drawString(30, y, "User Notes:")
+        y -= 20
+        for line in user_notes.split("\n"):
+            c.drawString(30, y, f"- {line}")
+            y -= 15
         c.save()
         output.seek(0)
         return output
@@ -1150,6 +1156,8 @@ def render_module_7():
 
     st.sidebar.header("Adjust Tool Weights")
     weights = {tool: st.sidebar.slider(f"Weight for {tool}", 0.5, 2.0, DEFAULT_WEIGHTS[tool], 0.1) for tool in TOOLS}
+
+    user_notes = st.text_area("Add your notes or observations here:")
 
     if uploaded_csv:
         df = pd.read_csv(uploaded_csv)
@@ -1214,6 +1222,9 @@ def render_module_7():
                 for insight in text_insights:
                     st.write(f"- {insight}")
 
+                st.write("**User Notes:**")
+                st.write(user_notes if user_notes else "No notes added.")
+
                 st.write("**Overall Recommendations:**")
                 st.write("Focus on improving tools with highest variance and addressing themes detected in documents.")
 
@@ -1221,7 +1232,7 @@ def render_module_7():
                 excel_file = export_to_excel(df_employees, df_branches)
                 st.download_button("Download Excel Report", excel_file, file_name="MA_5Tool_Report.xlsx")
 
-                pdf_file = export_to_pdf(df_employees, df_branches, generate_kpis(df_employees["Employee"].tolist(), df_branches["Branch"].tolist(), dict(zip(df_employees["Employee"], df_employees["Role"]))), [], text_insights)
+                pdf_file = export_to_pdf(df_employees, df_branches, generate_kpis(df_employees["Employee"].tolist(), df_branches["Branch"].tolist(), dict(zip(df_employees["Employee"], df_employees["Role"]))), text_insights, user_notes)
                 st.download_button("Download PDF Report", pdf_file, file_name="MA_5Tool_Report.pdf")
         else:
             st.error(f"CSV must contain columns: {', '.join(required_cols)}")
