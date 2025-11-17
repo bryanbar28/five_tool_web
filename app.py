@@ -1054,6 +1054,7 @@ def render_module_7():
     from docx import Document
     import pdfplumber
 
+    # Constants
     TOOLS = ["Speed", "Power", "Fielding", "Hitting for Average", "Arm Strength"]
     DEFAULT_WEIGHTS = {tool: 1.0 for tool in TOOLS}
     ROLE_KPIS = {
@@ -1072,6 +1073,7 @@ def render_module_7():
         "communication": "Collaboration Strength"
     }
 
+    # Helper functions
     def extract_text_from_files(word_file, pdf_file):
         text_content = ""
         if word_file:
@@ -1147,6 +1149,7 @@ def render_module_7():
         output.seek(0)
         return output
 
+    # UI
     st.title("🏢 M&A Analyzer with 5-Tool Employee Framework")
     st.write("Upload employee performance data and evaluate using the 5-Tool Framework.")
 
@@ -1159,26 +1162,32 @@ def render_module_7():
 
     user_notes = st.text_area("Add your notes or observations here:")
 
- if uploaded_csv:
-        df = pd.read_csv(uploaded_csv)
-        st.write("### Uploaded Data Preview")
-        st.dataframe(df.head())
+    # ✅ Always show button
+    generate = st.button("Generate Analysis")
 
-        required_cols = ["Employee", "Branch", "Role"] + TOOLS
-        if all(col in df.columns for col in required_cols):
-            for tool in TOOLS:
-                df[f"Weighted_{tool}"] = df[tool].astype(float) * weights[tool]
-            df["Total Score"] = df[[f"Weighted_{tool}" for tool in TOOLS]].sum(axis=1)
+    if generate:
+        if uploaded_csv:
+            df = pd.read_csv(uploaded_csv)
+            st.write("### Uploaded Data Preview")
+            st.dataframe(df.head())
 
-            df_employees = df.sort_values(by="Total Score", ascending=False)[["Employee", "Branch", "Role", "Total Score"] + TOOLS]
-            df_employees["Leadership Ready"] = df_employees["Total Score"] >= LEADERSHIP_THRESHOLD
-            df_employees["90-Day Risk"] = df_employees["Total Score"] < RISK_THRESHOLD
+            required_cols = ["Employee", "Branch", "Role"] + TOOLS
+            if all(col in df.columns for col in required_cols):
+                # Weighted scores
+                for tool in TOOLS:
+                    df[f"Weighted_{tool}"] = df[tool].astype(float) * weights[tool]
+                df["Total Score"] = df[[f"Weighted_{tool}" for tool in TOOLS]].sum(axis=1)
 
-            df_branches = df.groupby("Branch").agg({tool: 'mean' for tool in TOOLS}).reset_index()
-            df_branches["Avg Score"] = df_branches[TOOLS].mean(axis=1)
-            df_branches = df_branches.sort_values(by="Avg Score", ascending=False)
+                # Rankings
+                df_employees = df.sort_values(by="Total Score", ascending=False)[["Employee", "Branch", "Role", "Total Score"] + TOOLS]
+                df_employees["Leadership Ready"] = df_employees["Total Score"] >= LEADERSHIP_THRESHOLD
+                df_employees["90-Day Risk"] = df_employees["Total Score"] < RISK_THRESHOLD
 
-            if st.button("Generate Analysis"):
+                df_branches = df.groupby("Branch").agg({tool: 'mean' for tool in TOOLS}).reset_index()
+                df_branches["Avg Score"] = df_branches[TOOLS].mean(axis=1)
+                df_branches = df_branches.sort_values(by="Avg Score", ascending=False)
+
+                # Charts
                 st.write("### Employee Rankings")
                 st.dataframe(df_employees)
 
@@ -1213,7 +1222,7 @@ def render_module_7():
                 st.write("Tools with highest variance (inconsistency across branches):")
                 st.write(variance.sort_values(ascending=False))
 
-                # ✅ Text Analysis Section
+                # ✅ Text Analysis
                 text_content = extract_text_from_files(uploaded_word, uploaded_pdf)
                 text_insights = analyze_text(text_content)
 
@@ -1234,11 +1243,10 @@ def render_module_7():
 
                 pdf_file = export_to_pdf(df_employees, df_branches, generate_kpis(df_employees["Employee"].tolist(), df_branches["Branch"].tolist(), dict(zip(df_employees["Employee"], df_employees["Role"]))), text_insights, user_notes)
                 st.download_button("Download PDF Report", pdf_file, file_name="MA_5Tool_Report.pdf")
+            else:
+                st.error(f"CSV must contain columns: {', '.join(required_cols)}")
         else:
-            st.error(f"CSV must contain columns: {', '.join(required_cols)}")
-    else:
-        st.info("Please upload a CSV file to proceed.")
-        
+            st.error("Please upload a CSV file to generate analysis.")   
 
 def render_module_8():
     st.title("🚧 Page 8: Under Construction")
