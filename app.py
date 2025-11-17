@@ -947,7 +947,7 @@ def render_module_6():
     user_comments = st.text_area("Add your comments or observations", placeholder="e.g., This candidate freezes under pressure but excels in planning.")
 
     # ✅ Generate AI insights
-    if st.button("Generate Grid with Insights"):
+    if st.button("Generate Insights"):
         if user_comments.strip():
             st.subheader("🔍 AI Insights Based on Your Comments")
             response = client.chat.completions.create(
