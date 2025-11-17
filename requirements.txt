@@ -13,3 +13,4 @@ seaborn
 matplotlib
 python-docx
 Pillow
+pdfplumber
