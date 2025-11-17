@@ -1140,10 +1140,11 @@ def render_module_7():
         elif uploaded_file.name.endswith(".docx"):
             doc = Document(uploaded_file)
             data = [p.text.split(",") for p in doc.paragraphs if p.text.strip()]
-            if len(data) > 1:
+            # ✅ Validation for consistent columns
+            if len(data) > 1 and all(len(row) == len(data[0]) for row in data[1:]):
                 df = pd.DataFrame(data[1:], columns=data[0])
             else:
-                st.error("Word file does not contain tabular data.")
+                st.error("Word file must contain comma-separated values with consistent columns.")
                 return
         elif uploaded_file.name.endswith(".pdf"):
             with pdfplumber.open(uploaded_file) as pdf:
