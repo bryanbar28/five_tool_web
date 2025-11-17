@@ -1269,6 +1269,7 @@ if uploaded_file:
             st.error(f"File must contain columns: {', '.join(required_cols)}")
     else:
         st.info("Please upload a file to proceed.")
+        
 def render_module_8():
     st.title("🚧 Page 8: Under Construction")
     st.markdown("This page is not yet implemented.")
