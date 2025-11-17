@@ -1054,7 +1054,6 @@ def render_module_7():
     from docx import Document
     import pdfplumber
 
-    # Define 5-Tool Framework
     TOOLS = ["Speed", "Power", "Fielding", "Hitting for Average", "Arm Strength"]
     DEFAULT_WEIGHTS = {tool: 1.0 for tool in TOOLS}
     ROLE_KPIS = {
@@ -1065,7 +1064,6 @@ def render_module_7():
     LEADERSHIP_THRESHOLD = 21
     RISK_THRESHOLD = 18
 
-    # KPI generation
     def generate_kpis(top_employees, top_branches, roles):
         kpis = []
         if top_employees:
@@ -1076,21 +1074,6 @@ def render_module_7():
             kpis.append(f"Focus on top branch: {top_branches[0]} for strategic growth")
         return kpis
 
-    # Drift analysis
-    def analyze_behavioral_drift(current_df, historical_df=None):
-        drift_report = []
-        if historical_df is not None:
-            for idx, row in current_df.iterrows():
-                emp = row['Employee']
-                if emp in historical_df['Employee'].values:
-                    hist_row = historical_df[historical_df['Employee'] == emp].iloc[0]
-                    for tool in TOOLS:
-                        drift = row[tool] - hist_row[tool]
-                        if abs(drift) >= 2:
-                            drift_report.append(f"{emp}: Significant drift in {tool} ({drift:+})")
-        return drift_report
-
-    # Interview questions
     def generate_interview_questions(low_tools):
         questions = {
             "Speed": "Tell me about a time you had to adapt quickly under pressure. How did you handle it?",
@@ -1101,7 +1084,6 @@ def render_module_7():
         }
         return [questions[tool] for tool in low_tools if tool in questions]
 
-    # Export to Excel
     def export_to_excel(df_employees, df_branches):
         output = BytesIO()
         with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
@@ -1110,8 +1092,7 @@ def render_module_7():
         output.seek(0)
         return output
 
-    # Export to PDF
-    def export_to_pdf(df_employees, df_branches, kpis, drift_report, interview_questions):
+    def export_to_pdf(df_employees, df_branches, kpis, interview_questions):
         output = BytesIO()
         c = canvas.Canvas(output, pagesize=letter)
         width, height = letter
@@ -1135,13 +1116,6 @@ def render_module_7():
         for kpi in kpis:
             c.drawString(30, y, f"- {kpi}")
             y -= 15
-        if drift_report:
-            y -= 20
-            c.drawString(30, y, "Behavioral Drift Alerts:")
-            y -= 20
-            for drift in drift_report:
-                c.drawString(30, y, f"- {drift}")
-                y -= 15
         if interview_questions:
             y -= 20
             c.drawString(30, y, "Interview Questions for Low-Scoring Tools:")
@@ -1153,36 +1127,32 @@ def render_module_7():
         output.seek(0)
         return output
 
-    # UI
     st.title("🏢 M&A Analyzer with 5-Tool Employee Framework")
     st.write("Upload employee performance data and evaluate using the 5-Tool Framework.")
 
     uploaded_file = st.file_uploader("Upload file (CSV, PDF, Word)", type=["csv", "pdf", "docx"])
-    historical_file = st.file_uploader("Optional: Upload historical CSV for Behavioral Drift Analysis", type=["csv"])
-
     st.sidebar.header("Adjust Tool Weights")
     weights = {tool: st.sidebar.slider(f"Weight for {tool}", 0.5, 2.0, DEFAULT_WEIGHTS[tool], 0.1) for tool in TOOLS}
 
-if uploaded_file:
-    if uploaded_file.name.endswith(".csv"):
-        df = pd.read_csv(uploaded_file)
-    elif uploaded_file.name.endswith(".docx"):
-        from docx import Document
-        doc = Document(uploaded_file)
-        data = [p.text.split(",") for p in doc.paragraphs if p.text.strip()]
-        if len(data) > 1:
-            df = pd.DataFrame(data[1:], columns=data[0])
+    if uploaded_file:
+        if uploaded_file.name.endswith(".csv"):
+            df = pd.read_csv(uploaded_file)
+        elif uploaded_file.name.endswith(".docx"):
+            doc = Document(uploaded_file)
+            data = [p.text.split(",") for p in doc.paragraphs if p.text.strip()]
+            if len(data) > 1:
+                df = pd.DataFrame(data[1:], columns=data[0])
+            else:
+                st.error("Word file does not contain tabular data.")
+                return
+        elif uploaded_file.name.endswith(".pdf"):
+            with pdfplumber.open(uploaded_file) as pdf:
+                text = "\n".join(page.extract_text() for page in pdf.pages if page.extract_text())
+            st.write("PDF content:", text)
+            return
         else:
-            st.error("Word file does not contain tabular data.")
-    elif uploaded_file.name.endswith(".pdf"):
-        import pdfplumber
-        with pdfplumber.open(uploaded_file) as pdf:
-            text = "\n".join(page.extract_text() for page in pdf.pages if page.extract_text())
-        st.write("PDF content:", text)
-        # You need custom parsing logic here
-    else:
-        st.error("Unsupported file type.")
-        return
+            st.error("Unsupported file type.")
+            return
 
         st.write("### Uploaded Data Preview")
         st.dataframe(df.head())
@@ -1208,50 +1178,34 @@ if uploaded_file:
                 st.write("### Branch Rankings")
                 st.dataframe(df_branches)
 
-                # Bar charts
                 fig_emp = px.bar(df_employees, x="Employee", y="Total Score", color="Branch", title="Employee Rankings by Total Score", text="Total Score")
                 st.plotly_chart(fig_emp)
 
                 fig_branch = px.bar(df_branches, x="Branch", y="Avg Score", title="Branch Rankings by Avg Score", text="Avg Score")
                 st.plotly_chart(fig_branch)
 
-                # Radar chart for top employee
                 st.subheader("Radar Chart: Top Employee")
                 top_emp = df_employees.iloc[0]
                 fig_radar_emp = px.line_polar(r=[float(top_emp[t]) for t in TOOLS], theta=TOOLS, line_close=True, title=f"Radar Profile: {top_emp['Employee']}")
                 fig_radar_emp.update_traces(fill='toself')
                 st.plotly_chart(fig_radar_emp)
 
-                # Radar chart for branch averages
                 st.subheader("Radar Chart: Branch Averages")
                 fig_radar_branch = px.line_polar(r=df_branches[TOOLS].mean().tolist(), theta=TOOLS, line_close=True, title="Radar Profile: Branch Averages")
                 fig_radar_branch.update_traces(fill='toself')
                 st.plotly_chart(fig_radar_branch)
 
-                # Heatmap for consistency analysis
                 st.subheader("Heatmap: Tool Scores by Branch")
                 heatmap_data = df.groupby("Branch")[TOOLS].mean()
                 fig, ax = plt.subplots(figsize=(8, 6))
                 sns.heatmap(heatmap_data, annot=True, cmap="coolwarm", ax=ax)
                 st.pyplot(fig)
 
-                # Variance analysis
                 st.subheader("Variance Analysis Across Branches")
                 variance = heatmap_data.var()
                 st.write("Tools with highest variance (inconsistency across branches):")
                 st.write(variance.sort_values(ascending=False))
 
-                # Behavioral Drift Analysis
-                drift_report = []
-                if historical_file:
-                    historical_df = pd.read_csv(historical_file)
-                    drift_report = analyze_behavioral_drift(df, historical_df)
-                    if drift_report:
-                        st.write("### Behavioral Drift Alerts")
-                        for drift in drift_report:
-                            st.write(f"- {drift}")
-
-                # Interview Question Generator
                 low_tools = [tool for tool in TOOLS if df[tool].astype(float).mean() < 3]
                 interview_questions = generate_interview_questions(low_tools)
                 if interview_questions:
@@ -1259,11 +1213,10 @@ if uploaded_file:
                     for q in interview_questions:
                         st.write(f"- {q}")
 
-                # Export options
                 excel_file = export_to_excel(df_employees, df_branches)
                 st.download_button("Download Excel Report", excel_file, file_name="MA_5Tool_Report.xlsx")
 
-                pdf_file = export_to_pdf(df_employees, df_branches, generate_kpis(df_employees["Employee"].tolist(), df_branches["Branch"].tolist(), dict(zip(df_employees["Employee"], df_employees["Role"]))), drift_report, interview_questions)
+                pdf_file = export_to_pdf(df_employees, df_branches, generate_kpis(df_employees["Employee"].tolist(), df_branches["Branch"].tolist(), dict(zip(df_employees["Employee"], df_employees["Role"]))), interview_questions)
                 st.download_button("Download PDF Report", pdf_file, file_name="MA_5Tool_Report.pdf")
         else:
             st.error(f"File must contain columns: {', '.join(required_cols)}")
