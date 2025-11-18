@@ -1,5 +1,4 @@
 streamlit
-openai
 python-dotenv
 psycopg2-binary
 supabase
@@ -16,3 +15,4 @@ Pillow
 pdfplumber
 fpdf
 pyPDF2
+openai==0.28
