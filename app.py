@@ -64,9 +64,11 @@ def analyze_notes_with_framework(notes):
     Generate a concise, contextual commentary that blends these insights with the user's notes.
     Do NOT dump the entire framework—only summarize relevant parts and integrate with user context.
     """
-    try:
-from openai import OpenAI
-client = OpenAI(api_key="YOUR_OPENAI_API_KEY")
+try:
+    from openai import OpenAI
+    client = OpenAI(api_key="YOUR_OPENAI_API_KEY")
+except Exception as e:
+    print(f"Error initializing OpenAI client: {e}")
 
 response = client.chat.completions.create(
     model="gpt-3.5-turbo",
