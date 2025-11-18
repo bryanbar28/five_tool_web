@@ -79,12 +79,12 @@ response = client.chat.completions.create(
     max_tokens=500,
     temperature=0.7
 )
-
-gpt_commentary = response.choices[0].message.content
-    except Exception as e:
+try:
+    gpt_commentary = response.choices[0].message.content
+except Exception as e:
     gpt_commentary = f"[GPT-3 Placeholder] Could not fetch response: {e}"
 
-    return insights_summary, gpt_commentary
+return insights_summary, gpt_commentary
 
 # --- VISUAL INTRODUCTION ---
 st.title("⚾ The 5-Tool Employee Framework")
