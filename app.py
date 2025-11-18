@@ -9,6 +9,8 @@ from openai import OpenAI
 from googleapiclient.discovery import build
 import random
 from fpdf import FPDF  # For PDF export
+import pandas as pd
+import random
 
 # -------------------------------
 # Page Config
@@ -745,6 +747,7 @@ def render_module_5():
         save_to_repository("Module 5: Toxicity Analysis", f"Notes: {notes}, Scores: {speed},{power},{fielding},{hitting},{arm_strength}")
     if st.button("Download as PDF"):
         export_to_pdf("Module 5 Report", f"Notes: {notes}\nScores: {speed},{power},{fielding},{hitting},{arm_strength}")
+        
 # ✅ Module 6 Wrapper
 def render_module_6():
     st.title("📊 SWOT 2.0 Strategic Framework")
@@ -761,14 +764,18 @@ def render_module_6():
         You are a strategic consultant. Generate a detailed SWOT analysis for this scenario:
         {notes}
 
-        Additional context from user:
+        Additional context:
         {ai_chat}
 
-        Provide:
-        - Strengths (internal advantages)
-        - Weaknesses (internal limitations)
-        - Opportunities (external possibilities)
-        - Threats (external risks)
+        Return the output in this exact format:
+        Strengths:
+        - ...
+        Weaknesses:
+        - ...
+        Opportunities:
+        - ...
+        Threats:
+        - ...
         """
         try:
             if check_prompt_limit():
@@ -784,16 +791,39 @@ def render_module_6():
                 )
                 swot_text = response.choices[0].message.content
 
+                # ✅ Parse structured output
                 strengths, weaknesses, opportunities, threats = [], [], [], []
+                current_section = None
                 for line in swot_text.split("\n"):
+                    line = line.strip()
                     if line.lower().startswith("strength"):
-                        strengths.append(line)
+                        current_section = "strengths"
+                        continue
                     elif line.lower().startswith("weak"):
-                        weaknesses.append(line)
+                        current_section = "weaknesses"
+                        continue
                     elif line.lower().startswith("opport"):
-                        opportunities.append(line)
+                        current_section = "opportunities"
+                        continue
                     elif line.lower().startswith("threat"):
-                        threats.append(line)
+                        current_section = "threats"
+                        continue
+                    elif line.startswith("-"):
+                        if current_section == "strengths":
+                            strengths.append(line[1:].strip())
+                        elif current_section == "weaknesses":
+                            weaknesses.append(line[1:].strip())
+                        elif current_section == "opportunities":
+                            opportunities.append(line[1:].strip())
+                        elif current_section == "threats":
+                            threats.append(line[1:].strip())
+
+                # ✅ Fallback if empty
+                if not strengths: strengths = ["No strengths identified."]
+                if not weaknesses: weaknesses = ["No weaknesses identified."]
+                if not opportunities: opportunities = ["No opportunities identified."]
+                if not threats: threats = ["No threats identified."]
+
                 return strengths, weaknesses, opportunities, threats
             else:
                 return ["Upgrade to Premium for more prompts."], [], [], []
@@ -860,6 +890,12 @@ def render_module_6():
                     "Pivot Strategy": "Reallocate resources and accelerate compliance training"
                 })
             st.dataframe(pd.DataFrame(roadmap))
+
+    # ✅ Premium Features
+    if st.button("Save to Repository"):
+        save_to_repository("Module 6: SWOT Analysis", f"Notes: {notes}\nAI Context: {ai_chat}")
+    if st.button("Download as PDF"):
+        export_to_pdf("Module 6 Report", f"Notes: {notes}\nAI Context: {ai_chat}")
 
     # ✅ Premium Features
     if st.button("Save to Repository"):
