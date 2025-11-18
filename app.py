@@ -4,17 +4,17 @@ import json
 import re
 import plotly.graph_objects as go
 
-# --- FULL TOP OF CODE SETUP ---
-st.set_page_config(page_title="5-Tool Employee Framework", layout="wide")
+# --- PAGE CONFIG ---
+st.set_page_config(page_title="The 5-Tool Employee Framework", layout="wide")
 
-# Session state initialization
+# --- SESSION STATE ---
 if "history" not in st.session_state:
     st.session_state.history = []
 
-# OpenAI API setup (placeholder)
+# --- OPENAI API KEY ---
 openai.api_key = "YOUR_OPENAI_API_KEY"
 
-# --- Deep Research Dictionary (from book & PDF) ---
+# --- DEEP RESEARCH DICTIONARY ---
 deep_research_insights = {
     "speed": {
         "Natural Gift": "Pattern recognition, emotional agility, perceptual timing",
@@ -48,32 +48,28 @@ deep_research_insights = {
     }
 }
 
-# --- START NEW LOGIC ---
+# --- GPT-3 ANALYSIS FUNCTION ---
 def analyze_notes_with_framework(notes):
     detected_tools = []
     for tool in deep_research_insights.keys():
         if re.search(tool, notes, re.IGNORECASE):
             detected_tools.append(tool)
 
-    insights_summary = {}
-    for tool in detected_tools:
-        insights_summary[tool] = deep_research_insights[tool]
+    insights_summary = {tool: deep_research_insights[tool] for tool in detected_tools}
 
     prompt = f"""
-    The user provided these notes: {notes}
-    Relevant tools detected: {', '.join(detected_tools)}
-    Use the Deep-Research 5-Tool Employee Framework insights below:
-    {json.dumps(insights_summary, indent=2)}
+    User notes: {notes}
+    Relevant tools: {', '.join(detected_tools)}
+    Insights: {json.dumps(insights_summary, indent=2)}
     Generate a concise, contextual commentary that blends these insights with the user's notes.
     Do NOT dump the entire framework—only summarize relevant parts and integrate with user context.
-    If the question is outside the framework, answer it but keep the 5-Tool logic in mind.
     """
 
     try:
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are an expert HR and organizational psychologist."},
+                {"role": "system", "content": "You are an expert HR strategist and organizational psychologist."},
                 {"role": "user", "content": prompt}
             ],
             max_tokens=500,
@@ -84,26 +80,43 @@ def analyze_notes_with_framework(notes):
         gpt_commentary = f"[GPT-3 Placeholder] Could not fetch response: {e}"
 
     return insights_summary, gpt_commentary
-# --- END NEW LOGIC ---
 
-# --- MODULE 1 UI ---
+# --- VISUAL INTRODUCTION ---
 st.title("⚾ The 5-Tool Employee Framework")
-st.markdown("### Baseball Analogy & Professional Skills Comparison")
-st.image("https://upload.wikimedia.org/wikipedia/commons/8/8e/Baseball_player.jpg", caption="The 5-Tool Player Analogy")
+st.markdown("#### Introduction into the 5 Tool Employee Framework")
+st.markdown("_An Interchangeable Model_")
+st.markdown("### 5 Tool Baseball Player")
+st.markdown("""
+- **Hitting for Average** – Consistently making contact and getting on base  
+- **Hitting for Power** – Ability to drive the ball for extra bases or home runs  
+- **Speed** – Quickness on the bases and in the field  
+- **Fielding** – Defensive ability, including range and reaction time  
+- **Arm Strength** – Throwing ability, especially for outfielders and infielders  
+""")
 
-# Notes input
+st.markdown("### Baseball Tools vs. Professional Skills")
+st.markdown("""
+- ⚾ **Hitting → Technical Competence**  
+- 🛡 **Fielding → Problem-Solving Ability**  
+- ⚡ **Speed → Adaptability & Continuous Learning**  
+- 💪 **Arm Strength → Communication & Leadership**  
+- 🚀 **Power → Strategic Decision-Making**  
+""")
+
+st.markdown("---")
+
+# --- CREATE YOUR OWN SECTION ---
 st.subheader("📝 Create Your Own 5-Tool Employee")
 notes_input = st.text_area("Enter notes about your ideal employee or ask a question:", height=200)
 
-# Sliders for rating
-st.subheader("Rate the Employee on Each Tool")
+st.subheader("Rate the Employee on Each Tool (1–5)")
 speed_score = st.slider("Speed (Adaptability & Learning)", 1, 5, 3)
 power_score = st.slider("Power (Strategic Decision-Making)", 1, 5, 3)
 fielding_score = st.slider("Fielding (Problem-Solving)", 1, 5, 3)
 hitting_score = st.slider("Hitting for Average (Reliability)", 1, 5, 3)
 arm_strength_score = st.slider("Arm Strength (Communication & Leadership)", 1, 5, 3)
 
-# Generate button
+# --- GENERATE BUTTON ---
 if st.button("Generate 5-Tool Employee"):
     st.markdown("## 🏆 Results")
     st.write(f"Scores: Speed={speed_score}, Power={power_score}, Fielding={fielding_score}, Hitting for Average={hitting_score}, Arm Strength={arm_strength_score}")
@@ -133,10 +146,11 @@ if st.button("Generate 5-Tool Employee"):
     )
     st.plotly_chart(fig)
 
-# Clear history button
+# --- CLEAR HISTORY BUTTON ---
 if st.button("Clear History"):
     st.session_state.history.clear()
     st.success("History cleared!")
+
         
 def render_module_2():
     import streamlit as st
