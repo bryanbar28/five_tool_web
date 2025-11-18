@@ -672,13 +672,13 @@ if choice == "Page 7: Premium Subscription & Repository":
 
     **Premium Tier ($9.99/month):**  
     - Unlimited AI prompts  
-    - PDF export  
-    - Repository saving  
+    - PDF export enabled  
+    - Repository saving enabled  
     """)
 
-    # Subscription Activation
+    # Subscription Management
     st.subheader("Manage Subscription")
-    email = st.text_input("Enter your email to activate Premium:")
+    email = st.text_input("Enter your email:")
     if st.button("Activate Premium"):
         if email.strip():
             st.session_state.is_premium = True
@@ -686,20 +686,15 @@ if choice == "Page 7: Premium Subscription & Repository":
         else:
             st.warning("Please enter a valid email.")
 
-    st.markdown("---")
+    # Repository Display
     st.subheader("📂 Saved Reports Repository")
-
     if st.session_state.repository:
         for idx, item in enumerate(st.session_state.repository):
             st.markdown(f"**{idx+1}. {item['title']}**")
             st.write(item["content"])
-
-            # PDF Download for Premium Users
             if st.session_state.is_premium:
-                if st.button(f"Download PDF for {item['title']}", key=f"pdf_{idx}"):
+                if st.button(f"Download {item['title']} as PDF", key=f"pdf_{idx}"):
                     pdf_file = export_to_pdf(item["content"], f"{item['title'].replace(' ', '_')}.pdf")
                     st.success(f"✅ PDF exported: {pdf_file}")
-            else:
-                st.warning("Upgrade to Premium to download PDFs.")
     else:
         st.info("No reports saved yet. Generate content in other modules and save to repository.")
