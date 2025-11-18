@@ -7,6 +7,10 @@ import streamlit as st
 import plotly.express as px
 from openai import OpenAI
 from googleapiclient.discovery import build
+import random
+from fpdf import FPDF  # For PDF export
+import pandas as pd
+import random
 
 # -------------------------------
 # Page Config
@@ -20,11 +24,17 @@ if "initial_review" not in st.session_state:
     st.session_state.initial_review = ""
 if "show_repository" not in st.session_state:
     st.session_state.show_repository = False
+if "prompt_count" not in st.session_state:
+    st.session_state.prompt_count = 0
+if "is_premium" not in st.session_state:
+    st.session_state.is_premium = False
+if "repository" not in st.session_state:
+    st.session_state.repository = []
 
 # -------------------------------
 # OpenAI Client Setup
 # -------------------------------
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))  # ✅ Use environment variable
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # -------------------------------
 # API Keys
@@ -76,113 +86,42 @@ def map_videos_to_tools(videos):
 # -------------------------------
 # Subscription Logic
 # -------------------------------
-PAID_PAGES = {
-    "Page 7: Repository": "$9.99/mo"
-}
+FREE_PROMPT_LIMIT = 5
+PREMIUM_PRICE = "$9.99/month"
 
-def is_unlocked(page):
-    return False  # Placeholder for future subscription logic
+def check_prompt_limit():
+    if not st.session_state.is_premium and st.session_state.prompt_count >= FREE_PROMPT_LIMIT:
+        st.warning("⚠️ Free tier limit reached (5 prompts/month). Upgrade to Premium for unlimited prompts.")
+        return False
+    return True
 
-def unlock_page(page, price):
-    st.warning(f"This page requires a subscription: {price}")
-    st.button("Unlock Now")
+def increment_prompt_count():
+    st.session_state.prompt_count += 1
 
-# -------------------------------
-# 🔍 OpenAI Setup
-client = OpenAI()
+def save_to_repository(title, content):
+    if st.session_state.is_premium:
+        st.session_state.repository.append({"title": title, "content": content})
+        st.success("✅ Saved to repository!")
+    else:
+        st.warning("Upgrade to Premium to save your work.")
 
-# -------------------------------
-# 🧠 Template Discovery Module
-# -------------------------------
-def render_template_discovery():
-    st.title("🧠 Behavioral Intelligence App — Template Discovery")
-
-    role_query = st.text_input(
-        "Ask me anything about job reviews, templates, or phrases",
-        placeholder="e.g., steel machinist, mechanic, I need help writing a review"
-    )
-
-    if role_query:
-        st.markdown(f"🔍 You asked: **{role_query}**")
-        role = role_query.lower()
-
-        # ✅ Conversational explanation for open-ended questions
-        if "what is a job review" in role or "define job review" in role:
-            st.markdown("### 📘 What Is a Job Review?")
-            st.markdown("""
-            A **job review** is a structured evaluation of an employee's performance, responsibilities, and contributions in a specific role. It often includes:
-            - A summary of duties and expectations  
-            - Feedback on strengths and areas for improvement  
-            - Discussion of goals, compensation, or promotion potential  
-            - A record for HR and future reference  
-
-            Job reviews can be formal (annual performance reviews) or informal (feedback sessions), and they vary by industry and company culture.
-            """)
-            return
-
-        # ✅ Conversational fallback for vague help requests
-        if "help" in role or "phrases" in role or "statements" in role:
-            st.markdown("### 💬 Helpful Job Review Phrases & Comments")
-            st.markdown("- [Status.net: Job Knowledge Phrases](https://status.net/articles/job-knowledge-performance-review-phrases-paragraphs-examples/)")
-            st.markdown("- [BuddiesHR: 75 Review Phrases](https://blog.buddieshr.com/75-effective-performance-review-phrases-examples/)")
-            st.markdown("- [Engage & Manage: 120 Review Comments](https://engageandmanage.com/blog/performance-review-example-phrases-comments/)")
-            return
-
-        # ✅ Role-specific or general template links
-        st.markdown("### 🌐 General Review Templates and Examples")
-        st.markdown("- [Native Teams: 30 Role-Based Review Examples](https://nativeteams.com/blog/performance-review-examples)")
-        st.markdown("- [BetterUp: 53 Performance Review Examples](https://www.betterup.com/blog/performance-review-examples)")
-        st.markdown("- [Indeed: Review Template Library](https://www.indeed.com/career-advice/career-development/performance-review-template)")
-# -------------------------------
-# 🎬 Gritty Job Review Generator
-# -------------------------------
-def generate_job_review(role, notes=None):
-    st.info(f"🔍 Generating realistic job review for: **{role}**")
-
-    prompt = f"""
-    Write a realistic, role-specific job review for the position: {role}.
-    Use a clear, professional tone with practical insights. Include:
-
-    - Job Summary
-    - Key Responsibilities
-    - Required Skills and Tools
-    - Compensation and Schedule
-    - Pros and Cons
-    - Interview Tips
-    - Career Path
-
-    Avoid generic corporate language. Make it useful for someone considering this job.
-    """
-
-    if notes:
-        prompt += f"\n\nIncorporate these user-provided notes into the review:\n{notes}"
-
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are a workplace analyst writing realistic job reviews for professionals."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.7,
-            max_tokens=800
-        )
-
-        review_text = response.choices[0].message.content
-        st.markdown("### 🧾 Realistic Job Review")
-        st.write(review_text)
-
-    except Exception as e:
-        st.error(f"❌ Error generating review: {e}")
-# -------------------------------
+def export_to_pdf(title, content):
+    if not st.session_state.is_premium:
+        st.warning("Upgrade to Premium to download PDFs.")
+        return
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt=title, ln=True, align="C")
+    pdf.multi_cell(0, 10, txt=content)
+    pdf.output(f"{title}.pdf")
+    st.success(f"✅ PDF exported: {title}.pdf")
 # ✅ Module 1 Wrapper
-# -------------------------------
 def render_module_1():
     # ✅ Title and Intro
     st.title("The 5 Tool Employee Framework")
     st.markdown("### _Introduction into the 5 Tool Employee Framework_")
     st.markdown("An Interchangeable Model. Finding the Right Fit.")
-
     # ✅ Framework Section
     st.markdown("#### 5 Tool Baseball Player")
     st.markdown("""
@@ -192,88 +131,49 @@ def render_module_1():
     - **Fielding** – Defensive ability, including range and reaction time.
     - **Arm Strength** – Throwing ability, especially for outfielders and infielders.
     """)
-
     st.markdown("#### Baseball Tools vs. Professional Skills")
     st.markdown("""
-    - ⚾ **Hitting → Technical Competence**  
-      Just like hitting is fundamental for a baseball player, mastering core skills is crucial for a professional.
-    - 🛡 **Fielding → Problem-Solving Ability**  
-      A great fielder reacts quickly and prevents errors—just like a skilled problem solver.
-    - ⚡ **Speed → Adaptability & Continuous Learning**  
-      Speed gives a player a competitive edge; adaptability ensures professionals stay relevant.
-    - 💪 **Arm Strength → Communication & Leadership**  
-      A powerful arm makes impactful plays—just like effective communication drives team success.
-    - 🚀 **Power → Strategic Decision-Making**  
-      Power hitters change the game—just like leaders who make high-impact decisions.
+    - ⚾ **Hitting → Technical Competence**
+    Just like hitting is fundamental for a baseball player, mastering core skills is crucial for a professional.
+    - 🛡 **Fielding → Problem-Solving Ability**
+    A great fielder reacts quickly and prevents errors—just like a skilled problem solver.
+    - ⚡ **Speed → Adaptability & Continuous Learning**
+    Speed gives a player a competitive edge; adaptability ensures professionals stay relevant.
+    - 💪 **Arm Strength → Communication & Leadership**
+    A powerful arm makes impactful plays—just like effective communication drives team success.
+    - 🚀 **Power → Strategic Decision-Making**
+    Power hitters change the game—just like leaders who make high-impact decisions.
     """)
-
     st.markdown("---")
 
     # ✅ Chatbox Section
     st.subheader("🤖 Ask AI About the Framework")
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
-
     user_question = st.text_input("Ask a question (e.g., 'Tell me more about hitting for average', 'Explain adaptability')")
-
     if st.button("Send Question"):
         if user_question.strip():
-            # ✅ Rich descriptive answers based on question keywords
             q_lower = user_question.lower()
             if "hitting" in q_lower or "technical" in q_lower:
                 ai_answer = """
                 **Hitting for Average → Technical Competence**
-                This tool represents a professional’s ability to perform job-specific duties effectively and consistently.
+                Represents a professional’s ability to perform job-specific duties effectively and consistently.
                 - **Why It Matters:** Without strong technical fundamentals, everything else suffers.
-                - **Behavioral Insight:** High scores indicate rhythm and repeatability under pressure; low scores often signal avoidance of ambiguity or over-reliance on routine.
-                - **Development Path:** Build structured training plans, reinforce accountability, and encourage precision under stress.
+                - **Behavioral Insight:** High scores indicate rhythm and repeatability under pressure.
+                - **Development Path:** Build structured training plans and reinforce accountability.
                 """
             elif "fielding" in q_lower or "problem" in q_lower:
                 ai_answer = """
                 **Fielding → Problem-Solving Ability**
-                A great fielder anticipates and adjusts—just like a skilled problem solver who diagnoses inefficiencies early.
+                Anticipates and adjusts—like a skilled problem solver who diagnoses inefficiencies early.
                 - **Why It Matters:** Prevents chaos and costly errors.
-                - **Behavioral Insight:** High scores show foresight and composure; low scores reveal rigidity or blame-shifting.
                 - **Development Path:** Scenario planning and root-cause analysis training.
                 """
-            elif "speed" in q_lower or "adaptability" in q_lower:
-                ai_answer = """
-                **Speed → Adaptability & Continuous Learning**
-                Speed in business means agility and learning under pressure.
-                - **Why It Matters:** Keeps employees relevant in fast-changing environments.
-                - **Behavioral Insight:** High scores reflect emotional agility and proactive learning; low scores suggest resistance to change.
-                - **Development Path:** Micro-learning programs and resilience coaching.
-                """
-            elif "arm" in q_lower or "communication" in q_lower:
-                ai_answer = """
-                **Arm Strength → Communication & Leadership**
-                Communication drives clarity and influence across teams.
-                - **Why It Matters:** Aligns stakeholders and builds trust.
-                - **Behavioral Insight:** High scores show authentic leadership; low scores risk optics-driven behavior or dominance.
-                - **Development Path:** Coaching on clarity, empathy, and feedback loops.
-                """
-            elif "power" in q_lower or "strategic" in q_lower:
-                ai_answer = """
-                **Power → Strategic Decision-Making**
-                Power is about foresight and decisive action.
-                - **Why It Matters:** Shapes long-term success and prevents costly missteps.
-                - **Behavioral Insight:** High scores indicate confidence with humility; low scores reveal impulsiveness or short-term thinking.
-                - **Development Path:** Strategic frameworks and risk analysis training.
-                """
             else:
-                ai_answer = """
-                The 5 Tool Employee Framework evaluates five core skills:
-                - Technical Competence
-                - Problem-Solving Ability
-                - Adaptability & Continuous Learning
-                - Communication & Leadership
-                - Strategic Decision-Making
-                Ask about any tool for a detailed explanation.
-                """
+                ai_answer = "The 5 Tool Employee Framework evaluates five core skills: Technical Competence, Problem-Solving, Adaptability, Communication, and Strategic Decision-Making."
             st.session_state.chat_history.append((user_question, ai_answer.strip()))
         else:
             st.warning("Please enter a question before sending.")
-
     if st.session_state.chat_history:
         st.markdown("### 💬 Conversation History")
         for q, a in st.session_state.chat_history:
@@ -281,12 +181,9 @@ def render_module_1():
             st.markdown(f"**AI:** {a}")
             st.markdown("---")
 
-    st.markdown("---")
-
     # ✅ Notes and Sliders Section
     st.subheader("🛠 Create Your Own 5 Tool Employee")
     notes_input = st.text_area("Enter notes about your ideal employee or evaluation criteria", placeholder="e.g., strong leadership, adaptable, great communicator")
-
     st.subheader("Rate the Employee on Each Tool (1–10)")
     TOOLS = [
         "Technical Competence",
@@ -297,70 +194,26 @@ def render_module_1():
     ]
     scores = [st.slider(tool, 1, 10, 5) for tool in TOOLS]
 
-    # ✅ Generate Profile Button
     if st.button("Generate 5 Tool Employee"):
         if notes_input.strip():
             st.markdown("### 🧠 Your Custom 5 Tool Employee Profile")
-
             for tool, score in zip(TOOLS, scores):
                 st.markdown(f"**{tool} (Score: {score}/10)**")
-
-                # ✅ Detailed interpretation based on your book
-                if score <= 3:
-                    st.write("- **Behavioral Reality:** Needs Development.")
-                    if tool == "Technical Competence":
-                        st.write("  • Misses execution rhythm; avoids ambiguity; may disengage under pressure.")
-                        st.write("  • Risk: Reliability gaps erode trust and team cadence.")
-                        st.write("  • Development: Structured technical training and accountability systems.")
-                    elif tool == "Problem-Solving Ability":
-                        st.write("  • Reactive firefighting; freezes or blames others when overwhelmed.")
-                        st.write("  • Risk: Creates chaos instead of solutions.")
-                        st.write("  • Development: Build analytical discipline and scenario planning.")
-                    elif tool == "Adaptability & Continuous Learning":
-                        st.write("  • Resistant to change; lacks proactive learning habits.")
-                        st.write("  • Risk: Falls behind in dynamic environments.")
-                        st.write("  • Development: Micro-learning and resilience coaching.")
-                    elif tool == "Communication & Leadership":
-                        st.write("  • Communication lacks clarity; influence minimal.")
-                        st.write("  • Risk: Team misalignment and low morale.")
-                        st.write("  • Development: Authentic leadership coaching and feedback loops.")
-                    elif tool == "Strategic Decision-Making":
-                        st.write("  • Decisions lack foresight; may chase optics over substance.")
-                        st.write("  • Risk: High chance of costly missteps under pressure.")
-                        st.write("  • Development: Train in strategic frameworks and risk analysis.")
-                elif score <= 6:
-                    st.write("- **Behavioral Reality:** Effective but inconsistent.")
-                    st.write("  • Strength: Handles routine tasks and moderate complexity.")
-                    st.write("  • Growth Area: Needs calibration for high-pressure scenarios.")
-                    st.write("  • Development Path: Reinforce rhythm and foresight through structured coaching.")
-                else:
-                    st.write("- **Behavioral Reality:** Exceptional.")
-                    st.write("  • Strength: Demonstrates mastery under pressure; inspires confidence.")
-                    st.write("  • Watch Out: Overuse can drift into dysfunction (e.g., dominance, rigidity).")
-                    st.write("  • Development Path: Maintain humility and balance; leverage as a leadership strength.")
-
-                st.markdown("---")
-
-            # ✅ Notes Section
             st.markdown("**Notes:**")
             st.write(notes_input)
-
-            # ✅ Radar Chart Visualization
-            st.subheader("📊 5-Tool Employee Profile Radar")
             fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="5-Tool Employee Radar Chart")
             fig.update_traces(fill='toself')
             st.plotly_chart(fig)
         else:
             st.warning("Please add notes before generating the profile.")
 
-    # ✅ Clear History Button
-    if st.button("Clear History"):
-        st.session_state.chat_history = []
-        st.experimental_rerun()
-        
+    # ✅ Premium Features
+    if st.button("Save to Repository"):
+        save_to_repository("Module 1: 5 Tool Employee Framework", f"Notes: {notes_input}, Scores: {scores}")
+    if st.button("Download as PDF"):
+        export_to_pdf("Module 1 Report", f"Notes: {notes_input}, Scores: {scores}")
+# ✅ Module 2 Wrapper
 def render_module_2():
-    import streamlit as st
-
     st.title("Advanced Deep Research — The 5 Tool Employee Framework")
 
     # ✅ Display full PDF content in a scrollable section
@@ -451,7 +304,6 @@ def render_module_2():
     #### Arm Strength — Communication Reach & Influence
     Natural Gift: Expressive clarity, emotional connection, presence
     High-Functioning Expression:
-    - Pitch it
     - Distills vision into language that moves people
     - Connects across functions and hierarchies effortlessly
     - Builds buy-in without overreaching
@@ -490,15 +342,11 @@ def render_module_2():
                 - Transactional & Transformational Leadership
                 - Social Cognitive Theory (Bandura)
                 - Psychological Capital (Luthans, Avolio, Youssef)
-                - Ilya Prigogine
                 - Drucker’s work (The Effective Executive)
-                - Capra & Autopoiesis
                 - Balanced Scorecard (Kaplan & Norton)
                 - Deming’s Quality Circles
                 - Cameron & Quinn (Competing Values Framework, OCAI)
-                - Related leadership literature
                 """
-
                 system_prompt = f"""
                 You are an advanced HR and leadership research assistant. Use the following framework and concepts to answer deeply:
                 Framework:
@@ -510,7 +358,6 @@ def render_module_2():
                 - Practical implications
                 - References to leadership theories where relevant
                 """
-
                 response = client.chat.completions.create(
                     model="gpt-4",
                     messages=[
@@ -520,24 +367,28 @@ def render_module_2():
                     temperature=0.7,
                     max_tokens=1000
                 )
-
                 ai_answer = response.choices[0].message.content
                 st.markdown("### 🔍 Deep Dive Answer")
                 st.markdown(ai_answer)
-
             except Exception as e:
                 st.error(f"❌ Error generating AI response: {e}")
         else:
             st.warning("Please enter a question before diving further.")
 
+    # ✅ Premium Features
+    if st.button("Save to Repository"):
+        save_to_repository("Module 2: Deep Research", f"Question: {question}")
+    if st.button("Download as PDF"):
+        export_to_pdf("Module 2 Report", pdf_content)
+# ✅ Module 3 Wrapper
 def render_module_3():
     st.title("Behavior Under Pressure")
-    st.markdown("### What is the Behavior Under Pressure Grid? An evaluation tool for the behavior that leaders, both current, and potentially, showcase when under stress or pressure")
+    st.markdown("### What is the Behavior Under Pressure Grid?")
     st.markdown("""
+    An evaluation tool for the behavior that leaders, both current and potential, showcase when under stress or pressure.
     This grid shows how behavioral tools manifest in two states:
     - **Intentional Use:** Calm, focused, deliberate behavior.
     - **Under Duress:** How traits distort under stress.
-    
     Use this tool for leadership diagnostics, hiring decisions, and team development.
     """)
 
@@ -559,11 +410,10 @@ def render_module_3():
             "Charms without clarity, dominates without connection"
         ]
     }
-
     df = pd.DataFrame(data)
 
-    # ✅ Hide index completely
-    st.dataframe(df, hide_index=True)  # Works in latest Streamlit versions
+    # ✅ Display grid
+    st.dataframe(df, hide_index=True)
 
     # ✅ Add comments input
     user_comments = st.text_area("Add your comments or observations", placeholder="e.g., This candidate freezes under pressure but excels in planning.")
@@ -572,23 +422,32 @@ def render_module_3():
     if st.button("Generate Insights"):
         if user_comments.strip():
             st.subheader("🔍 AI Insights Based on Your Comments")
-            response = client.chat.completions.create(
-                model="gpt-4",
-                messages=[
-                    {"role": "system", "content": "You are an organizational psychologist analyzing behavior under pressure."},
-                    {"role": "user", "content": f"Analyze this comment in context of the Behavior Under Pressure Grid: {user_comments}"}
-                ],
-                temperature=0.7,
-                max_tokens=400
-            )
-            st.write(response.choices[0].message.content)
+            if check_prompt_limit():
+                increment_prompt_count()
+                response = client.chat.completions.create(
+                    model="gpt-4",
+                    messages=[
+                        {"role": "system", "content": "You are an organizational psychologist analyzing behavior under pressure."},
+                        {"role": "user", "content": f"Analyze this comment in context of the Behavior Under Pressure Grid: {user_comments}"}
+                    ],
+                    temperature=0.7,
+                    max_tokens=400
+                )
+                st.write(response.choices[0].message.content)
         else:
             st.warning("Please add comments before generating insights.")
-                    
+
+    # ✅ Premium Features
+    if st.button("Save to Repository"):
+        save_to_repository("Module 3: Behavior Under Pressure", f"Comments: {user_comments}")
+    if st.button("Download as PDF"):
+        export_to_pdf("Module 3 Report", f"Behavior Grid:\n{df.to_string()}\n\nComments:\n{user_comments}")
+
+# ✅ Module 4 Wrapper
 def render_module_4():
     import plotly.express as px
-
     TOOLS = ["Speed", "Power", "Fielding", "Hitting for Average", "Arm Strength"]
+
     educational_panels = {
         "Urgency vs Foresight": "Speed without foresight creates reactive chaos. Leaders must balance urgency with strategic anticipation.",
         "Leadership Eligibility Filter": "Evaluates readiness for management roles using 5-Tool scoring and behavioral calibration.",
@@ -701,7 +560,8 @@ def render_module_4():
     st.subheader("Ask AI About the Framework")
     user_question = st.text_area("Ask a question (e.g., 'Tell me more about this')")
     if st.button("Send Question"):
-        if user_question.strip():
+        if user_question.strip() and check_prompt_limit():
+            increment_prompt_count()
             response = client.chat.completions.create(
                 model="gpt-4",
                 messages=[
@@ -727,10 +587,9 @@ def render_module_4():
             st.warning("Please enter a question before sending.")
 
     # ✅ Radar Scoring Section
-    st.subheader("Score the Employee on Each Tool (1-5)")
+    st.subheader("Score the Employee on Each Tool (1–5)")
     scores = [st.slider(tool, 1, 5, 3) for tool in TOOLS]
     employee_notes = st.text_area("Enter notes about the employee")
-
     if st.button("Generate Scoring"):
         analysis = generate_analysis(scores, employee_notes, framework)
         st.markdown(analysis)
@@ -738,46 +597,19 @@ def render_module_4():
         fig.update_traces(fill='toself')
         st.plotly_chart(fig)
 
-        # ✅ Follow-up question box under radar
-        st.subheader("Ask a follow-up question about the radar:")
-        follow_up_question = st.text_area("Enter your question", placeholder="e.g., Can you make some training recommendations?")
-        if st.button("Get AI Answer"):
-            if follow_up_question.strip():
-                response = client.chat.completions.create(
-                    model="gpt-4",
-                    messages=[
-                        {"role": "system", "content": (
-                            "You are an expert on the 5-Tool Employee Framework. "
-                            "Provide detailed, practical, and psychologically rich insights. "
-                            "Always include a link to our YouTube channel: https://www.youtube.com/@5toolemployeeframework "
-                            "and add recommended training links."
-                        )},
-                        {"role": "user", "content": follow_up_question}
-                    ],
-                    temperature=0.7,
-                    max_tokens=700
-                )
-                st.markdown("### AI Answer")
-                st.write(response.choices[0].message.content)
-                st.markdown("**Recommended Training Links:**")
-                st.markdown("- Developing Emotional Intelligence – LinkedIn Learning")
-                st.markdown("- Time Management Fundamentals – LinkedIn Learning")
-                st.markdown("- Resilience Training – Coursera")
-                st.markdown("- Scenario-Based Leadership – Harvard Business Publishing")
-                st.markdown("- Watch tutorials on YouTube")
-            else:
-                st.warning("Please enter a question before clicking 'Get AI Answer'.")
-                
+    # ✅ Premium Features
+    if st.button("Save to Repository"):
+        save_to_repository("Module 4: Behavioral Calibration", f"Notes: {employee_notes}, Scores: {scores}")
+    if st.button("Download as PDF"):
+        export_to_pdf("Module 4 Report", f"Framework: {framework}\n\nNotes: {employee_notes}\nScores: {scores}")
+# ✅ Module 5 Wrapper
 def render_module_5():
-    import streamlit as st
     import plotly.express as px
-    from openai import OpenAI
-    import os
 
     # Initialize OpenAI client
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-    # --- Helper: AI response for general questions ---
+    # Helper: AI response for general questions
     def get_ai_response(question):
         system_prompt = """
         You are an expert in organizational psychology and leadership.
@@ -797,14 +629,13 @@ def render_module_5():
         )
         return response.choices[0].message.content
 
-    # --- Helper: Contextual Insight combining notes and score ---
+    # Helper: Contextual Insight combining notes and score
     def get_contextual_insight(notes, score, risk_level):
         contextual_prompt = f"""
         Analyze this scenario:
         Notes: {notes}
         Numeric Score: {score}
         Risk Level: {risk_level}
-
         Determine if notes indicate toxic intent or cultural risk even if numeric score suggests low risk.
         Provide:
         **Contextual Insight:** Explain toxicity risk based on notes.
@@ -821,7 +652,7 @@ def render_module_5():
         )
         return response.choices[0].message.content
 
-    # --- UI Layout ---
+    # UI Layout
     st.title("☢️ Toxicity in the Workplace")
 
     # Educational Expanders
@@ -851,7 +682,9 @@ def render_module_5():
     st.subheader("AI Chat: Ask about Toxic Leadership or Feedback")
     ai_question = st.text_area("Ask a question (e.g., Tell me more about 360-degree feedback)")
     if st.button("Get AI Response"):
-        st.markdown(get_ai_response(ai_question))
+        if check_prompt_limit():
+            increment_prompt_count()
+            st.markdown(get_ai_response(ai_question))
 
     # Scoring Sliders
     st.subheader("Rate the Employee on Each Dimension")
@@ -860,7 +693,6 @@ def render_module_5():
     fielding = st.slider("Fielding", 1, 5, 3)
     hitting = st.slider("Hitting for Average", 1, 5, 3)
     arm_strength = st.slider("Arm Strength", 1, 5, 3)
-
     notes = st.text_area("Additional Notes")
 
     # Generate Profile
@@ -901,100 +733,107 @@ def render_module_5():
 
         # AI Insights
         st.subheader("AI Insights")
-        st.markdown(get_ai_response("toxicity in workplace"))
+        if check_prompt_limit():
+            increment_prompt_count()
+            st.markdown(get_ai_response("toxicity in workplace"))
 
         # Contextual Insight
         if notes.strip():
             st.subheader("Contextual Insight")
             st.markdown(get_contextual_insight(notes, total_score, risk_level))
 
-import streamlit as st
-import random
-import pandas as pd
-
-# --- AI + Web Insights Simulation ---
-# In real implementation, these would call an AI model and integrate web-scraped insights.
-# For now, we'll simulate with blended logic from user notes and industry best practices.
-
-def generate_ai_swot(notes, ai_chat):
-    """Generate SWOT bullet points based on user notes and web insights."""
-    user_strengths = [
-        "Strong engineering expertise and leadership",
-        "New hire brings extensive industry connections",
-        "Ability to deliver complex coding projects quickly"
-    ]
-    user_weaknesses = [
-        "Potential cultural disruption due to salary disparity",
-        "Over-reliance on one individual for core coding tasks",
-        "Risk of burnout among existing engineers"
-    ]
-    web_strengths = [
-        "High demand for senior engineers positions company competitively",
-        "Hybrid team structures reduce burnout and improve delivery"
-    ]
-    web_weaknesses = [
-        "Salary gaps can lead to morale issues and attrition",
-        "Limited succession planning increases vulnerability"
-    ]
-    web_opportunities = [
-        "Upskilling programs can boost retention and engagement",
-        "Leverage new hire's network for strategic partnerships",
-        "Adopt automation tools to reduce workload on engineers"
-    ]
-    web_threats = [
-        "Competitors exploiting instability during transition",
-        "Client dissatisfaction if onboarding disrupts service",
-        "Industry salary inflation increasing cost pressures"
-    ]
-
-    strengths = user_strengths + web_strengths
-    weaknesses = user_weaknesses + web_weaknesses
-    opportunities = web_opportunities
-    threats = web_threats
-
-    return strengths, weaknesses, opportunities, threats
-
-# Weighted scoring logic
-weights = {"Impact": 0.4, "Feasibility": 0.3, "Urgency": 0.2, "Confidence": 0.1}
-
-def score_factor():
-    return {criterion: random.randint(1, 5) for criterion in weights}
-
-def calculate_weighted_score(scores):
-    return sum(scores[c] * weights[c] for c in weights)
-
-# Generate roadmap from top-ranked items
-def generate_roadmap(df):
-    roadmap = []
-    top_items = df.sort_values(by="Total Score", ascending=False).head(5)
-    for _, row in top_items.iterrows():
-        factor = row["Factor"]
-        category = row["Category"]
-        roadmap.append({
-            "Action": f"Address {category}: {factor}",
-            "Milestone": "Complete initial implementation in 90 days",
-            "Owner": "Cross-functional team",
-            "Review Cycle": "Quarterly reassessment",
-            "Best Case": "Improved team stability and client satisfaction",
-            "Worst Case": "Attrition increases, delays in delivery",
-            "Pivot Strategy": "Reallocate resources and accelerate upskilling"
-        })
-    return pd.DataFrame(roadmap)
-
-# --- Streamlit UI ---
-
+    # ✅ Premium Features
+    if st.button("Save to Repository"):
+        save_to_repository("Module 5: Toxicity Analysis", f"Notes: {notes}, Scores: {speed},{power},{fielding},{hitting},{arm_strength}")
+    if st.button("Download as PDF"):
+        export_to_pdf("Module 5 Report", f"Notes: {notes}\nScores: {speed},{power},{fielding},{hitting},{arm_strength}")
+        
+# ✅ Module 6 Wrapper
 def render_module_6():
     st.title("📊 SWOT 2.0 Strategic Framework")
     st.markdown("Designed by Bryan Barrera & Microsoft Copilot")
 
-    notes = st.text_area("Additional Notes and Input")
-
+    # ✅ User Inputs
+    notes = st.text_area("Enter your scenario or notes", placeholder="e.g., We want to move from medical devices to aerospace...")
+    ai_chat = st.text_area("Ask AI for additional context or strategic advice", placeholder="e.g., What are the compliance challenges for aerospace?")
     view_mode = st.radio("Select View Mode", ["Basic SWOT", "Advanced SWOT 2.0"])
 
+    # ✅ AI-powered SWOT generator
+    def generate_ai_swot(notes, ai_chat):
+        prompt = f"""
+        You are a strategic consultant. Generate a detailed SWOT analysis for this scenario:
+        {notes}
+
+        Additional context:
+        {ai_chat}
+
+        Return the output in this exact format:
+        Strengths:
+        - ...
+        Weaknesses:
+        - ...
+        Opportunities:
+        - ...
+        Threats:
+        - ...
+        """
+        try:
+            if check_prompt_limit():
+                increment_prompt_count()
+                response = client.chat.completions.create(
+                    model="gpt-4",
+                    messages=[
+                        {"role": "system", "content": "You are an expert in business strategy and operational planning."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=0.7,
+                    max_tokens=800
+                )
+                swot_text = response.choices[0].message.content
+
+                # ✅ Parse structured output
+                strengths, weaknesses, opportunities, threats = [], [], [], []
+                current_section = None
+                for line in swot_text.split("\n"):
+                    line = line.strip()
+                    if line.lower().startswith("strength"):
+                        current_section = "strengths"
+                        continue
+                    elif line.lower().startswith("weak"):
+                        current_section = "weaknesses"
+                        continue
+                    elif line.lower().startswith("opport"):
+                        current_section = "opportunities"
+                        continue
+                    elif line.lower().startswith("threat"):
+                        current_section = "threats"
+                        continue
+                    elif line.startswith("-"):
+                        if current_section == "strengths":
+                            strengths.append(line[1:].strip())
+                        elif current_section == "weaknesses":
+                            weaknesses.append(line[1:].strip())
+                        elif current_section == "opportunities":
+                            opportunities.append(line[1:].strip())
+                        elif current_section == "threats":
+                            threats.append(line[1:].strip())
+
+                # ✅ Fallback if empty
+                if not strengths: strengths = ["No strengths identified."]
+                if not weaknesses: weaknesses = ["No weaknesses identified."]
+                if not opportunities: opportunities = ["No opportunities identified."]
+                if not threats: threats = ["No threats identified."]
+
+                return strengths, weaknesses, opportunities, threats
+            else:
+                return ["Upgrade to Premium for more prompts."], [], [], []
+        except Exception as e:
+            return [f"Error generating SWOT: {e}"], [], [], []
+
+    # ✅ Generate SWOT
     if st.button("🎯 Generate AI-Powered SWOT"):
         strengths, weaknesses, opportunities, threats = generate_ai_swot(notes, ai_chat)
 
-        # Quadrant Layout
         st.subheader("✅ Generated SWOT Analysis")
         col1, col2 = st.columns(2)
         with col1:
@@ -1012,13 +851,17 @@ def render_module_6():
             for t in threats:
                 st.markdown(f"- {t}")
 
+        # ✅ Advanced Mode
         if view_mode == "Advanced SWOT 2.0":
             st.subheader("📈 Narrative Summary")
-            st.write("This analysis blends internal insights with external best practices. "
-                     "Key focus: manage cultural risks, leverage new hire's network, and mitigate attrition through upskilling.")
+            st.write("This analysis blends internal insights with external best practices.")
 
-            st.subheader("📊 Weighted Scoring Table")
-            st.write("Criteria: Impact (40%), Feasibility (30%), Urgency (20%), Confidence (10%)")
+            # Weighted scoring logic
+            weights = {"Impact": 0.4, "Feasibility": 0.3, "Urgency": 0.2, "Confidence": 0.1}
+            def score_factor():
+                return {criterion: random.randint(1, 5) for criterion in weights}
+            def calculate_weighted_score(scores):
+                return sum(scores[c] * weights[c] for c in weights)
 
             data = []
             for category, items in zip(["Strength", "Weakness", "Opportunity", "Threat"], [strengths, weaknesses, opportunities, threats]):
@@ -1029,25 +872,37 @@ def render_module_6():
                     data.append(row)
 
             df = pd.DataFrame(data)
+            st.subheader("📊 Weighted Scoring Table")
             st.dataframe(df.sort_values(by="Total Score", ascending=False))
 
             st.subheader("🛠 Dynamic KPIs")
             st.write("Actionable steps with milestones, ownership, and scenario planning.")
-            roadmap_df = generate_roadmap(df)
-            st.dataframe(roadmap_df)
+            roadmap = []
+            top_items = df.sort_values(by="Total Score", ascending=False).head(5)
+            for _, row in top_items.iterrows():
+                roadmap.append({
+                    "Action": f"Address {row['Category']}: {row['Factor']}",
+                    "Milestone": "Complete initial implementation in 90 days",
+                    "Owner": "Cross-functional team",
+                    "Review Cycle": "Quarterly reassessment",
+                    "Best Case": "Improved market entry and compliance",
+                    "Worst Case": "Delays in certification and client acquisition",
+                    "Pivot Strategy": "Reallocate resources and accelerate compliance training"
+                })
+            st.dataframe(pd.DataFrame(roadmap))
 
-# Integrate with your app navigation
-# Example:
-# if selected_page == "Module 6":
-#     render_module_6()
+    # ✅ Premium Features
+    if st.button("Save to Repository"):
+        save_to_repository("Module 6: SWOT Analysis", f"Notes: {notes}\nAI Context: {ai_chat}")
+    if st.button("Download as PDF"):
+        export_to_pdf("Module 6 Report", f"Notes: {notes}\nAI Context: {ai_chat}")
 
-def render_module_7():
-    st.title("🚧 Page 8: Under Construction")
-    st.markdown("This page is not yet implemented.")
-    
-# -------------------------------
-# Navigation
-# -------------------------------
+    # ✅ Premium Features
+    if st.button("Save to Repository"):
+        save_to_repository("Module 6: SWOT Analysis", f"Notes: {notes}\nAI Context: {ai_chat}")
+    if st.button("Download as PDF"):
+        export_to_pdf("Module 6 Report", f"Notes: {notes}\nAI Context: {ai_chat}")
+# ✅ Navigation
 PAGES = [
     "Page 1: The 5 Tool Employee Framework",
     "Page 2: The 5 Tool Employee Framework: Deep Research Version",
@@ -1055,12 +910,11 @@ PAGES = [
     "Page 4: Behavioral Calibration Grid",
     "Page 5: Toxicity in the Workplace",
     "Page 6: SWOT 2.0",
-    "Page 7: Repository",
+    "Page 7: Premium Subscription & Repository"
 ]
 
 selected_page = st.sidebar.selectbox("Choose a page", PAGES)
 
-# ✅ Page rendering logic (unchanged for now)
 if selected_page == "Page 1: The 5 Tool Employee Framework":
     render_module_1()
 elif selected_page == "Page 2: The 5 Tool Employee Framework: Deep Research Version":
@@ -1073,7 +927,5 @@ elif selected_page == "Page 5: Toxicity in the Workplace":
     render_module_5()
 elif selected_page == "Page 6: SWOT 2.0":
     render_module_6()
-elif selected_page == "Page 7: Repository":
+elif selected_page == "Page 7: Premium Subscription & Repository":
     render_module_7()
-    
-
