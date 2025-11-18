@@ -47,9 +47,12 @@ deep_research_insights = {
         "Behavioral Insight": "Influence that isn’t anchored in clarity becomes theater"
     }
 }
-
 # --- GPT-3 ANALYSIS FUNCTION ---
+from openai import OpenAI
+client = OpenAI(api_key="YOUR_OPENAI_API_KEY")
+
 def analyze_notes_with_framework(notes):
+    # Detect relevant tools
     detected_tools = []
     for tool in deep_research_insights.keys():
         if re.search(tool, notes, re.IGNORECASE):
@@ -57,6 +60,7 @@ def analyze_notes_with_framework(notes):
 
     insights_summary = {tool: deep_research_insights[tool] for tool in detected_tools}
 
+    # Build prompt
     prompt = f"""
     User notes: {notes}
     Relevant tools: {', '.join(detected_tools)}
@@ -64,23 +68,18 @@ def analyze_notes_with_framework(notes):
     Generate a concise, contextual commentary that blends these insights with the user's notes.
     Do NOT dump the entire framework—only summarize relevant parts and integrate with user context.
     """
-try:
-    from openai import OpenAI
-    client = OpenAI(api_key="YOUR_OPENAI_API_KEY")
-except Exception as e:
-    print(f"Error initializing OpenAI client: {e}")
 
-response = client.chat.completions.create
-    model="gpt-3.5-turbo",
-    messages=[
-        {"role": "system", "content": "You are an expert HR strategist and organizational psychologist."},
-        {"role": "user", "content": prompt}
-    ],
-    max_tokens=500,
-    temperature=0.7
-)
-def analyze_notes_with_framework(notes):
+    # Call GPT-3.5
     try:
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are an expert HR strategist and organizational psychologist."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=500,
+            temperature=0.7
+        )
         gpt_commentary = response.choices[0].message.content
     except Exception as e:
         gpt_commentary = f"[GPT-3 Placeholder] Could not fetch response: {e}"
