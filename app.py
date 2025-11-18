@@ -82,7 +82,7 @@ response = client.chat.completions.create(
 
 gpt_commentary = response.choices[0].message.content
     except Exception as e:
-        gpt_commentary = f"[GPT-3 Placeholder] Could not fetch response: {e}"
+    gpt_commentary = f"[GPT-3 Placeholder] Could not fetch response: {e}"
 
     return insights_summary, gpt_commentary
 
