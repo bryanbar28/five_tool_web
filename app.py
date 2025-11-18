@@ -66,16 +66,20 @@ def analyze_notes_with_framework(notes):
     """
 
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are an expert HR strategist and organizational psychologist."},
-                {"role": "user", "content": prompt}
-            ],
-            max_tokens=500,
-            temperature=0.7
-        )
-        gpt_commentary = response.choices[0].message["content"]
+from openai import OpenAI
+client = OpenAI(api_key="YOUR_OPENAI_API_KEY")
+
+response = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": "You are an expert HR strategist and organizational psychologist."},
+        {"role": "user", "content": prompt}
+    ],
+    max_tokens=500,
+    temperature=0.7
+)
+
+gpt_commentary = response.choices[0].message.content
     except Exception as e:
         gpt_commentary = f"[GPT-3 Placeholder] Could not fetch response: {e}"
 
