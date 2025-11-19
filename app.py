@@ -243,16 +243,19 @@ if page == "1. Framework Intro":
                 {book_context}
                 """
 
-                response = requests.post(
-                    "https://api.x.ai/v1/chat/completions",
-                    headers={"Authorization": f"Bearer {st.secrets.get('XAI_API_KEY', '')}"},
-                    json={
-                        "model": "grok-beta",
-                        "messages": [{"role": "user", "content": prompt}],
-                        "temperature": 0.7
-                    },
-                    timeout=90
-                )
+          response = requests.post(
+    "https://api.x.ai/v1/chat/completions",
+    headers={
+        "Authorization": f"Bearer {st.secrets['XAI_API_KEY']}",
+        "Content-Type": "application/json"      # ← ADD THIS LINE
+    },
+    json={
+        "model": "grok-beta",
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.7
+    },
+    timeout=90
+)
                 response.raise_for_status()
                 ai_text = response.json()["choices"][0]["message"]["content"]
 
