@@ -27,35 +27,39 @@ def hash_password(pw):
 # Login/Registration
 def login():
     st.sidebar.title("Login")
-    username = st.sidebar.text_input("Username")
+    email = st.sidebar.text_input("Email")  # ✅ Changed from username
     password = st.sidebar.text_input("Password", type="password")
+
+    # Login
     if st.sidebar.button("Login"):
         try:
-            user = supabase.table('users').select('id, password_hash').eq('username', username).execute().data
+            user = supabase.table('users').select('id, password_hash').eq('email', email).execute().data
             if user and user[0]['password_hash'] == hash_password(password):
                 st.session_state.user_id = user[0]['id']
                 st.session_state.logged_in = True
                 st.sidebar.success("Logged in!")
             else:
-                st.sidebar.error("Invalid username or password")
+                st.sidebar.error("Invalid email or password")
         except Exception as e:
-            st.sidebar.error(f"Login error: {str(e)}. Ensure 'users' table exists with columns: id, username, password_hash.")
+            st.sidebar.error(f"Login error: {str(e)}. Ensure 'users' table exists with columns: id, email, password_hash.")
+
+    # Registration
     if st.sidebar.button("Register"):
         try:
-            if not username or not password:
-                st.sidebar.error("Username and password cannot be empty")
+            if not email or not password:
+                st.sidebar.error("Email and password cannot be empty")
             else:
-                existing = supabase.table('users').select('id').eq('username', username).execute().data
+                existing = supabase.table('users').select('id').eq('email', email).execute().data
                 if existing:
-                    st.sidebar.error("Username already taken")
+                    st.sidebar.error("Email already registered")
                 else:
                     supabase.table('users').insert({
-                        'username': username,
+                        'email': email,
                         'password_hash': hash_password(password)
                     }).execute()
                     st.sidebar.success("Registered! Please log in.")
         except Exception as e:
-            st.sidebar.error(f"Registration error: {str(e)}. Ensure 'users' table has columns: id (int8, primary key, identity), username (text, unique), password_hash (text).")
+            st.sidebar.error(f"Registration error: {str(e)}. Ensure 'users' table has columns: id (int8, primary key, identity), email (text, unique), password_hash (text).")
 
 # Main app
 if 'logged_in' not in st.session_state:
