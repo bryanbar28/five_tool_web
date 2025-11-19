@@ -3,10 +3,10 @@ import plotly.express as px
 import requests
 import json
 import re
+import streamlit==1.39.0
+import plotly==5.24.1
+import requests==2.32.3
 from typing import List
-import streamlit>=1.30.0
-import plotly>=5.18.0
-import requests>=2.31.0
 
 st.set_page_config(page_title="5-Tool Employee Framework", page_icon="⚾", layout="wide")
 
