@@ -208,65 +208,32 @@ if page == "1. Framework Intro":
             st.warning("Please enter some notes, a resume, or a job description first.")
             st.stop()
 
-        with st.spinner("Analyzing with the full deep-research 5-Tool Framework…"):
-            try:
-                # Deep-research framework + full book (never shown to user)
-                deep_framework = """[PASTE YOUR ENTIRE DEEP-RESEARCH SECTION HERE]"""
-                book_context   = """[PASTE YOUR FULL BOOK TEXT HERE]"""
+                  with st.spinner("Analyzing with Grok-4 + your full book…"):
+                try:
+                    response = requests.post(
+                        "https://api.x.ai/v1/chat/completions",
+                        headers={
+                            "Authorization": f"Bearer {st.secrets['XAI_API_KEY']}",
+                            "Content-Type": "application/json"
+                        },
+                        json={
+                            "model": "grok-beta",
+                            "messages": [{"role": "user", "content": prompt}],
+                            "temperature": 0.7
+                        },
+                        timeout=90
+                    )
+                    response.raise_for_status()
+                    ai_text = response.json()["choices"][0]["message"]["content"]
 
-                prompt = f"""
-                You are the ultimate expert on Bryan Barrera's 5-Tool Employee Framework.
-                Use the complete deep-research version + the entire book below to evaluate the candidate/role.
+                    import re
+                    match = re.search(r"\[?\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\]?", ai_text)
+                    final_scores = [int(x) for x in match.groups()] if match else scores
 
-                User notes / resume / job description:
-                {notes}
-
-                Slider scores (1–10):
-                Speed: {scores[0]}
-                Power: {scores[1]}
-                Fielding: {scores[2]}
-                Hitting for Average: {scores[3]}
-                Arm Strength: {scores[4]}
-
-                Your job:
-                1. Return final radar scores as a Python list like [8, 7, 9, 8, 6] (adjust sliders ±1 only if notes clearly contradict them — explain any change).
-                2. Give a full deep-research breakdown for each tool using this exact structure:
-                   • Natural Gift
-                   • High-Functioning Expression (bullet points)
-                   • Dysfunction Signals (bullet points)
-                   • Behavioral Insight
-                   • Where It Shows Up
-                3. Overall conclusion + fit rating (1–10) + recommendation.
-
-                Deep-research framework and full book:
-                {deep_framework}
-                {book_context}
-                """
-                      try:
-                response = requests.post(
-                    "https://api.x.ai/v1/chat/completions",
-                    headers={
-                        "Authorization": f"Bearer {st.secrets['XAI_API_KEY']}",
-                        "Content-Type": "application/json"
-                    },
-                    json={
-                        "model": "grok-beta",
-                        "messages": [{"role": "user", "content": prompt}],
-                        "temperature": 0.7
-                    },
-                    timeout=90
-                )
-                response.raise_for_status()
-                ai_text = response.json()["choices"][0]["message"]["content"]
-
-                import re
-                match = re.search(r"\[?\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\]?", ai_text)
-                final_scores = [int(x) for x in match.groups()] if match else scores
-
-            except Exception as e:
-                st.warning("⚡ Full AI analysis is temporarily offline — using your slider values only.")
-                ai_text = f"""
-### 5-Tool Profile (AI Offline – Manual Mode)
+                except Exception:
+                    st.warning("Grok is taking a quick nap — using your sliders only for now.")
+                    ai_text = f"""
+### 5-Tool Profile (Sliders Only)
 
 **Speed** = {scores[0]}/10  
 **Power** = {scores[1]}/10  
@@ -274,9 +241,9 @@ if page == "1. Framework Intro":
 **Hitting for Average** = {scores[3]}/10  
 **Arm Strength** = {scores[4]}/10  
 
-Click Generate again when Grok is back online.
-                """
-                final_scores = scores
+Click Generate again in a minute — Grok will be back with the full deep-research magic.
+                    """
+                    final_scores = scores
 ### 5-Tool Profile (Manual Mode - AI Offline)
 
 **Speed** = {scores[0]}/10  
