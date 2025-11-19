@@ -68,7 +68,8 @@ with col1:
         scores.append(st.slider(t, 1, 10, 6, key=short))
 
 with col2:
-    st.image("https://i.imgur.com/6ZfZ9kD.png")  # placeholder baseball image
+    # Option 3 — radar chart style (ties to your tool)
+st.image("https://i.imgur.com/8z3kR2p.png")
 
 if st.button("Generate Profile", type="primary", use_container_width=True):
     if not notes.strip():
