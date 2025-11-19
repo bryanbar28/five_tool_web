@@ -1,4 +1,7 @@
 streamlit
-python-dotenv
+pandas
+plotly
 openai
 supabase
+google-api-python-client
+python-dotenv
