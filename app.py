@@ -148,37 +148,41 @@ if page == "1. Framework Intro":
     st.title("The 5-Tool Employee Framework")
     st.markdown("### An Interchangeable Model. Finding the Right Fit.")
 
-    # ——— FULL ONE-PAGER (visible) ———
+    # ————— FULL ONE-PAGER (visible to user) —————
     st.markdown("""
     #### Introduction into the 5-Tool Employee Framework
     An Interchangeable Model
 
     ##### 5-Tool Baseball Player
-    1. Hitting for Average – Consistently making contact and getting on base.
-    2. Hitting for Power – Ability to drive the ball for extra bases or home runs.
-    3. Speed – Quickness on the bases and in the field.
-    4. Fielding – Defensive ability, including range and reaction time.
+    1. Hitting for Average – Consistently making contact and getting on base.  
+    2. Hitting for Power – Ability to drive the ball for extra bases or home runs.  
+    3. Speed – Quickness on the bases and in the field.  
+    4. Fielding – Defensive ability, including range and reaction time.  
     5. Arm Strength – Throwing ability, especially for outfielders and infielders.
 
     ##### Baseball Tools vs. Professional Skills
-    1. ⚾ **Hitting for Average** → **Technical Competence & Reliability**  
-       Just like hitting is fundamental for a baseball player, mastering core skills and delivering consistently is crucial. Without solid technical ability and rhythm, everything else suffers.
-    2. 🧤 **Fielding** → **Problem-Solving Ability & Strategic Foresight**  
-       A great fielder reacts quickly, adjusts, and prevents errors — just like a skilled problem-solver who diagnoses inefficiencies and anticipates risk before bigger issues arise.
-    3. ⚡ **Speed** → **Adaptability & Continuous Learning**  
-       Speed gives a competitive edge, allowing fast reaction and adjustment. In business, adaptability and continuous learning keep professionals ahead of change.
-    4. 💪 **Arm Strength** → **Communication & Leadership**  
-       A powerful arm makes impactful plays — just like effective communication and leadership drive motivation, accountability, and team success.
-    5. 🚀 **Power** → **Strategic Decision-Making & Ownership**  
-       Power hitters change the game with big plays, just like leaders who think long-term, own outcomes, and make high-impact decisions.
+    1. **Hitting for Average** → **Technical Competence & Reliability**  
+       Just like hitting is fundamental for a baseball player, mastering core skills and delivering consistently is crucial.
+    2. **Fielding** → **Problem-Solving Ability & Strategic Foresight**  
+       A great fielder reacts quickly, adjusts, and prevents errors — just like a skilled problem-solver who anticipates risk.
+    3. **Speed** → **Adaptability & Continuous Learning**  
+       Speed gives a competitive edge; in business, adaptability and learning keep professionals ahead of change.
+    4. **Arm Strength** → **Communication & Leadership**  
+       A powerful arm makes impactful plays — just like effective communication drives motivation and team success.
+    5. **Power** → **Strategic Decision-Making & Ownership**  
+       Power hitters change the game with big plays, just like leaders who own outcomes and make high-impact decisions.
 
-    Every player (and professional) needs all five tools to be truly great.
+    **Every player (and professional) needs all five tools to be truly great.**
     """)
 
     col1, col2 = st.columns([3, 2])
+
     with col1:
         st.markdown("#### Create Your Own 5-Tool Employee")
-        notes = st.text_area("Notes about the ideal employee (paste resume, job description, or free-form thoughts here)", height=200)
+        notes = st.text_area(
+            "Notes about the ideal employee (paste resume, job description, or free-form thoughts here)",
+            height=200
+        )
 
         tools = [
             "Speed — Cognitive & Behavioral Agility",
@@ -187,26 +191,60 @@ if page == "1. Framework Intro":
             "Hitting for Average — Reliability, Rhythm & Repeatability",
             "Arm Strength — Communication Reach & Influence"
         ]
+
         scores = []
         for t in tools:
-            short = t.split(" — ")[0]
-            scores.append(st.slider(t, 1, 10, 6, key=f"s1_{short}"))
+            short_name = t.split(" — ")[0].lower().replace(" ", "_")
+            scores.append(st.slider(t, 1, 10, 6, key=f"s1_{short_name}"))
 
-     with col2:
+    with col2:
         if video_map.get("Hitting for Average"):
             st.video(video_map["Hitting for Average"])
 
-    # ——— GENERATE PROFILE BUTTON (outside the column, full width) ———
+    # ————— GENERATE PROFILE BUTTON —————
     if st.button("Generate Profile", type="primary", use_container_width=True):
         if not notes.strip():
-            st.warning("Please add some notes, a resume1999, or a job description first.")
+            st.warning("Please enter some notes, a resume, or a job description first.")
             st.stop()
 
-        with st.spinner("Analyzing with the full 5-Tool Framework (deep-research + book)…"):
+        with st.spinner("Analyzing with the full deep-research 5-Tool Framework…"):
             try:
+                # Deep-research framework + full book (never shown to user)
+                deep_framework = """[PASTE YOUR ENTIRE DEEP-RESEARCH SECTION HERE]"""
+                book_context   = """[PASTE YOUR FULL BOOK TEXT HERE]"""
+
+                prompt = f"""
+                You are the ultimate expert on Bryan Barrera's 5-Tool Employee Framework.
+                Use the complete deep-research version + the entire book below to evaluate the candidate/role.
+
+                User notes / resume / job description:
+                {notes}
+
+                Slider scores (1–10):
+                Speed: {scores[0]}
+                Power: {scores[1]}
+                Fielding: {scores[2]}
+                Hitting for Average: {scores[3]}
+                Arm Strength: {scores[4]}
+
+                Your job:
+                1. Return final radar scores as a Python list like [8, 7, 9, 8, 6] (adjust sliders ±1 only if notes clearly contradict them — explain any change).
+                2. Give a full deep-research breakdown for each tool using this exact structure:
+                   • Natural Gift
+                   • High-Functioning Expression (bullet points)
+                   • Dysfunction Signals (bullet points)
+                   • Behavioral Insight
+                   • Where It Shows Up
+                3. Overall conclusion + fit rating (1–10) + recommendation.
+
+                Deep-research framework and full book:
+                {deep_framework}
+                {book_context}
+                """
+
                 response = requests.post(
                     "https://api.x.ai/v1/chat/completions",
-                    headers={"Authorization": f"Bearer {st.secrets['XAI_API_KEY']}"},
+                    headers={"Authorization": f"Bearer {st.secrets.get('XAI_API_KEY', '')}"},
                     json={
                         "model": "grok-4",
                         "messages": [{"role": "user", "content": prompt}],
@@ -217,131 +255,55 @@ if page == "1. Framework Intro":
                 response.raise_for_status()
                 ai_text = response.json()["choices"][0]["message"]["content"]
 
-                # Extract radar scores if AI returned them
+                # Extract scores for radar chart
                 import re
-                score_match = re.search(r"\[?\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d)\s*\]?", ai_text)
-                final_scores = [int(x) for x in score_match.groups()] if score_match else scores
+                match = re.search(r"\[?\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\]?", ai_text)
+                final_scores = [int(x) for x in match.groups()] if match else scores
 
             except Exception as e:
-                st.warning("⚡ Full AI analysis is temporarily offline (or API key missing). Falling back to your slider values.")
+                st.warning("Full AI analysis offline right now — using your slider scores only.")
                 ai_text = f"""
-### 5-Tool Profile (Slider-Based – AI Offline)
+### 5-Tool Profile (Manual Mode)
+**Speed** → {scores[0]}/10  
+**Power** → {scores[1]}/10  
+**Fielding** → {scores[2]}/10  
+**Hitting for Average** → {scores[3]}/10  
+**Arm Strength** → {scores[4]}/10  
 
-**Speed** — {scores[0]}/10  
-**Power** — {scores[1]}/10  
-**Fielding** — {scores[2]}/10  
-**Hitting for Average** — {scores[3]}/10  
-**Arm Strength** — {scores[4]}/10  
-
-Your manual scores are shown below. When the AI is back online, click Generate again for the full deep-research breakdown!
+When the AI is back online, click Generate again for the complete deep-research breakdown!
                 """
-                final_scores = scores  # use sliders as fallback
+                final_scores = scores
 
-            # ——— RADAR CHART ———
+            # ————— RADAR CHART —————
             fig = px.line_polar(
                 r=final_scores,
                 theta=tools,
                 line_close=True,
                 title="5-Tool Employee Radar Chart",
-                range_r=[0, 10]
+                range_r=[0, 10],
+                template="plotly_dark"
             )
-            fig.update_traces(fill='toself', fillcolor='rgba(0,150,255,0.3)', line_color='royalblue')
+            fig.update_traces(fill="toself", fillcolor="rgba(0,150,255,0.3)", line_color="royalblue")
+            fig.update_layout(polar=dict(radialaxis=dict(visible=True, range=[0, 10])))
             st.plotly_chart(fig, use_container_width=True)
 
-            # ——— AI-GENERATED ANALYSIS ———
-            st.markdown(ai_text)
-### 5-Tool Profile (Slider-Based – AI Offline)
-
-**Speed** — {scores[0]}/10  
-**Power** — {scores[1]}/10  
-**Fielding** — {scores[2]}/10  
-**Hitting for Average** — {scores[3]}/10  
-**Arm Strength** — {scores[4]}/10  
-
-Your manual scores are plotted below. When the AI is back online, paste the same notes again for the full deep-research breakdown!
-                """
-                final_scores = scores
-
-            # Always draw the radar chart
-            fig = px.line_polar(r=final_scores, theta=tools, line_close=True,
-                                title="5-Tool Employee Radar Chart", range_r=[0,10])
-            fig.update_traces(fill='toself', fillcolor='rgba(0,150,255,0.3)', line_color='royalblue')
-            st.plotly_chart(fig, use_container_width=True)
-
-            # Show the text analysis
+            # ————— FULL AI ANALYSIS —————
             st.markdown(ai_text)
 
-    if st.button("Generate Profile", type="primary"):
-        with st.spinner("Analyzing with the full deep-research framework…"):
-            # ——— DEEP FRAMEWORK + BOOK (never shown, only sent to AI) ———
-            deep_framework = """
-            [Insert the entire "The Final Version The Deep-Research 5-Tool Employee Framework" section here – the one that starts with "A behavioral operating system..." and contains Natural Gift, High-Functioning Expression, Dysfunction Signals, etc. for all five tools]
-            """
-            book_context = """
-            [Insert the full book text you just posted – all chapters, stories, influences, etc.]
-            """
-
-            prompt = f"""
-            You are an expert evaluator using Bryan Barrera's complete 5-Tool Employee Framework (deep-research version + full book context below).
-
-            User input:
-            Notes/resume/job description: {notes}
-            Slider scores (1-10): 
-            Speed: {scores[0]}, Power: {scores[1]}, Fielding: {scores[2]}, Hitting for Average: {scores[3]}, Arm Strength: {scores[4]}
-
-            Task:
-            1. Produce a beautiful Plotly polar radar chart (r=final_scores, theta=tools, filled).
-               – Start with the user's slider values, but intelligently adjust ±1 point if the notes/resume very clearly contradict a slider (explain any adjustments).
-            2. Give a full 5-Tool deep-research breakdown for this person/role using the exact structure:
-               • Natural Gift
-               • High-Functioning Expression (with bullets)
-               • Dysfunction Signals (with bullets)
-               • Behavioral Insight
-               • Where It Shows Up
-            3. Overall conclusion, fit rating (1-10), and recommendation.
-
-            Deep-research framework and full book context:
-            {deep_framework}
-
-            {book_context}
-            """
-
-            # ——— CHEAP HIGH-QUALITY AI CALL (Grok-4 via xAI API) ———
-            response = requests.post(
-                "https://api.x.ai/v1/chat/completions",
-                headers={"Authorization": f"Bearer {st.secrets['XAI_API_KEY']}"},
-                json={
-                    "model": "grok-4",
-                    "messages": [{"role": "user", "content": prompt}],
-                    "temperature": 0.7
-                }
-            ).json()
-
-            ai_text = response["choices"][0]["message"]["content"]
-
-            # Extract radar scores from AI response (it will output something like Final scores: [8,7,9,8,6])
-            import re
-            score_match = re.search(r"\[?\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\]?", ai_text)
-            if score_match:
-                final_scores = [int(x) for x in score_match.groups()]
-            else:
-                final_scores = scores  # fallback to sliders
-
-            fig = px.line_polar(r=final_scores, theta=tools, line_close=True,
-                                title="5-Tool Employee Radar Chart", range_r=[0,10])
-            fig.update_traces(fill='toself', fillcolor='rgba(0, 150, 255, 0.3)', line_color='royalblue')
-            st.plotly_chart(fig, use_container_width=True)
-
-            # Show the full AI analysis
-            st.markdown(ai_text)
-
-    col1, col2 = st.columns(2)
-    with col1:
+    # ————— SAVE / DOWNLOAD BUTTONS —————
+    col_a, col_b = st.columns(2)
+    with col_a:
         if st.button("Save to Repository"):
-            save_to_repository("Module 1 Profile", f"Notes: {notes}\nScores: {dict(zip(tools, scores))}")
-    with col2:
+            save_to_repository(
+                "Module 1 Profile",
+                f"Notes: {notes}\nScores: {dict(zip(tools, scores))}"
+            )
+    with col_b:
         if st.button("Download PDF"):
-            export_to_pdf("5-Tool Profile", notes + "\n\n" + "\n".join([f"{t}: {s}/10" for t,s in zip(tools, scores)]))
+            export_to_pdf(
+                "5-Tool Profile",
+                notes + "\n\n" + "\n".join([f"{t}: {s}/10" for t, s in zip(tools, scores)])
+            )
 # ================================
 # PAGE 2 - DEEP RESEARCH
 # ================================
