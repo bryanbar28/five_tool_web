@@ -197,7 +197,7 @@ if page == "1. Framework Intro":
             st.video(video_map["Hitting for Average"])
             if st.button("Generate Profile", type="primary"):
                 if not notes.strip():
-        st.warning("Please add some notes, a resume, or job description first.")
+                    st.warning("Please add some notes, a resume, or job description first.")
     else:
         with st.spinner("Generating your 5-Tool profile…"):
             try:
