@@ -207,7 +207,6 @@ if page == "1. Framework Intro":
         if not notes.strip():
             st.warning("Please enter some notes, a resume, or a job description first.")
             st.stop()
-
             with st.spinner("Analyzing with Grok-4 + your full book…"):
                 try:
                     response = requests.post(
@@ -243,7 +242,7 @@ if page == "1. Framework Intro":
 
 Click Generate again in a minute — Grok will be back with the full deep-research magic.
                     """
-                    final_scores = scores                
+                    final_scores = scores               
 ### 5-Tool Profile (Manual Mode - AI Offline)
 
 **Speed** = {scores[0]}/10  
