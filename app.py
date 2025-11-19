@@ -264,18 +264,16 @@ if page == "1. Framework Intro":
                 match = re.search(r"\[?\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\]?", ai_text)
                 final_scores = [int(x) for x in match.groups()] if match else scores
 
-            except Exception as e:
+         except Exception as e:
                 st.warning("⚡ Full AI analysis is temporarily offline — using your slider values only.")
                 ai_text = f"""
-### 5-Tool Profile (Manual Mode – AI Offline)
+### 5-Tool Profile (Manual Mode - AI Offline)
 
-**Speed** → {scores[0]}/10  
-**Power** → {scores[1]}/10  
-**Fielding** → {scores[2]}/10  
-**Hitting for Average** → {scores[3]}/10  
-**Arm Strength** → {scores[4]}/10  
-
-Click Generate again when the AI is back — you’ll get the full deep-research breakdown!
+**Speed** = {scores[0]}/10  
+**Power** = {scores[1]}/10  
+**Fielding** = {scores[2]}/10  
+**Hitting for Average** = {scores[3]}/10  
+**Arm Strength** = {scores[4]}/10
                 """
                 final_scores = scores
 ### 5-Tool Profile (Manual Mode)
