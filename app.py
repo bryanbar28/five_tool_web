@@ -195,6 +195,55 @@ if page == "1. Framework Intro":
     with col2:
         if video_map["Hitting for Average"]:
             st.video(video_map["Hitting for Average"])
+    if st.button("Generate Profile", type="primary"):
+    if not notes.strip():
+        st.warning("Please add some notes, a resume, or job description first.")
+    else:
+        with st.spinner("Generating your 5-Tool profile…"):
+            try:
+                # Try to call Grok-4 (best & cheapest high-quality option)
+                response = requests.post(
+                    "https://api.x.ai/v1/chat/completions",
+                    headers={"Authorization": f"Bearer {st.secrets['XAI_API_KEY']}"},
+                    json={
+                        "model": "grok-4",
+                        "messages": [{"role": "user", "content": prompt}],
+                        "temperature": 0.7
+                    },
+                    timeout=90
+                )
+                response.raise_for_status()
+                ai_text = response.json()["choices"][0]["message"]["content"]
+
+                # extract final scores for radar chart
+                import re
+                score_match = re.search(r"\[?\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d)\s*\]?", ai_text)
+                final_scores = [int(x) for x in score_match.groups()] if score_match else scores
+
+            except Exception as e:
+                # Graceful fallback — still shows a beautiful chart + basic breakdown
+                st.warning("⚡ Full AI analysis is offline right now (or key missing). Using your slider values only.")
+                ai_text = f"""
+### 5-Tool Profile (Slider-Based – AI Offline)
+
+**Speed** — {scores[0]}/10  
+**Power** — {scores[1]}/10  
+**Fielding** — {scores[2]}/10  
+**Hitting for Average** — {scores[3]}/10  
+**Arm Strength** — {scores[4]}/10  
+
+Your manual scores are plotted below. When the AI is back online, paste the same notes again for the full deep-research breakdown!
+                """
+                final_scores = scores
+
+            # Always draw the radar chart
+            fig = px.line_polar(r=final_scores, theta=tools, line_close=True,
+                                title="5-Tool Employee Radar Chart", range_r=[0,10])
+            fig.update_traces(fill='toself', fillcolor='rgba(0,150,255,0.3)', line_color='royalblue')
+            st.plotly_chart(fig, use_container_width=True)
+
+            # Show the text analysis
+            st.markdown(ai_text)
 
     if st.button("Generate Profile", type="primary"):
         with st.spinner("Analyzing with the full deep-research framework…"):
