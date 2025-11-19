@@ -1,7 +1,5 @@
-streamlit==1.39.0
-plotly==5.24.1
-pandas==2.2.3
-openai==1.51.0
-google-api-python-client==2.149.0
-supabase==2.9.1
-python-dotenv==1.2.1
+streamlit
+plotly
+pandas
+openai
+google-api-python-client
