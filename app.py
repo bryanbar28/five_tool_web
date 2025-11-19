@@ -835,14 +835,14 @@ def render_module_5():
             n = notes.lower()
             insight = "No strong toxic signals detected from notes."
             if any(w in n for w in ["blame", "fault", "not me", "they", "others"]):
-                insight = """**High Power Toxicity Risk**  
+                insight = ""**High Power Toxicity Risk**  
 Blame-shifting detected — classic arrogance derailer.  
 Immediate coaching on ownership required."""
             elif any(w in n for w in ["charm", "everyone loves", "optics", "image", "perform"]):
-                insight = """**High Arm Strength Toxicity Risk**  
+                insight = ""**High Arm Strength Toxicity Risk**  
 Manipulative charm without substance — theater over truth and substance."""
             elif any(w in n for w in ["quiet", "disengage", "silent", "checked out", "quit"]):
-                insight = """**High Hitting Toxicity Risk
+                insight = ""**High Hitting Toxicity Risk
             
 def render_module_6():
     st.title("SWOT 2.0 Strategic Framework")
