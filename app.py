@@ -192,16 +192,18 @@ if page == "1. Framework Intro":
             short = t.split(" — ")[0]
             scores.append(st.slider(t, 1, 10, 6, key=f"s1_{short}"))
 
-    with col2:
-        if video_map["Hitting for Average"]:
+     with col2:
+        if video_map.get("Hitting for Average"):
             st.video(video_map["Hitting for Average"])
-            if st.button("Generate Profile", type="primary"):
-                if not notes.strip():
-                    st.warning("Please add some notes, a resume, or job description first.")
-    else:
-        with st.spinner("Generating your 5-Tool profile…"):
+
+    # ——— GENERATE PROFILE BUTTON (outside the column, full width) ———
+    if st.button("Generate Profile", type="primary", use_container_width=True):
+        if not notes.strip():
+            st.warning("Please add some notes, a resume1999, or a job description first.")
+            st.stop()
+
+        with st.spinner("Analyzing with the full 5-Tool Framework (deep-research + book)…"):
             try:
-                # Try to call Grok-4 (best & cheapest high-quality option)
                 response = requests.post(
                     "https://api.x.ai/v1/chat/completions",
                     headers={"Authorization": f"Bearer {st.secrets['XAI_API_KEY']}"},
@@ -215,15 +217,39 @@ if page == "1. Framework Intro":
                 response.raise_for_status()
                 ai_text = response.json()["choices"][0]["message"]["content"]
 
-                # extract final scores for radar chart
+                # Extract radar scores if AI returned them
                 import re
                 score_match = re.search(r"\[?\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d)\s*\]?", ai_text)
                 final_scores = [int(x) for x in score_match.groups()] if score_match else scores
 
             except Exception as e:
-                # Graceful fallback — still shows a beautiful chart + basic breakdown
-                st.warning("⚡ Full AI analysis is offline right now (or key missing). Using your slider values only.")
+                st.warning("⚡ Full AI analysis is temporarily offline (or API key missing). Falling back to your slider values.")
                 ai_text = f"""
+### 5-Tool Profile (Slider-Based – AI Offline)
+
+**Speed** — {scores[0]}/10  
+**Power** — {scores[1]}/10  
+**Fielding** — {scores[2]}/10  
+**Hitting for Average** — {scores[3]}/10  
+**Arm Strength** — {scores[4]}/10  
+
+Your manual scores are shown below. When the AI is back online, click Generate again for the full deep-research breakdown!
+                """
+                final_scores = scores  # use sliders as fallback
+
+            # ——— RADAR CHART ———
+            fig = px.line_polar(
+                r=final_scores,
+                theta=tools,
+                line_close=True,
+                title="5-Tool Employee Radar Chart",
+                range_r=[0, 10]
+            )
+            fig.update_traces(fill='toself', fillcolor='rgba(0,150,255,0.3)', line_color='royalblue')
+            st.plotly_chart(fig, use_container_width=True)
+
+            # ——— AI-GENERATED ANALYSIS ———
+            st.markdown(ai_text)
 ### 5-Tool Profile (Slider-Based – AI Offline)
 
 **Speed** — {scores[0]}/10  
