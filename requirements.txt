@@ -1,6 +1,4 @@
 streamlit
-plotly
-pandas
+python-dotenv
 openai
-google-api-python-client
 supabase
