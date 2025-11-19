@@ -242,31 +242,42 @@ if page == "1. Framework Intro":
                 {deep_framework}
                 {book_context}
                 """
-
-          response = requests.post(
-    "https://api.x.ai/v1/chat/completions",
-    headers={
-        "Authorization": f"Bearer {st.secrets['XAI_API_KEY']}",
-        "Content-Type": "application/json"      # ← ADD THIS LINE
-    },
-    json={
-        "model": "grok-beta",
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.7
-    },
-    timeout=90
-)
+            try:
+                response = requests.post(
+                    "https://api.x.ai/v1/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {st.secrets['XAI_API_KEY']}",
+                        "Content-Type": "application/json"
+                    },
+                    json={
+                        "model": "grok-beta",
+                        "messages": [{"role": "user", "content": prompt}],
+                        "temperature": 0.7
+                    },
+                    timeout=90
+                )
                 response.raise_for_status()
                 ai_text = response.json()["choices"][0]["message"]["content"]
 
-                # Extract scores for radar chart
+                # Extract radar scores if Grok returned them
                 import re
                 match = re.search(r"\[?\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\]?", ai_text)
                 final_scores = [int(x) for x in match.groups()] if match else scores
 
             except Exception as e:
-                st.warning("Full AI analysis offline right now — using your slider scores only.")
+                st.warning("⚡ Full AI analysis is temporarily offline — using your slider values only.")
                 ai_text = f"""
+### 5-Tool Profile (Manual Mode – AI Offline)
+
+**Speed** → {scores[0]}/10  
+**Power** → {scores[1]}/10  
+**Fielding** → {scores[2]}/10  
+**Hitting for Average** → {scores[3]}/10  
+**Arm Strength** → {scores[4]}/10  
+
+Click Generate again when the AI is back — you’ll get the full deep-research breakdown!
+                """
+                final_scores = scores
 ### 5-Tool Profile (Manual Mode)
 **Speed** → {scores[0]}/10  
 **Power** → {scores[1]}/10  
