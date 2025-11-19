@@ -5,6 +5,28 @@ import re
 
 st.set_page_config(page_title="5-Tool Employee Framework", page_icon="⚾", layout="wide")
 
+# ================================
+# SIDEBAR – PAGE SELECTION
+# ================================
+st.sidebar.title("⚾ 5-Tool Framework")
+st.sidebar.markdown("**Select a module**")
+
+page = st.sidebar.radio(
+    "Go to",
+    [
+        "1. Framework Intro",
+        "2. 360° Feedback",
+        "3. Toxicity Scale",
+        "4. Leadership Eligibility",
+        "5. Interview Rubrics",
+        "6. Repository"
+    ],
+    label_visibility="collapsed"
+)
+
+st.sidebar.markdown("---")
+st.sidebar.caption(f"Powered by Grok-4 • {st.session_state.get('prompt_count', 0)} profiles generated")
+
 st.title("The 5-Tool Employee Framework")
 st.markdown("### An Interchangeable Model. Finding the Right Fit.")
 
