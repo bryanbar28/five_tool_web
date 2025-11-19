@@ -4,6 +4,9 @@ import requests
 import json
 import re
 from typing import List
+import streamlit>=1.30.0
+import plotly>=5.18.0
+import requests>=2.31.0
 
 st.set_page_config(page_title="5-Tool Employee Framework", page_icon="⚾", layout="wide")
 
