@@ -757,7 +757,7 @@ def render_module_5():
     # SAME Rubric Table
     st.subheader("Toxicity Rubric")
     st.markdown("""
-    <table style='width:100%; border:1px solid black; font-size:14px"}}>
+    <table style='width:100%; border:1px solid black; font-size:14px;'>
     <tr><th>Tool</th><th>Low Risk (3-4)</th><th>Moderate Risk (2)</th><th>High Risk (1)</th><th>Toxicity Triggers</th></tr>
     <tr><td>Speed</td><td>Adapts quickly; integrates feedback without ego.</td><td>Slow to adapt; reacts impulsively.</td><td>Freezes or disengages; ignores feedback.</td><td>Erratic decisions under pressure; volatility derailer.</td></tr>
     <tr><td>Power</td><td>Owns outcomes; decisive and humble.</td><td>Hesitates; deflects blame occasionally.</td><td>Blames others; manipulates responsibility.</td><td>Arrogance derailer; shirking accountability.</td></tr>
@@ -767,7 +767,7 @@ def render_module_5():
     </table>
     """, unsafe_allow_html=True)
 
-    # SAME Q&A — keyword logic
+    # SAME Q&A
     q = st.text_area("Ask about toxic leadership")
     if st.button("Get Response"):
         if q.strip():
@@ -830,7 +830,7 @@ def render_module_5():
         </table>
         """, unsafe_allow_html=True)
 
-        # Contextual Insight — keyword-based (fixed multi-line strings)
+        # Contextual Insight — keyword-based, now with proper colons
         if notes.strip():
             n = notes.lower()
             insight = "No strong toxic signals detected from notes."
@@ -840,15 +840,9 @@ Blame-shifting detected — classic arrogance derailer.
 Immediate coaching on ownership required."""
             elif any(w in n for w in ["charm", "everyone loves", "optics", "image", "perform"]):
                 insight = """**High Arm Strength Toxicity Risk**  
-Manipulative charm without substance — theater over truth."""
+Manipulative charm without substance — theater over truth and substance."""
             elif any(w in n for w in ["quiet", "disengage", "silent", "checked out", "quit"]):
-                insight = """**High Hitting Toxicity Risk**  
-Silent quitting / detachment derailer — reliability collapsing."""
-            elif any(w in n for w in ["rigid", "my way", "resist", "defensive", "block"]):
-                insight = """**High Fielding Toxicity Risk**  
-Rigid under stress — blocks learning and innovation."""
-            st.subheader("Contextual Insight")
-            st.markdown(insight)
+                insight = """**High Hitting Toxicity Risk
             
 def render_module_6():
     st.title("SWOT 2.0 Strategic Framework")
