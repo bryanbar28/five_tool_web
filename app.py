@@ -10,6 +10,7 @@ import plotly.express as px
 from openai import OpenAI
 from googleapiclient.discovery import build
 from fpdf import FPDF
+import requests
 
 st.set_page_config(page_title="Five-Tool Employee Framework", page_icon="⚾", layout="wide")
 
