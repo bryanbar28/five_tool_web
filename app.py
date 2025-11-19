@@ -757,7 +757,7 @@ def render_module_5():
     # SAME Rubric Table
     st.subheader("Toxicity Rubric")
     st.markdown("""
-    <table style='width:100%; border:1px solid black; font-size:14px;'>
+    <table style='width:100%; border:1px solid black; font-size:14px"}}>
     <tr><th>Tool</th><th>Low Risk (3-4)</th><th>Moderate Risk (2)</th><th>High Risk (1)</th><th>Toxicity Triggers</th></tr>
     <tr><td>Speed</td><td>Adapts quickly; integrates feedback without ego.</td><td>Slow to adapt; reacts impulsively.</td><td>Freezes or disengages; ignores feedback.</td><td>Erratic decisions under pressure; volatility derailer.</td></tr>
     <tr><td>Power</td><td>Owns outcomes; decisive and humble.</td><td>Hesitates; deflects blame occasionally.</td><td>Blames others; manipulates responsibility.</td><td>Arrogance derailer; shirking accountability.</td></tr>
@@ -767,7 +767,7 @@ def render_module_5():
     </table>
     """, unsafe_allow_html=True)
 
-    # SAME Q&A — now AI-free, smart keyword logic
+    # SAME Q&A — keyword logic
     q = st.text_area("Ask about toxic leadership")
     if st.button("Get Response"):
         if q.strip():
@@ -796,7 +796,7 @@ def render_module_5():
     arm_strength = st.slider("Arm Strength", 1, 5, 3)
     notes = st.text_area("Additional Notes")
 
-    # SAME Generate Profile
+    # SAME Generate Profile + Radar + Table
     if st.button("Generate Profile"):
         total_score = speed + power + fielding + hitting + arm_strength
         if total_score >= 15:
@@ -813,15 +813,13 @@ def render_module_5():
         st.write(f"**Risk Level:** {risk_level}")
         st.write(f"**Action Plan:** {action_plan}")
 
-        # SAME Radar Chart
         categories = ["Speed", "Power", "Fielding", "Hitting", "Arm Strength"]
-        scores = [speed, power, fielding, hitting, arm_strength]
-        fig = px.line_polar(r=scores, theta=categories, line_close=True)
+        scores_list = [speed, power, fielding, hitting, arm_strength]
+        fig = px.line_polar(r=scores_list, theta=categories, line_close=True)
         fig.update_traces(fill='toself')
         fig.update_layout(title="Toxicity Profile Radar Chart")
         st.plotly_chart(fig)
 
-        # SAME Interpretation Table
         st.markdown("""
         <h4>Total Score Interpretation</h4>
         <table style='width:100%; border:1px solid black;'>
@@ -832,13 +830,26 @@ def render_module_5():
         </table>
         """, unsafe_allow_html=True)
 
-        # Contextual Insight — now AI-free, keyword-based
+        # Contextual Insight — keyword-based (fixed multi-line strings)
         if notes.strip():
             n = notes.lower()
             insight = "No strong toxic signals detected from notes."
-            if any(w in n for w in ["blame", "fault", "not me", "they"]):
-                insight = "**High Power Toxicity Risk** → Blame-shifting detected. Classic
-
+            if any(w in n for w in ["blame", "fault", "not me", "they", "others"]):
+                insight = """**High Power Toxicity Risk**  
+Blame-shifting detected — classic arrogance derailer.  
+Immediate coaching on ownership required."""
+            elif any(w in n for w in ["charm", "everyone loves", "optics", "image", "perform"]):
+                insight = """**High Arm Strength Toxicity Risk**  
+Manipulative charm without substance — theater over truth."""
+            elif any(w in n for w in ["quiet", "disengage", "silent", "checked out", "quit"]):
+                insight = """**High Hitting Toxicity Risk**  
+Silent quitting / detachment derailer — reliability collapsing."""
+            elif any(w in n for w in ["rigid", "my way", "resist", "defensive", "block"]):
+                insight = """**High Fielding Toxicity Risk**  
+Rigid under stress — blocks learning and innovation."""
+            st.subheader("Contextual Insight")
+            st.markdown(insight)
+            
 def render_module_6():
     st.title("SWOT 2.0 Strategic Framework")
     st.markdown("Designed by Bryan Barrera – Bias-Resistant, Systems-Driven")
