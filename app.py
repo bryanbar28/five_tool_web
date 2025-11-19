@@ -1,22 +1,21 @@
-import streamlit as st
-from openai import OpenAI
 from supabase import create_client
+from openai import OpenAI
+import streamlit as st
 import hashlib
 from datetime import datetime
 
-# Load secrets from Streamlit Cloud
+# Load secrets
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 
-# Check keys
 if not all([OPENAI_API_KEY, SUPABASE_URL, SUPABASE_KEY]):
     st.error("Missing API keys! Check Streamlit secrets.")
     st.stop()
 
 try:
     client = OpenAI(api_key=OPENAI_API_KEY)
-    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)  # ✅ FIXED
 except Exception as e:
     st.error(f"Failed to initialize connections: {str(e)}")
     st.stop()
