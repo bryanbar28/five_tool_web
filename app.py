@@ -4,10 +4,10 @@
 import os
 import pandas as pd
 import streamlit as st
-import supasbase client
 import plotly.express as px
 from openai import OpenAI
 from googleapiclient.discovery import build
+from supabase import create_client
 
 # -------------------------------
 # Page Config
