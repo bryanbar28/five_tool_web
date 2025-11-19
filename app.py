@@ -246,7 +246,7 @@ if page == "1. Framework Intro":
                     "https://api.x.ai/v1/chat/completions",
                     headers={"Authorization": f"Bearer {st.secrets.get('XAI_API_KEY', '')}"},
                     json={
-                        "model": "grok-4-latest",
+                        "model": "grok-beta",
                         "messages": [{"role": "user", "content": prompt}],
                         "temperature": 0.7
                     },
