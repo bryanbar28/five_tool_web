@@ -1,6 +1,6 @@
 import streamlit as st
 from openai import OpenAI
-from supabase import create_client, Client
+from supabase import create_client
 import hashlib
 from datetime import datetime
 
