@@ -242,7 +242,7 @@ if page == "1. Framework Intro":
                 {deep_framework}
                 {book_context}
                 """
-            try:
+                      try:
                 response = requests.post(
                     "https://api.x.ai/v1/chat/completions",
                     headers={
@@ -259,7 +259,6 @@ if page == "1. Framework Intro":
                 response.raise_for_status()
                 ai_text = response.json()["choices"][0]["message"]["content"]
 
-                # Extract final scores for radar chart
                 import re
                 match = re.search(r"\[?\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\]?", ai_text)
                 final_scores = [int(x) for x in match.groups()] if match else scores
@@ -275,7 +274,7 @@ if page == "1. Framework Intro":
 **Hitting for Average** = {scores[3]}/10  
 **Arm Strength** = {scores[4]}/10  
 
-Click Generate again when Grok is back online for the full deep-research breakdown.
+Click Generate again when Grok is back online.
                 """
                 final_scores = scores
 ### 5-Tool Profile (Manual Mode - AI Offline)
