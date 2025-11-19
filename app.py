@@ -2,11 +2,17 @@
 # Imports
 # -------------------------------
 import os
-import pandas as pd
+import json
 import streamlit as st
+import pandas as pd
 import plotly.express as px
 from openai import OpenAI
 from googleapiclient.discovery import build
+from dotenv import load_dotenv
+
+load_dotenv()
+
+st.set_page_config(page_title="Five-Tool App", layout="wide")
 
 # -------------------------------
 # Page Config
@@ -22,9 +28,67 @@ if "show_repository" not in st.session_state:
     st.session_state.show_repository = False
 
 # -------------------------------
-# OpenAI Client Setup
+# OpenAI Client
 # -------------------------------
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))  # ✅ Use environment variable
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+# -------------------------------
+# SINGLE AI FUNCTION — ALL CHAT BOXES USE THIS
+# -------------------------------
+def ask_5tool(question: str, temperature=0.3):
+    context = """
+You are an expert consultant using Bryan Barrera’s 5-Tool Employee Framework from the book "Finding the Right Fit".
+The five tools:
+• Speed — Cognitive & Behavioral Agility
+• Power — Ownership, Initiative & Decisiveness
+• Fielding — Strategic Foresight & System Protection
+• Hitting for Average — Reliability, Rhythm & Repeatability
+• Arm Strength — Communication Reach & Influence
+
+Always reference behavior under pressure, dysfunction signals, toxicity, leadership eligibility, behavioral drift, and systems thinking. Use baseball analogies when helpful.
+Never give generic advice — stay grounded in the framework and the user’s input.
+"""
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        temperature=temperature,
+        messages=[
+            {"role": "system", "content": context},
+            {"role": "user", "content": question}
+        ],
+        max_tokens=900
+    )
+    return response.choices[0].message.content.strip()
+
+# -------------------------------
+# Business Description Parser (Coffee Roasting Magic)
+# -------------------------------
+def parse_business_description(description: str):
+    prompt = f"""
+Extract ONLY valid JSON (no markdown):
+
+{{
+  "industry_primary": "e.g. Food & Beverage",
+  "industry_subcategory": "e.g. Coffee Roasting",
+  "company_size_employees": "1"|"2-10"|"11-50"|"51-200"|"201-1000"|"1000+",
+  "company_size_revenue": "<1M"|"1-5M"|"5-20M"|"20-100M"|"100M+"|"Unknown",
+  "location_city": string or null,
+  "location_state": string or null,
+  "business_model": "B2B"|"B2C"|"Marketplace"|"Subscription"|"Retail"|"Wholesale"|"Service"|"Other",
+  "confidence_score": 1-10
+}}
+
+User description: "{description}"
+"""
+    try:
+        resp = client.chat.completions.create(
+            model="gpt-4o-mini",
+            temperature=0,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        raw = resp.choices[0].message.content.strip()
+        return json.loads(raw)
+    except:
+        return None
 
 # -------------------------------
 # API Keys
@@ -36,20 +100,14 @@ CHANNEL_ID = "YOUR_CHANNEL_ID"
 # Helper Functions
 # -------------------------------
 def fetch_youtube_videos():
-    youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
+    youtube = build("youtube", "v3", developerKey=os.getenv("YOUTUBE_API_KEY"))
     request = youtube.search().list(
         part="snippet",
-        channelId=CHANNEL_ID,
+        channelId="YOUR_CHANNEL_ID",
         maxResults=20,
         order="date"
     )
-    response = request.execute()
-    videos = []
-    for item in response.get("items", []):
-        video_title = item["snippet"]["title"]
-        video_url = f"https://www.youtube.com/watch?v={item['id']['videoId']}"
-        videos.append({"title": video_title, "url": video_url})
-    return videos
+    return request.execute().get("items", [])
 
 def map_videos_to_tools(videos):
     mapping = {
@@ -133,6 +191,19 @@ def render_template_discovery():
         st.markdown("- [Native Teams: 30 Role-Based Review Examples](https://nativeteams.com/blog/performance-review-examples)")
         st.markdown("- [BetterUp: 53 Performance Review Examples](https://www.betterup.com/blog/performance-review-examples)")
         st.markdown("- [Indeed: Review Template Library](https://www.indeed.com/career-advice/career-development/performance-review-template)")
+def page_parser():
+    st.title("Smart Business Parser")
+    desc = st.text_area("Describe your business", height=120,
+                        placeholder="e.g. my company is a small coffee roasting business in Portland")
+    if st.button("Parse", type="primary"):
+        if desc.strip():
+            with st.spinner("Analyzing..."):
+                result = parse_business_description(desc)
+                if result:
+                    st.session_state.last_parse = result
+                    st.success("Done!")
+    if "last_parse" in st.session_state:
+        st.json(st.session_state.last_parse, expanded=True)
 # -------------------------------
 # 🎬 Gritty Job Review Generator
 # -------------------------------
@@ -179,9 +250,9 @@ def generate_job_review(role, notes=None):
 # -------------------------------
 def render_module_1():
     # ✅ Title and Intro
-    st.title("The 5 Tool Employee Framework")
+st.title("The 5 Tool Employee Framework")
     st.markdown("### _Introduction into the 5 Tool Employee Framework_")
-    st.markdown("An Interchangeable Model. Finding the Right Fit.")
+    st.markdown("An Interchangeable Model. Finding the Right Fit.") 
 
     # ✅ Framework Section
     st.markdown("#### 5 Tool Baseball Player")
@@ -210,9 +281,13 @@ def render_module_1():
     st.markdown("---")
 
     # ✅ Chatbox Section
-    st.subheader("🤖 Ask AI About the Framework")
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history = []
+st.subheader("Ask AI About the Framework")
+    q = st.text_input("Ask anything about the framework")
+    if st.button("Send"):
+        if q.strip():
+            with st.spinner("Thinking..."):
+                answer = ask_5tool(q)
+            st.markdown(answer)
 
     user_question = st.text_input("Ask a question (e.g., 'Tell me more about hitting for average', 'Explain adaptability')")
 
@@ -475,7 +550,12 @@ def render_module_2():
     )
 
     # ✅ Question input
-    question = st.text_input("Ask a question about the framework:")
+    q = st.text_input("Ask a question about the framework:")
+    if st.button("Dive Further"):
+        if q.strip():
+            with st.spinner("Researching..."):
+                answer = ask_5tool(q)
+            st.markdown(answer)
 
     # ✅ Dive Further button
     if st.button("Dive Further"):
@@ -569,21 +649,12 @@ def render_module_3():
     user_comments = st.text_area("Add your comments or observations", placeholder="e.g., This candidate freezes under pressure but excels in planning.")
 
     # ✅ Generate AI insights
+    comments = st.text_area("Comments")
     if st.button("Generate Insights"):
-        if user_comments.strip():
-            st.subheader("🔍 AI Insights Based on Your Comments")
-            response = client.chat.completions.create(
-                model="gpt-4",
-                messages=[
-                    {"role": "system", "content": "You are an organizational psychologist analyzing behavior under pressure."},
-                    {"role": "user", "content": f"Analyze this comment in context of the Behavior Under Pressure Grid: {user_comments}"}
-                ],
-                temperature=0.7,
-                max_tokens=400
-            )
-            st.write(response.choices[0].message.content)
-        else:
-            st.warning("Please add comments before generating insights.")
+        if comments.strip():
+            answer = ask_5tool(f"Analyze in Behavior Under Pressure Grid: {comments}")
+            st.markdown(answer)
+            
                     
 def render_module_4():
     import plotly.express as px
@@ -699,18 +770,11 @@ def render_module_4():
 
     # ✅ Original AI Q&A Box
     st.subheader("Ask AI About the Framework")
-    user_question = st.text_area("Ask a question (e.g., 'Tell me more about this')")
-    if st.button("Send Question"):
-        if user_question.strip():
-            response = client.chat.completions.create(
-                model="gpt-4",
-                messages=[
-                    {"role": "system", "content": (
-                        "You are an expert on the 5-Tool Employee Framework. "
-                        "Always include a link to our YouTube channel: https://www.youtube.com/@5toolemployeeframework "
-                        "and add recommended training links."
-                    )},
-                    {"role": "user", "content": user_question}
+    follow = st.text_area("Ask a follow-up")
+    if st.button("Get AI Answer"):
+        if follow.strip():
+            answer = ask_5tool(follow)
+            st.markdown(answer)
                 ],
                 temperature=0.7,
                 max_tokens=700
@@ -774,29 +838,6 @@ def render_module_5():
     from openai import OpenAI
     import os
 
-    # Initialize OpenAI client
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-    # --- Helper: AI response for general questions ---
-    def get_ai_response(question):
-        system_prompt = """
-        You are an expert in organizational psychology and leadership.
-        Provide a structured response in this format:
-        **Explanation:** Summary of the concept.
-        **Detail:** Key insights and why it matters.
-        **Practical Tips:** Actionable steps for real-world application.
-        """
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": question}
-            ],
-            temperature=0.7,
-            max_tokens=700
-        )
-        return response.choices[0].message.content
-
     # --- Helper: Contextual Insight combining notes and score ---
     def get_contextual_insight(notes, score, risk_level):
         contextual_prompt = f"""
@@ -807,19 +848,7 @@ def render_module_5():
 
         Determine if notes indicate toxic intent or cultural risk even if numeric score suggests low risk.
         Provide:
-        **Contextual Insight:** Explain toxicity risk based on notes.
-        **Recommendation:** Suggest actions considering both score and notes.
-        """
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are an expert in leadership assessment and organizational culture."},
-                {"role": "user", "content": contextual_prompt}
-            ],
-            temperature=0.7,
-            max_tokens=500
-        )
-        return response.choices[0].message.content
+
 
     # --- UI Layout ---
     st.title("☢️ Toxicity in the Workplace")
@@ -847,11 +876,11 @@ def render_module_5():
     </table>
     """, unsafe_allow_html=True)
 
-    # AI Chat
-    st.subheader("AI Chat: Ask about Toxic Leadership or Feedback")
-    ai_question = st.text_area("Ask a question (e.g., Tell me more about 360-degree feedback)")
+    q = st.text_area("Ask about toxic leadership")
     if st.button("Get AI Response"):
-        st.markdown(get_ai_response(ai_question))
+        if q.strip():
+            answer = ask_5tool(q)
+            st.markdown(answer)
 
     # Scoring Sliders
     st.subheader("Rate the Employee on Each Dimension")
@@ -984,15 +1013,18 @@ def generate_roadmap(df):
 # --- Streamlit UI ---
 
 def render_module_6():
-    st.title("📊 SWOT 2.0 Strategic Framework")
-    st.markdown("Designed by Bryan Barrera & Microsoft Copilot")
-
-    notes = st.text_area("Additional Notes and Input")
-
-    view_mode = st.radio("Select View Mode", ["Basic SWOT", "Advanced SWOT 2.0"])
-
-    if st.button("🎯 Generate AI-Powered SWOT"):
-        strengths, weaknesses, opportunities, threats = generate_ai_swot(notes, ai_chat)
+    st.title("SWOT 2.0 Strategic Framework")
+    st.markdown("Designed by Bryan Barrera – Bias-Resistant, Systems-Driven")
+    notes = st.text_area("Raw notes / challenges", height=180)
+    if st.button("Generate Bias-Resistant SWOT 2.0", type="primary"):
+        if notes.strip():
+            with st.spinner("Pre-mortem, red-team, weighted scoring..."):
+                answer = ask_5tool(f"""
+                Act as SWOT 2.0 master using Bryan Barrera's full bias-resistant framework.
+                Apply anonymous input, pre-mortem, reversal test, red-team, weighted scoring (Impact 40%, Feasibility 30%, Urgency 20%, Confidence 10%), Capra’s criteria, war-gaming, dynamic roadmap.
+                User notes: {notes}
+                """)
+            st.markdown(answer)
 
         # Quadrant Layout
         st.subheader("✅ Generated SWOT Analysis")
