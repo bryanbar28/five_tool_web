@@ -3,7 +3,6 @@ import plotly.express as px
 import requests
 import json
 import re
-from typing import List
-streamlit>=1.30.0
-plotly>=5.18.0
-requests>=2.31.0
+streamlit==1.39.0
+plotly==5.24.1
+requests==2.32.3
