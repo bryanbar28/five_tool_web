@@ -3,3 +3,4 @@ plotly
 pandas
 openai
 google-api-python-client
+supabase client 
