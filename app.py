@@ -7,10 +7,11 @@ import random
 import pandas as pd
 import streamlit as st
 import plotly.express as px
-from openai import OpenAI
 from googleapiclient.discovery import build
 from fpdf import FPDF
-import requests
+import requests           
+import re
+
 
 st.set_page_config(page_title="Five-Tool Employee Framework", page_icon="⚾", layout="wide")
 
@@ -29,7 +30,6 @@ if "chat_history" not in st.session_state:
 # ================================
 # API SETUP
 # ================================
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 CHANNEL_ID = "UC_your_channel_id_here"  # ← CHANGE THIS
 
