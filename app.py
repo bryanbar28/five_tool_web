@@ -20,12 +20,11 @@ if "initial_review" not in st.session_state:
     st.session_state.initial_review = ""
 if "show_repository" not in st.session_state:
     st.session_state.show_repository = False
-    # Initialize prompt counter
+# ✅ Prompt limit setup
 if "prompt_count" not in st.session_state:
     st.session_state.prompt_count = 0
 
-# Define max prompts for free tier
-MAX_PROMPTS = 5
+MAX_PROMPTS = 5  # Free tier limit
 
 # -------------------------------
 # OpenAI Client Setup
@@ -83,7 +82,7 @@ def map_videos_to_tools(videos):
 # Subscription Logic
 # -------------------------------
 PAID_PAGES = {
-    "Page 7: Repository": "$9.99/mo"
+    "Page 6: Repository": "$9.99/mo"
 }
 
 def is_unlocked(page):
@@ -163,6 +162,10 @@ def generate_job_review(role, notes=None):
     if notes:
         prompt += f"\n\nIncorporate these user-provided notes into the review:\n{notes}"
 
+if st.session_state.prompt_count >= MAX_PROMPTS:
+    st.warning("🚫 You have reached your free limit of 5 prompts this month. Upgrade to premium for unlimited access.")
+else:
+
     try:
         response = client.chat.completions.create(
             model="gpt-4-mini",
@@ -173,7 +176,7 @@ def generate_job_review(role, notes=None):
             temperature=0.7,
             max_tokens=800
         )
-
+          st.session_state.prompt_count += 1  # Increment after successful call
         review_text = response.choices[0].message.content
         st.markdown("### 🧾 Realistic Job Review")
         st.write(review_text)
@@ -393,7 +396,7 @@ def render_module_2():
     - Mistakes urgency for depth
     - Avoids structure, defaults to charisma
     - Performs rather than processes under pressure
-    Behavioral Insight: Psychological agility is the governor here—not raw reaction speed. Sustainable performance depends on metabolizing tension, not just masking it.
+    Behavioral Insight: Psychoal agility is the governor here—not raw reaction speed. Sustainable performance depends on metabolizing tension, not just masking it.
     Where It Shows Up:
     - Change management
     - Customer-facing adaptation
@@ -495,7 +498,7 @@ def render_module_2():
                 - Invisible, Shared, Authentic, Servant, Toxic Leadership
                 - Transactional & Transformational Leadership
                 - Social Cognitive Theory (Bandura)
-                - Psychological Capital (Luthans, Avolio, Youssef)
+                - Psychoal Capital (Luthans, Avolio, Youssef)
                 - Ilya Prigogine
                 - Drucker’s work (The Effective Executive)
                 - Capra & Autopoiesis
@@ -526,7 +529,7 @@ def render_module_2():
                     temperature=0.7,
                     max_tokens=1000
                 )
-
+                  st.session_state.prompt_count += 1  # Increment after successful call
                 ai_answer = response.choices[0].message.content
                 st.markdown("### 🔍 Deep Dive Answer")
                 st.markdown(ai_answer)
@@ -587,6 +590,7 @@ def render_module_3():
                 temperature=0.7,
                 max_tokens=400
             )
+            st.session_state.prompt_count += 1  # Increment after successful call
             st.write(response.choices[0].message.content)
         else:
             st.warning("Please add comments before generating insights.")
@@ -674,7 +678,7 @@ def render_module_4():
             ["Execution Excellence", "Over-indexes on personal output", "Micromanagement, resistance to delegation"],
             ["Deep Knowledge", "Weaponizes expertise to dominate", "Dismissiveness, lack of collaborative fluency"],
             ["Busy Bee Mentality", "Equates busyness with impact", "Activity ≠ strategy, reactive leadership"],
-            ["Low Emotional Calibration", "Talks down, corrects instead of connects", "Erosion of trust, psychological safety drain"]
+            ["Low Emotional Calibration", "Talks down, corrects instead of connects", "Erosion of trust, psychoal safety drain"]
         ])
     elif framework == "Risk-Sensitive Execution Roles":
         st.write("### Risk-Sensitive Execution Roles")
@@ -721,6 +725,7 @@ def render_module_4():
                 temperature=0.7,
                 max_tokens=700
             )
+            st.session_state.prompt_count += 1  # Increment after successful call
             st.markdown("### AI Answer")
             st.write(response.choices[0].message.content)
             st.markdown("**Recommended Training Links:**")
@@ -754,7 +759,7 @@ def render_module_4():
                     messages=[
                         {"role": "system", "content": (
                             "You are an expert on the 5-Tool Employee Framework. "
-                            "Provide detailed, practical, and psychologically rich insights. "
+                            "Provide detailed, practical, and psychoally rich insights. "
                             "Always include a link to our YouTube channel: https://www.youtube.com/@5toolemployeeframework "
                             "and add recommended training links."
                         )},
@@ -763,6 +768,7 @@ def render_module_4():
                     temperature=0.7,
                     max_tokens=700
                 )
+                st.session_state.prompt_count += 1  # Increment after successful call
                 st.markdown("### AI Answer")
                 st.write(response.choices[0].message.content)
                 st.markdown("**Recommended Training Links:**")
@@ -801,6 +807,7 @@ def render_module_5():
             temperature=0.7,
             max_tokens=700
         )
+        st.session_state.prompt_count += 1  # Increment after successful call
         return response.choices[0].message.content
 
     # --- Helper: Contextual Insight combining notes and score ---
@@ -825,6 +832,7 @@ def render_module_5():
             temperature=0.7,
             max_tokens=500
         )
+        st.session_state.prompt_count += 1  # Increment after successful call
         return response.choices[0].message.content
 
     # --- UI Layout ---
@@ -920,7 +928,7 @@ import pandas as pd
 
 # --- AI + Web Insights Simulation ---
 # In real implementation, these would call an AI model and integrate web-scraped insights.
-# For now, we'll simulate with blended logic from user notes and industry best practices.
+# For now, we'll simulate with blended  from user notes and industry best practices.
 
 def generate_ai_swot(notes, ai_chat):
     """Generate SWOT bullet points based on user notes and web insights."""
