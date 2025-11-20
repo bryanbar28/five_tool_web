@@ -159,7 +159,7 @@ def generate_job_review(role, notes=None):
 
     try:
         response = client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-4-mini",
             messages=[
                 {"role": "system", "content": "You are a workplace analyst writing realistic job reviews for professionals."},
                 {"role": "user", "content": prompt}
@@ -512,7 +512,7 @@ def render_module_2():
                 """
 
                 response = client.chat.completions.create(
-                    model="gpt-4",
+                    model="gpt-4-mini",
                     messages=[
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": question}
@@ -573,7 +573,7 @@ def render_module_3():
         if user_comments.strip():
             st.subheader("🔍 AI Insights Based on Your Comments")
             response = client.chat.completions.create(
-                model="gpt-4",
+                model="gpt-4-mini",
                 messages=[
                     {"role": "system", "content": "You are an organizational psychologist analyzing behavior under pressure."},
                     {"role": "user", "content": f"Analyze this comment in context of the Behavior Under Pressure Grid: {user_comments}"}
@@ -703,7 +703,7 @@ def render_module_4():
     if st.button("Send Question"):
         if user_question.strip():
             response = client.chat.completions.create(
-                model="gpt-4",
+                model="gpt-4-mini",
                 messages=[
                     {"role": "system", "content": (
                         "You are an expert on the 5-Tool Employee Framework. "
@@ -744,7 +744,7 @@ def render_module_4():
         if st.button("Get AI Answer"):
             if follow_up_question.strip():
                 response = client.chat.completions.create(
-                    model="gpt-4",
+                    model="gpt-4-mini",
                     messages=[
                         {"role": "system", "content": (
                             "You are an expert on the 5-Tool Employee Framework. "
@@ -787,7 +787,7 @@ def render_module_5():
         **Practical Tips:** Actionable steps for real-world application.
         """
         response = client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-4-mini",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": question}
@@ -811,7 +811,7 @@ def render_module_5():
         **Recommendation:** Suggest actions considering both score and notes.
         """
         response = client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-4-mini",
             messages=[
                 {"role": "system", "content": "You are an expert in leadership assessment and organizational culture."},
                 {"role": "user", "content": contextual_prompt}
