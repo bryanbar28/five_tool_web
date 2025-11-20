@@ -209,10 +209,7 @@ def render_module_1():
 
     st.markdown("---")
 
-    # ✅ Chatbox Section
-    st.subheader("🤖 Ask AI About the Framework")
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history = []
+
 
     user_question = st.text_input("Ask a question (e.g., 'Tell me more about hitting for average', 'Explain adaptability')")
 
