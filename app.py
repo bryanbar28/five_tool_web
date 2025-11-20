@@ -176,7 +176,7 @@ else:
             temperature=0.7,
             max_tokens=800
         )
-          st.session_state.prompt_count += 1  # Increment after successful call
+        st.session_state.prompt_count += 1  # Increment after successful call
         review_text = response.choices[0].message.content
         st.markdown("### 🧾 Realistic Job Review")
         st.write(review_text)
