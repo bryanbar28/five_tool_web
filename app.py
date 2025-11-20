@@ -252,7 +252,7 @@ def page_1():
             fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="5-Tool Radar")
             fig.update_traces(fill='toself')
             st.plotly_chart(fig)
-                else:
+            else:
     if st.button("Clear History"):
         st.session_state.chat_history = []
         st.rerun()
