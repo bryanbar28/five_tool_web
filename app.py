@@ -209,7 +209,10 @@ def render_module_1():
 
     st.markdown("---")
 
-
+    # ✅ Chatbox Section
+    st.subheader("🤖 Ask AI About the Framework")
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = []
 
     user_question = st.text_input("Ask a question (e.g., 'Tell me more about hitting for average', 'Explain adaptability')")
 
@@ -904,6 +907,7 @@ def render_module_5():
         if notes.strip():
             st.subheader("Contextual Insight")
             st.markdown(get_contextual_insight(notes, total_score, risk_level))
+
 import streamlit as st
 import random
 import pandas as pd
@@ -1050,7 +1054,7 @@ PAGES = [
     "Page 3: Behavior Under Pressure Grid",
     "Page 4: Behavioral Calibration Grid",
     "Page 5: Toxicity in the Workplace",
-    "Page 6: SWOT Analysis 2.0",
+    "Page 6: SWOT 2.0",
     "Page 7: Repository",
 ]
 
@@ -1067,7 +1071,7 @@ elif selected_page == "Page 4: Behavioral Calibration Grid":
     render_module_4()
 elif selected_page == "Page 5: Toxicity in the Workplace":
     render_module_5()
-elif selected_page == "Page 6: SWOT Analysis 2.0":
+elif selected_page == "Page 6: SWOT 2.0":
     render_module_6()
 elif selected_page == "Page 7: Repository":
     render_module_7()
