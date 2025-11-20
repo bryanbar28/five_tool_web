@@ -5,7 +5,7 @@ import os
 import pandas as pd
 import streamlit as st
 import plotly.express as px
-import OpenAI from openai 
+from OpenAI import OpeanAI
 from googleapiclient.discovery import build
 
 # -------------------------------
