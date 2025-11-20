@@ -23,19 +23,19 @@ if "last_parse" not in st.session_state:
 # -------------------------------
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 # -------------------------------
-# SINGLE AI FUNCTION — ALL CHAT BOXES USE THIS
+# SINGLE AI FUNCTION - ALL CHAT BOXES USE THIS
 # -------------------------------
 def ask_5tool(question: str, temperature=0.3):
     context = """
-You are an expert consultant using Bryan Barrera’s 5-Tool Employee Framework from the book "Finding the Right Fit".
+You are an expert consultant using Bryan Barrera's 5-Tool Employee Framework from the book "Finding the Right Fit".
 The five tools:
-• Speed — Cognitive & Behavioral Agility
-• Power — Ownership, Initiative & Decisiveness
-• Fielding — Strategic Foresight & System Protection
-• Hitting for Average — Reliability, Rhythm & Repeatability
-• Arm Strength — Communication Reach & Influence
+• Speed - Cognitive & Behavioral Agility
+• Power - Ownership, Initiative & Decisiveness
+• Fielding - Strategic Foresight & System Protection
+• Hitting for Average - Reliability, Rhythm & Repeatability
+• Arm Strength - Communication Reach & Influence
 Always reference behavior under pressure, dysfunction signals, toxicity, leadership eligibility, behavioral drift, and systems thinking. Use baseball analogies when helpful.
-Never give generic advice — stay grounded in the framework and the user’s input.
+Never give generic advice - stay grounded in the framework and the user's input.
 """
     response = client.chat.completions.create(
         model="gpt-4o-mini",
@@ -152,7 +152,7 @@ Avoid generic corporate language. Make it useful for someone considering this jo
 # Template Discovery
 # -------------------------------
 def render_template_discovery():
-    st.title("🧠 Behavioral Intelligence App — Template Discovery")
+    st.title("🧠 Behavioral Intelligence App - Template Discovery")
     role_query = st.text_input(
         "Ask me anything about job reviews, templates, or phrases",
     )
@@ -215,9 +215,9 @@ def page_1():
 - ⚡ **Speed → Adaptability & Continuous Learning**
   Speed gives a player a competitive edge; adaptability ensures professionals stay relevant.
 - 💪 **Arm Strength → Communication & Leadership**
-  A powerful arm makes impactful plays—just like effective communication drives team success.
+  A powerful arm makes impactful plays-just like effective communication drives team success.
 - 🚀 **Power → Strategic Decision-Making**
-  Power hitters change the game—just like leaders who make high-impact decisions.
+  Power hitters change the game-just like leaders who make high-impact decisions.
     """)
     st.markdown("---")
     st.subheader("Ask AI About the Framework")
@@ -258,7 +258,8 @@ def page_1():
         st.rerun()
 def render_module_2():
     import streamlit as st
-    st.title("Advanced Deep Research — The 5 Tool Employee Framework")
+    st.title("Advanced Deep Research - The 5 Tool Employee Framework")
+    # ✅ SAME scrollable PDF content as before
     pdf_content = """
     _The Deep-Research 5-Tool Employee Framework_
     A behavioral operating system for high-performance environments. Designed to evaluate not just output, but behavior under pressure, natural tendencies, and the psychodynamic tensions that determine real-world effectiveness.
@@ -268,11 +269,11 @@ def render_module_2():
     - Dysfunction Signals: How strengths derail under pressure
     - Behavioral Insights: How to calibrate for sustained impact
     - Where It Shows Up: Cross-industry applications and archetypes
-    #### Speed — Cognitive & Behavioral Agility
+    #### Speed - Cognitive & Behavioral Agility
     Natural Gift: Pattern recognition, emotional agility, perceptual timing
     High-Functioning Expression:
     - Adjusts mid-motion with grace and clarity
-    - Communicates with precise cadence—knowing when to pause, pivot, or push
+    - Communicates with precise cadence-knowing when to pause, pivot, or push
     - Integrates feedback without spiraling or flinching
     - Creates momentum without overcomplication
     Dysfunction Signals:
@@ -280,15 +281,15 @@ def render_module_2():
     - Mistakes urgency for depth
     - Avoids structure, defaults to charisma
     - Performs rather than processes under pressure
-    Behavioral Insight: Psychological agility is the governor here—not raw reaction speed. Sustainable performance depends on metabolizing tension, not just masking it.
+    Behavioral Insight: Psychological agility is the governor here-not raw reaction speed. Sustainable performance depends on metabolizing tension, not just masking it.
     Where It Shows Up:
     - Change management
     - Customer-facing adaptation
     - Executive communication in volatile contexts
-    #### Power — Ownership, Initiative & Decisiveness
+    #### Power - Ownership, Initiative & Decisiveness
     Natural Gift: Inner drive, conviction, will to close
     High-Functioning Expression:
-    - Owns the mission from start to finish—no deflection
+    - Owns the mission from start to finish-no deflection
     - Pushes progress without waiting for consensus
     - Makes high-impact decisions that others align behind
     - Brings heat without burning bridges
@@ -297,12 +298,12 @@ def render_module_2():
     - Hides behind motion to deflect reflection
     - Overuses authority or energy to silence dissent
     - Equates charisma with clarity
-    Behavioral Insight: Unchecked Power erodes trust. Under stress, ego and volume increase—but clarity and alignment disappear. Humility is the ultimate limiter.
+    Behavioral Insight: Unchecked Power erodes trust. Under stress, ego and volume increase-but clarity and alignment disappear. Humility is the ultimate limiter.
     Where It Shows Up:
     - Founders and team leads
     - Accountable closers and operators
     - High-pressure roles with final-call authority
-    #### Fielding — Strategic Foresight & System Protection
+    #### Fielding - Strategic Foresight & System Protection
     Natural Gift: Systems awareness, anticipatory thinking, stability
     High-Functioning Expression:
     - Spots second- and third-order consequences early
@@ -313,12 +314,12 @@ def render_module_2():
     - Resists new data or shifts in environment
     - Defaults to rigid safeguards that halt innovation
     - Blames others when overwhelmed
-    Behavioral Insight: Fielding reveals emotional maturity through discipline—not reaction. Pressure doesn't break systems. People do, when foresight is missing.
+    Behavioral Insight: Fielding reveals emotional maturity through discipline-not reaction. Pressure doesn't break systems. People do, when foresight is missing.
     Where It Shows Up:
     - Compliance, audit, legal, ops
     - Strategic planning, QA, IT architecture
     - Team stabilizers and culture protectors
-    #### Hitting for Average — Reliability, Rhythm & Repeatability
+    #### Hitting for Average - Reliability, Rhythm & Repeatability
     Natural Gift: Execution discipline, operational precision, resilience
     High-Functioning Expression:
     - Anchors workflows and norms others depend on
@@ -331,7 +332,7 @@ def render_module_2():
     - Ops, customer success, fulfillment
     - Risk-sensitive execution roles
     - Individual Contributors who prevent chaos and catch the slack
-    #### Arm Strength — Communication Reach & Influence
+    #### Arm Strength - Communication Reach & Influence
     Natural Gift: Expressive clarity, emotional connection, presence
     High-Functioning Expression:
     - Pitch it
@@ -343,7 +344,7 @@ def render_module_2():
     - Dominates conversations, silences opposition
     - Uses messaging to mask misalignment
     - Prioritizes performance over truth
-    Behavioral Insight: Influence that isn’t anchored in clarity becomes theater. Real communication reaches not just ears—but identity and belonging.
+    Behavioral Insight: Influence that isn't anchored in clarity becomes theater. Real communication reaches not just ears-but identity and belonging.
     Where It Shows Up:
     - Sales, enablement, leadership
     - Cross-functional translators
@@ -353,13 +354,15 @@ def render_module_2():
         f"<div style='height:500px; overflow-y:auto; border:1px solid #ccc; padding:10px;'>{pdf_content}</div>",
         unsafe_allow_html=True
     )
+    # ✅ SAME input box and button
     question = st.text_input("Ask a question about the framework:")
     if st.button("Dive Further"):
         if question.strip():
             q_lower = question.lower()
+            # Intelligent keyword matching - same logic you loved from Module 1
             if any(word in q_lower for word in ["speed", "agility", "adapt", "learning"]):
                 answer = """
-**Speed — Cognitive & Behavioral Agility**
+**Speed - Cognitive & Behavioral Agility**
 **Natural Gift:** Pattern recognition, emotional agility, perceptual timing
 **High-Functioning:** Adjusts mid-motion with grace; communicates with precise cadence; integrates feedback without spiraling; creates momentum without overcomplication
 **Dysfunction Signals:** Impulsive reactions, mistakes urgency for depth, defaults to charisma, performs instead of processes
@@ -367,34 +370,34 @@ def render_module_2():
                 """
             elif any(word in q_lower for word in ["power", "ownership", "decis", "initiative"]):
                 answer = """
-**Power — Ownership, Initiative & Decisiveness**
+**Power - Ownership, Initiative & Decisiveness**
 **Natural Gift:** Inner drive, conviction, will to close
 **High-Functioning:** Owns mission end-to-end, pushes progress without consensus, makes high-impact decisions others align behind, brings heat without burning bridges
 **Dysfunction Signals:** Bulldozes collaboration, hides behind motion, overuses authority, equates charisma with clarity
-**Behavioral Insight:** Unchecked Power erodes trust — humility is the limiter.
+**Behavioral Insight:** Unchecked Power erodes trust - humility is the limiter.
 **Where It Shows Up:** Founders, team leads, closers, high-pressure final-call roles
                 """
             elif any(word in q_lower for word in ["fielding", "foresight", "risk", "system", "protect"]):
                 answer = """
-**Fielding — Strategic Foresight & System Protection**
+**Fielding - Strategic Foresight & System Protection**
 **Natural Gift:** Systems awareness, anticipatory thinking, stability
 **Dysfunction Signals:** Risk-averse/defensive, resists new data, rigid safeguards, blames others
-**Behavioral Insight:** Emotional maturity shows through discipline — people, not pressure, break systems.
+**Behavioral Insight:** Emotional maturity shows through discipline - people, not pressure, break systems.
 **Where It Shows Up:** Compliance, audit, legal, ops, strategic planning, QA, culture protectors
                 """
             elif any(word in q_lower for word in ["hitting", "average", "reliab", "rhythm", "consistency"]):
                 answer = """
-**Hitting for Average — Reliability, Rhythm & Repeatability**
+**Hitting for Average - Reliability, Rhythm & Repeatability**
 **Natural Gift:** Execution discipline, operational precision, resilience
 **Dysfunction Signals:** Hides in routine, resents lack of recognition, over-indexes habit, mechanical task performance
 **Where It Shows Up:** Ops, customer success, fulfillment, risk-sensitive execution, chaos-preventers
                 """
             elif any(word in q_lower for word in ["arm", "strength", "communicat", "influence", "leadership"]):
                 answer = """
-**Arm Strength — Communication Reach & Influence**
+**Arm Strength - Communication Reach & Influence**
 **Natural Gift:** Expressive clarity, emotional connection, presence
 **Dysfunction Signals:** Charms without substance, dominates conversation, masks misalignment, prioritizes performance over truth
-**Behavioral Insight:** Influence without clarity becomes theater — real communication reaches identity and belonging.
+**Behavioral Insight:** Influence without clarity becomes theater - real communication reaches identity and belonging.
 **Where It Shows Up:** Sales, enablement, leadership, cross-functional translators, cultural brokers
                 """
             else:
@@ -412,6 +415,7 @@ def render_module_3():
     - **Under Duress:** How traits distort under stress.
     Use this tool for leadership diagnostics, hiring decisions, and team development.
     """)
+    # ✅ SAME table
     data = {
         "Tool": ["Power", "Speed", "Fielding", "Hitting Avg.", "Arm Strength"],
         "Intentional Use": [
@@ -431,6 +435,7 @@ def render_module_3():
     }
     df = pd.DataFrame(data)
     st.dataframe(df, hide_index=True)
+    # ✅ SAME input box
     if st.button("Generate Insights"):
         if comments.strip():
             c_lower = comments.lower()
@@ -452,7 +457,7 @@ When Speed distorts:
 - Reacts impulsively or performs for optics
 - Mistakes urgency for depth
 - Deflects instead of integrates feedback
-**Diagnostic Insight:** This is motion masquerading as progress — charisma over processing.
+**Diagnostic Insight:** This is motion masquerading as progress - charisma over processing.
 **Calibration Path:** Train psychological agility: pause protocols, reflection rituals, and feedback integration drills.
                 """
             elif any(word in c_lower for word in ["fielding", "freeze", "rigid", "block", "blame"]):
@@ -462,7 +467,7 @@ When Fielding distorts:
 - Freezes or becomes defensive
 - Rigidifies safeguards, blocks learning
 - Blames others when overwhelmed
-**Diagnostic Insight:** Lack of emotional maturity under uncertainty — foresight fails when ego is threatened.
+**Diagnostic Insight:** Lack of emotional maturity under uncertainty - foresight fails when ego is threatened.
                 """
             elif any(word in c_lower for word in ["hitting", "average", "check out", "avoid", "change", "routine"]):
                 insight = """
@@ -480,11 +485,11 @@ When Arm Strength distorts:
 - Charms without substance
 - Dominates conversation
 - Uses messaging to mask misalignment
-**Diagnostic Insight:** Influence becomes theater — performance over truth.
+**Diagnostic Insight:** Influence becomes theater - performance over truth.
 **Calibration Path:** Anchor communication in clarity and belonging, not optics.
                 """
             else:
-                insight = "Comment detected. Match found across multiple tools — consider full 5-Tool evaluation under pressure."
+                insight = "Comment detected. Match found across multiple tools - consider full 5-Tool evaluation under pressure."
             st.markdown("### 🔍 Behavior Under Pressure Insights")
             st.markdown(insight)
         else:
@@ -527,7 +532,7 @@ def render_module_4():
         st.write("### Leadership Eligibility Filter")
         st.table([
             ["Domain", "Behavioral Signal", "Eligibility Indicator"],
-            ["Arm Strength", "Communicates clearly across hierarchy and function", "Delivers signal—not noise—to any audience"],
+            ["Arm Strength", "Communicates clearly across hierarchy and function", "Delivers signal-not noise-to any audience"],
             ["Power", "Holds conviction without overpowering or rigid framing", "Anchored, not authoritarian"],
             ["Hitting for Average", "Maintains team rhythm, trust, and consistency", "Cultural glue; reduces friction organically"]
         ])
@@ -563,6 +568,7 @@ def render_module_4():
     for title, content in educational_panels.items():
         with st.expander(title):
             st.write(content)
+    # SAME Q&A - now AI-free, instant, smart
     st.subheader("Ask About the Framework")
     follow = st.text_area("Ask a follow-up")
     if st.button("Get Answer"):
@@ -627,7 +633,7 @@ One weak link = system failure.
         fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="Behavioral Tool Scoring Radar")
         fig.update_traces(fill='toself')
         st.plotly_chart(fig)
-        # Follow-up under radar — now AI-free
+        # Follow-up under radar - now AI-free
         st.subheader("Ask a follow-up question about the radar:")
         if st.button("Get Answer", key="radar_answer"):
             if radar_q.strip():
@@ -641,14 +647,16 @@ def render_module_5():
     import streamlit as st
     import plotly.express as px
     st.title("☢️ Toxicity in the Workplace")
-    with st.expander("Padilla’s Toxic Triangle"):
+    # SAME Educational Expanders
+    with st.expander("Padilla's Toxic Triangle"):
         st.write("Destructive Leaders, Susceptible Followers, and Conducive Environments create toxic conditions.")
-    with st.expander("Hogan’s Dark Side Derailers"):
+    with st.expander("Hogan's Dark Side Derailers"):
         st.write("Traits like Arrogance, Volatility, and Manipulativeness can derail leadership effectiveness.")
     with st.expander("Machiavellianism & Dark Triad"):
         st.write("Machiavellianism, Narcissism, and Psychopathy are key indicators of toxic tendencies.")
     with st.expander("Behavioral Drift & 360-Degree Feedback"):
         st.write("Behavioral drift occurs when employees gradually deviate from norms; 360-degree feedback helps detect early signs.")
+    # SAME Rubric Table
     st.subheader("Toxicity Rubric")
     st.markdown("""
     <table style='width:100%; border:1px solid black; font-size:14px;'>
@@ -657,30 +665,33 @@ def render_module_5():
     <tr><td>Arm Strength</td><td>Communicates clearly; inspires buy-in.</td><td>Dominates or charms without substance.</td><td>Manipulative; dismisses feedback.</td><td>Divisive communication; manipulativeness derailer.</td></tr>
     </table>
     """, unsafe_allow_html=True)
+    # SAME Q&A
     q = st.text_area("Ask about toxic leadership")
     if st.button("Get Response"):
         if q.strip():
             ql = q.lower()
             if "padilla" in ql or "triangle" in ql:
-                ans = "**Padilla’s Toxic Triangle**\nDestructive Leaders + Susceptible Followers + Conducive Environment = Toxicity.\nBreak any one leg and toxicity collapses."
+                ans = "**Padilla's Toxic Triangle**\nDestructive Leaders + Susceptible Followers + Conducive Environment = Toxicity.\nBreak any one leg and toxicity collapses."
             elif "hogan" in ql or "derailer" in ql:
-                ans = "**Hogan’s Dark-Side Derailers**\n- Volatility (Speed)\n- Arrogance (Power)\n- Overconfidence (Fielding)\n- Detachment (Hitting)\n- Manipulativeness (Arm Strength)"
+                ans = "**Hogan's Dark-Side Derailers**\n- Volatility (Speed)\n- Arrogance (Power)\n- Overconfidence (Fielding)\n- Detachment (Hitting)\n- Manipulativeness (Arm Strength)"
             elif "machiavell" in ql or "dark triad" in ql:
                 ans = "**Dark Triad Traits**\n- Machiavellianism → Manipulative Arm Strength\n- Narcissism → Inflated Power\n- Psychopathy → Detached Hitting + Volatile Speed"
             elif "drift" in ql or "360" in ql:
                 ans = "**Behavioral Drift Detection**\n360-degree feedback catches gradual deviation before it becomes cultural cancer.\nEarly signals: dropping Hitting for Average, rising Power dysfunction."
             else:
-                ans = "Ask about Padilla’s Triangle, Hogan’s Derailers, Dark Triad, or Behavioral Drift for deep insights."
+                ans = "Ask about Padilla's Triangle, Hogan's Derailers, Dark Triad, or Behavioral Drift for deep insights."
             st.markdown("### Response")
             st.markdown(ans)
         else:
             st.warning("Enter a question first")
+    # SAME Scoring Sliders
     st.subheader("Rate the Employee on Each Dimension")
     speed = st.slider("Speed", 1, 5, 3)
     power = st.slider("Power", 1, 5, 3)
     fielding = st.slider("Fielding", 1, 5, 3)
     hitting = st.slider("Hitting for Average", 1, 5, 3)
     arm_strength = st.slider("Arm Strength", 1, 5, 3)
+    # SAME Generate Profile + Radar + Table
     if st.button("Generate Profile"):
         total_score = speed + power + fielding + hitting + arm_strength
         if total_score >= 15:
@@ -708,13 +719,13 @@ def render_module_5():
         <tr><td>10-14</td><td>Moderate Risk</td><td>Employee shows signs of disengagement or minor toxic behaviors.</td></tr>
         </table>
         """, unsafe_allow_html=True)
-        # Contextual Insight — keyword-based, now with proper colons
+        # Contextual Insight - keyword-based, now with proper colons
             if any(w in n for w in ["blame", "fault", "not me", "they", "others"]):
                 insight = ""**High Power Toxicity Risk**
 Blame-shifting detected, classic arrogance derailer.
             elif any(w in n for w in ["charm", "everyone loves", "optics", "image", "perform"]):
                 insight = ""**High Arm Strength Toxicity Risk**
-Manipulative charm without substance — theater over truth and substance."""
+Manipulative charm without substance - theater over truth and substance."""
                 insight = ""**High Hitting Toxicity Risk
 def render_module_6():
     st.title("SWOT 2.0 Strategic Framework")
@@ -757,7 +768,7 @@ def render_module_6():
             threats.append("Cultural collapse from unchecked behavioral drift")
         # Default fallback if no keywords
         if not (strengths or weaknesses or opportunities or threats):
-            st.info("No strong signals detected — try adding more detail about people, processes, or culture.")
+            st.info("No strong signals detected - try adding more detail about people, processes, or culture.")
             return
         # === Display Quadrants (your exact layout) ===
         st.subheader("✅ Generated SWOT Analysis")
@@ -795,4 +806,4 @@ elif selected_page == "Page 5: Toxicity in the Workplace":
 elif selected_page == "Page 6: SWOT 2.0":
     render_module_6()
 elif selected_page == "Page 7: Repository":
-    render_module_7()
+    render_module_7()"""
