@@ -77,7 +77,7 @@ def map_videos_to_tools(videos):
 # Subscription Logic
 # -------------------------------
 PAID_PAGES = {
-    "Page 7: Repository": "$9.99/mo"
+    "Page 6: Repository": "$9.99/mo"
 }
 
 def is_unlocked(page):
@@ -905,139 +905,6 @@ def render_module_5():
             st.subheader("Contextual Insight")
             st.markdown(get_contextual_insight(notes, total_score, risk_level))
 
-import streamlit as st
-import random
-import pandas as pd
-
-# --- AI + Web Insights Simulation ---
-# In real implementation, these would call an AI model and integrate web-scraped insights.
-# For now, we'll simulate with blended logic from user notes and industry best practices.
-
-def generate_ai_swot(notes, ai_chat):
-    """Generate SWOT bullet points based on user notes and web insights."""
-    user_strengths = [
-        "Strong engineering expertise and leadership",
-        "New hire brings extensive industry connections",
-        "Ability to deliver complex coding projects quickly"
-    ]
-    user_weaknesses = [
-        "Potential cultural disruption due to salary disparity",
-        "Over-reliance on one individual for core coding tasks",
-        "Risk of burnout among existing engineers"
-    ]
-    web_strengths = [
-        "High demand for senior engineers positions company competitively",
-        "Hybrid team structures reduce burnout and improve delivery"
-    ]
-    web_weaknesses = [
-        "Salary gaps can lead to morale issues and attrition",
-        "Limited succession planning increases vulnerability"
-    ]
-    web_opportunities = [
-        "Upskilling programs can boost retention and engagement",
-        "Leverage new hire's network for strategic partnerships",
-        "Adopt automation tools to reduce workload on engineers"
-    ]
-    web_threats = [
-        "Competitors exploiting instability during transition",
-        "Client dissatisfaction if onboarding disrupts service",
-        "Industry salary inflation increasing cost pressures"
-    ]
-
-    strengths = user_strengths + web_strengths
-    weaknesses = user_weaknesses + web_weaknesses
-    opportunities = web_opportunities
-    threats = web_threats
-
-    return strengths, weaknesses, opportunities, threats
-
-# Weighted scoring logic
-weights = {"Impact": 0.4, "Feasibility": 0.3, "Urgency": 0.2, "Confidence": 0.1}
-
-def score_factor():
-    return {criterion: random.randint(1, 5) for criterion in weights}
-
-def calculate_weighted_score(scores):
-    return sum(scores[c] * weights[c] for c in weights)
-
-# Generate roadmap from top-ranked items
-def generate_roadmap(df):
-    roadmap = []
-    top_items = df.sort_values(by="Total Score", ascending=False).head(5)
-    for _, row in top_items.iterrows():
-        factor = row["Factor"]
-        category = row["Category"]
-        roadmap.append({
-            "Action": f"Address {category}: {factor}",
-            "Milestone": "Complete initial implementation in 90 days",
-            "Owner": "Cross-functional team",
-            "Review Cycle": "Quarterly reassessment",
-            "Best Case": "Improved team stability and client satisfaction",
-            "Worst Case": "Attrition increases, delays in delivery",
-            "Pivot Strategy": "Reallocate resources and accelerate upskilling"
-        })
-    return pd.DataFrame(roadmap)
-
-# --- Streamlit UI ---
-
-def render_module_6():
-    st.title("📊 SWOT 2.0 Strategic Framework")
-    st.markdown("Designed by Bryan Barrera & Microsoft Copilot")
-
-    notes = st.text_area("Additional Notes and Input")
-
-    view_mode = st.radio("Select View Mode", ["Basic SWOT", "Advanced SWOT 2.0"])
-
-    if st.button("🎯 Generate AI-Powered SWOT"):
-        strengths, weaknesses, opportunities, threats = generate_ai_swot(notes, ai_chat)
-
-        # Quadrant Layout
-        st.subheader("✅ Generated SWOT Analysis")
-        col1, col2 = st.columns(2)
-        with col1:
-            st.markdown("### **Strengths**")
-            for s in strengths:
-                st.markdown(f"- {s}")
-            st.markdown("### **Opportunities**")
-            for o in opportunities:
-                st.markdown(f"- {o}")
-        with col2:
-            st.markdown("### **Weaknesses**")
-            for w in weaknesses:
-                st.markdown(f"- {w}")
-            st.markdown("### **Threats**")
-            for t in threats:
-                st.markdown(f"- {t}")
-
-        if view_mode == "Advanced SWOT 2.0":
-            st.subheader("📈 Narrative Summary")
-            st.write("This analysis blends internal insights with external best practices. "
-                     "Key focus: manage cultural risks, leverage new hire's network, and mitigate attrition through upskilling.")
-
-            st.subheader("📊 Weighted Scoring Table")
-            st.write("Criteria: Impact (40%), Feasibility (30%), Urgency (20%), Confidence (10%)")
-
-            data = []
-            for category, items in zip(["Strength", "Weakness", "Opportunity", "Threat"], [strengths, weaknesses, opportunities, threats]):
-                for item in items:
-                    scores = score_factor()
-                    total = calculate_weighted_score(scores)
-                    row = {"Category": category, "Factor": item, **scores, "Total Score": round(total, 2)}
-                    data.append(row)
-
-            df = pd.DataFrame(data)
-            st.dataframe(df.sort_values(by="Total Score", ascending=False))
-
-            st.subheader("🛠 Dynamic KPIs")
-            st.write("Actionable steps with milestones, ownership, and scenario planning.")
-            roadmap_df = generate_roadmap(df)
-            st.dataframe(roadmap_df)
-
-# Integrate with your app navigation
-# Example:
-# if selected_page == "Module 6":
-#     render_module_6()
-
 def render_module_7():
     st.title("🚧 Page 8: Under Construction")
     st.markdown("This page is not yet implemented.")
@@ -1051,8 +918,7 @@ PAGES = [
     "Page 3: Behavior Under Pressure Grid",
     "Page 4: Behavioral Calibration Grid",
     "Page 5: Toxicity in the Workplace",
-    "Page 6: SWOT 2.0",
-    "Page 7: Repository",
+    "Page 6: Repository",
 ]
 
 selected_page = st.sidebar.selectbox("Choose a page", PAGES)
@@ -1068,9 +934,7 @@ elif selected_page == "Page 4: Behavioral Calibration Grid":
     render_module_4()
 elif selected_page == "Page 5: Toxicity in the Workplace":
     render_module_5()
-elif selected_page == "Page 6: SWOT 2.0":
+elif selected_page == "Page 6: Repository":
     render_module_6()
-elif selected_page == "Page 7: Repository":
-    render_module_7()
     
 
