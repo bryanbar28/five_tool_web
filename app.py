@@ -141,7 +141,7 @@ def render_template_discovery():
 # -------------------------------
 # 🎬 Gritty Job Review Generator
 # -------------------------------
-def generate_job_review(role="Software Engineer", notes="Strong leadership skills):
+def generate_job_review(role, notes=None):
     st.info(f"🔍 Generating realistic job review for: **{role}**")
 
     # Build the prompt inside the function
