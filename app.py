@@ -4,13 +4,12 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from openai import OpenAI
-from googleapiclient.discovery import build
 from dotenv import load_dotenv
 load_dotenv()
 st.set_page_config(page_title="Five-Tool App", layout="wide")
-#-------------------------------
-#Session State Setup
-#-------------------------------
+# -------------------------------
+# Session State Setup
+# -------------------------------
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 if "initial_review" not in st.session_state:
@@ -19,13 +18,13 @@ if "show_repository" not in st.session_state:
     st.session_state.show_repository = False
 if "last_parse" not in st.session_state:
     st.session_state.last_parse = None
-#-------------------------------
-#OpenAI Client
-#-------------------------------
+# -------------------------------
+# OpenAI Client
+# -------------------------------
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-#-------------------------------
-#SINGLE AI FUNCTION — ALL CHAT BOXES USE THIS
-#-------------------------------
+# -------------------------------
+# SINGLE AI FUNCTION — ALL CHAT BOXES USE THIS
+# -------------------------------
 def ask_5tool(question: str, temperature=0.3):
     context = """
 You are an expert consultant using Bryan Barrera’s 5-Tool Employee Framework from the book "Finding the Right Fit".
@@ -48,9 +47,9 @@ Never give generic advice — stay grounded in the framework and the user’s in
         max_tokens=900
     )
     return response.choices[0].message.content.strip()
-#-------------------------------
-#Business Description Parser
-#-------------------------------
+# -------------------------------
+# Business Description Parser
+# -------------------------------
 def parse_business_description(description: str):
     prompt = f"""
 Extract ONLY valid JSON (no markdown):
@@ -77,16 +76,15 @@ User description: "{description}"
     except Exception as e:
         st.error(f"Parsing failed: {e}")
         return None
-#-------------------------------
-#API Keys – Replace with your actual values
-#-------------------------------
-YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")  #Replace with your key if not in env
-CHANNEL_ID = "YOUR_CHANNEL_ID"  #Replace with your actual channel ID
-#-------------------------------
-#Helper Functions
-#-------------------------------
+# -------------------------------
+# API Keys – Replace with your actual values
+# -------------------------------
+YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")  # Replace with your key if not in env
+CHANNEL_ID = "YOUR_CHANNEL_ID"  # Replace with your actual channel ID
+# -------------------------------
+# Helper Functions
+# -------------------------------
 def fetch_youtube_videos():
-    youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
     request = youtube.search().list(
         part="snippet",
         channelId=CHANNEL_ID,
@@ -121,55 +119,48 @@ def map_videos_to_tools(videos):
         elif "strategy" in title or "decision" in title or "power" in title:
             mapping["Power"] = video["url"]
     return mapping
-#-------------------------------
-#Subscription Logic (Placeholder)
-#-------------------------------
+# -------------------------------
+# -------------------------------
 PAID_PAGES = {
     "Page 7: Repository": "$9.99/mo"
 }
 def is_unlocked(page):
-    return True  #Set to False for real subscription; currently always unlocked for testing
+    return True  # Set to False for real subscription; currently always unlocked for testing
 def unlock_page(page, price):
-    st.warning(f"This page requires a subscription: {price}")
     if st.button("Unlock Now"):
         st.success("Unlocked! (Demo)")
-#-------------------------------
-#Job Review Generator
-#-------------------------------
-def generate_job_review(role, notes=None):
+# -------------------------------
+# Job Review Generator
+# -------------------------------
     prompt = f"""
 Write a realistic, role-specific job review for the position: {role}.
 Use a clear, professional tone with practical insights. Include:
 - Job Summary
 - Key Responsibilities
-- Required Skills and Tools
 - Compensation and Schedule
 - Pros and Cons
 - Interview Tips
 - Career Path
 Avoid generic corporate language. Make it useful for someone considering this job.
 """
-    if notes:
-        prompt += f"nIncorporate these notes: {notes}"
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}]
     )
     return response.choices[0].message.content
-#-------------------------------
-#Template Discovery
-#-------------------------------
+# -------------------------------
+# Template Discovery
+# -------------------------------
 def render_template_discovery():
     st.title("🧠 Behavioral Intelligence App — Template Discovery")
     role_query = st.text_input(
         "Ask me anything about job reviews, templates, or phrases",
-        placeholder="e.g., steel machinist, mechanic, I need help writing a review"
     )
     if role_query:
         st.markdown(f"🔍 You asked: **{role_query}**")
         role = role_query.lower()
         if "what is a job review" in role or "define job review" in role:
-            st.markdown("###📘 What Is a Job Review?")
+            st.markdown("### 📘 What Is a Job Review?")
             st.markdown("""
 A **job review** is a structured evaluation of an employee's performance, responsibilities, and contributions in a specific role. It often includes:
 - A summary of duties and expectations
@@ -180,22 +171,21 @@ Job reviews can be formal (annual performance reviews) or informal (feedback ses
             """)
             return
         if "help" in role or "phrases" in role or "statements" in role:
-            st.markdown("###💬 Helpful Job Review Phrases & Comments")
+            st.markdown("### 💬 Helpful Job Review Phrases & Comments")
             st.markdown("- [Status.net: Job Knowledge Phrases](https://status.net/articles/job-knowledge-performance-review-phrases-paragraphs-examples/)")
             st.markdown("- [BuddiesHR: 75 Review Phrases](https://blog.buddieshr.com/75-effective-performance-review-phrases-examples/)")
             st.markdown("- [Engage & Manage: 120 Review Comments](https://engageandmanage.com/blog/performance-review-example-phrases-comments/)")
             return
-        st.markdown("###🌐 General Review Templates and Examples")
+        st.markdown("### 🌐 General Review Templates and Examples")
         st.markdown("- [Native Teams: 30 Role-Based Review Examples](https://nativeteams.com/blog/performance-review-examples)")
         st.markdown("- [BetterUp: 53 Performance Review Examples](https://www.betterup.com/blog/performance-review-examples)")
         st.markdown("- [Indeed: Review Template Library](https://www.indeed.com/career-advice/career-development/performance-review-template)")
-#-------------------------------
-#Pages
-#-------------------------------
+# -------------------------------
+# Pages
+# -------------------------------
 def page_parser():
     st.title("Smart Business Parser")
     desc = st.text_area("Describe your business", height=120,
-                        placeholder="e.g. my company is a small coffee roasting business in Portland")
     if st.button("Parse", type="primary"):
         if desc.strip():
             with st.spinner("Analyzing..."):
@@ -208,22 +198,20 @@ def page_parser():
 def page_1():
     render_template_discovery()
     st.title("The 5 Tool Employee Framework")
-    st.markdown("###Introduction into the 5 Tool Employee Framework")
+    st.markdown("### Introduction into the 5 Tool Employee Framework")
     st.markdown("An Interchangeable Model. Finding the Right Fit.")
-    st.markdown("####5 Tool Baseball Player")
+    st.markdown("#### 5 Tool Baseball Player")
     st.markdown("""
 - **Hitting for Average** – Consistently making contact and getting on base.
 - **Hitting for Power** – Ability to drive the ball for extra bases or home runs.
-- **Speed** – Quickness on the bases and in the field.
 - **Fielding** – Defensive ability, including range and reaction time.
 - **Arm Strength** – Throwing ability, especially for outfielders and infielders.
     """)
-    st.markdown("####Baseball Tools vs. Professional Skills")
+    st.markdown("#### Baseball Tools vs. Professional Skills")
     st.markdown("""
 - ⚾ **Hitting → Technical Competence**
   Just like hitting is fundamental for a baseball player, mastering core skills is crucial for a professional.
 - 🧤 **Fielding → Problem-Solving Ability**
-  A great fielder reacts quickly and prevents errors—just like a skilled problem solver.
 - ⚡ **Speed → Adaptability & Continuous Learning**
   Speed gives a player a competitive edge; adaptability ensures professionals stay relevant.
 - 💪 **Arm Strength → Communication & Leadership**
@@ -240,7 +228,6 @@ def page_1():
                 answer = ask_5tool(q)
             st.markdown(answer)
     st.subheader("Create Your Own 5 Tool Employee")
-    notes_input = st.text_area("Enter notes about your ideal employee", placeholder="e.g., strong leadership, adaptable")
     st.subheader("Rate the Employee on Each Tool (1–10)")
     TOOLS = [
         "Technical Competence",
@@ -251,11 +238,10 @@ def page_1():
     ]
     scores = [st.slider(tool, 1, 10, 5) for tool in TOOLS]
     if st.button("Generate 5 Tool Employee"):
-        if notes_input.strip():
-            st.markdown("###Custom 5 Tool Employee Profile")
+            st.markdown("### Custom 5 Tool Employee Profile")
             for tool, score in zip(TOOLS, scores):
                 st.markdown(f"**{tool} (Score: {score}/10)**")
-                #Interpretation (your original logic)
+                # Interpretation (your original logic)
                 if score <= 3:
                     st.write("- Needs Development")
                 elif score <= 6:
@@ -263,20 +249,16 @@ def page_1():
                 else:
                     st.write("- Exceptional")
                 st.markdown("---")
-            st.markdown("**Notes:**")
-            st.write(notes_input)
             fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="5-Tool Radar")
             fig.update_traces(fill='toself')
             st.plotly_chart(fig)
         else:
-            st.warning("Add notes first.")
     if st.button("Clear History"):
         st.session_state.chat_history = []
         st.rerun()
 def render_module_2():
     import streamlit as st
     st.title("Advanced Deep Research — The 5 Tool Employee Framework")
-    #✅ SAME scrollable PDF content as before
     pdf_content = """
     _The Deep-Research 5-Tool Employee Framework_
     A behavioral operating system for high-performance environments. Designed to evaluate not just output, but behavior under pressure, natural tendencies, and the psychodynamic tensions that determine real-world effectiveness.
@@ -286,7 +268,7 @@ def render_module_2():
     - Dysfunction Signals: How strengths derail under pressure
     - Behavioral Insights: How to calibrate for sustained impact
     - Where It Shows Up: Cross-industry applications and archetypes
-    ####Speed — Cognitive & Behavioral Agility
+    #### Speed — Cognitive & Behavioral Agility
     Natural Gift: Pattern recognition, emotional agility, perceptual timing
     High-Functioning Expression:
     - Adjusts mid-motion with grace and clarity
@@ -303,8 +285,7 @@ def render_module_2():
     - Change management
     - Customer-facing adaptation
     - Executive communication in volatile contexts
-    - Individual Contributors managing high-volume ambiguity
-    ####Power — Ownership, Initiative & Decisiveness
+    #### Power — Ownership, Initiative & Decisiveness
     Natural Gift: Inner drive, conviction, will to close
     High-Functioning Expression:
     - Owns the mission from start to finish—no deflection
@@ -321,11 +302,10 @@ def render_module_2():
     - Founders and team leads
     - Accountable closers and operators
     - High-pressure roles with final-call authority
-    ####Fielding — Strategic Foresight & System Protection
+    #### Fielding — Strategic Foresight & System Protection
     Natural Gift: Systems awareness, anticipatory thinking, stability
     High-Functioning Expression:
     - Spots second- and third-order consequences early
-    - Builds guardrails for scalable decision-making
     - Operates upstream of risk, not downstream of damage
     - Stays composed when uncertainty spikes
     Dysfunction Signals:
@@ -338,30 +318,25 @@ def render_module_2():
     - Compliance, audit, legal, ops
     - Strategic planning, QA, IT architecture
     - Team stabilizers and culture protectors
-    ####Hitting for Average — Reliability, Rhythm & Repeatability
+    #### Hitting for Average — Reliability, Rhythm & Repeatability
     Natural Gift: Execution discipline, operational precision, resilience
     High-Functioning Expression:
-    - Delivers under pressure—quietly and predictably
-    - Builds trust through consistency, not theatrics
     - Anchors workflows and norms others depend on
     - Focuses on base hits, not glory swings
     Dysfunction Signals:
-    - Hides in routine to avoid ambiguity
     - Resents lack of recognition in flashy cultures
     - Over-indexes on habit and under-indexes on strategy
     - Performs tasks mechanically, loses intent
-    Behavioral Insight: Culture often underrates the glue. But rhythm beats reaction, and trust beats tension. Recognition must find the quiet storm.
     Where It Shows Up:
     - Ops, customer success, fulfillment
     - Risk-sensitive execution roles
     - Individual Contributors who prevent chaos and catch the slack
-    ####Arm Strength — Communication Reach & Influence
+    #### Arm Strength — Communication Reach & Influence
     Natural Gift: Expressive clarity, emotional connection, presence
     High-Functioning Expression:
     - Pitch it
     - Distills vision into language that moves people
     - Connects across functions and hierarchies effortlessly
-    - Builds buy-in without overreaching
     - Communicates emotionally and intellectually
     Dysfunction Signals:
     - Charms without delivering substance
@@ -378,12 +353,10 @@ def render_module_2():
         f"<div style='height:500px; overflow-y:auto; border:1px solid #ccc; padding:10px;'>{pdf_content}</div>",
         unsafe_allow_html=True
     )
-    #✅ SAME input box and button
     question = st.text_input("Ask a question about the framework:")
     if st.button("Dive Further"):
         if question.strip():
             q_lower = question.lower()
-            #Intelligent keyword matching — same logic you loved from Module 1
             if any(word in q_lower for word in ["speed", "agility", "adapt", "learning"]):
                 answer = """
 **Speed — Cognitive & Behavioral Agility**
@@ -391,7 +364,6 @@ def render_module_2():
 **High-Functioning:** Adjusts mid-motion with grace; communicates with precise cadence; integrates feedback without spiraling; creates momentum without overcomplication
 **Dysfunction Signals:** Impulsive reactions, mistakes urgency for depth, defaults to charisma, performs instead of processes
 **Behavioral Insight:** Sustainable performance depends on metabolizing tension, not masking it.
-**Where It Shows Up:** Change management, customer-facing roles, volatile executive communication, high-ambiguity individual contributors
                 """
             elif any(word in q_lower for word in ["power", "ownership", "decis", "initiative"]):
                 answer = """
@@ -406,7 +378,6 @@ def render_module_2():
                 answer = """
 **Fielding — Strategic Foresight & System Protection**
 **Natural Gift:** Systems awareness, anticipatory thinking, stability
-**High-Functioning:** Spots second/third-order consequences early, builds guardrails, operates upstream of risk, stays composed in uncertainty
 **Dysfunction Signals:** Risk-averse/defensive, resists new data, rigid safeguards, blames others
 **Behavioral Insight:** Emotional maturity shows through discipline — people, not pressure, break systems.
 **Where It Shows Up:** Compliance, audit, legal, ops, strategic planning, QA, culture protectors
@@ -415,36 +386,32 @@ def render_module_2():
                 answer = """
 **Hitting for Average — Reliability, Rhythm & Repeatability**
 **Natural Gift:** Execution discipline, operational precision, resilience
-**High-Functioning:** Delivers quietly and predictably under pressure, builds trust through consistency, anchors workflows, focuses on base hits
 **Dysfunction Signals:** Hides in routine, resents lack of recognition, over-indexes habit, mechanical task performance
-**Behavioral Insight:** Culture underrates the glue — rhythm beats reaction, trust beats tension. Recognition must find the quiet storm.
 **Where It Shows Up:** Ops, customer success, fulfillment, risk-sensitive execution, chaos-preventers
                 """
             elif any(word in q_lower for word in ["arm", "strength", "communicat", "influence", "leadership"]):
                 answer = """
 **Arm Strength — Communication Reach & Influence**
 **Natural Gift:** Expressive clarity, emotional connection, presence
-**High-Functioning:** Distills vision into moving language, connects across hierarchies effortlessly, builds buy-in without overreaching
 **Dysfunction Signals:** Charms without substance, dominates conversation, masks misalignment, prioritizes performance over truth
 **Behavioral Insight:** Influence without clarity becomes theater — real communication reaches identity and belonging.
 **Where It Shows Up:** Sales, enablement, leadership, cross-functional translators, cultural brokers
                 """
             else:
                 answer = "Ask about one of the five tools (Speed, Power, Fielding, Hitting for Average, Arm Strength) for a full deep-research breakdown."
-            st.markdown("###🔍 Deep Dive Answer")
+            st.markdown("### 🔍 Deep Dive Answer")
             st.markdown(answer)
         else:
             st.warning("Please enter a question before diving further.")
 def render_module_3():
     st.title("Behavior Under Pressure")
-    st.markdown("###What is the Behavior Under Pressure Grid? An evaluation tool for the behavior that leaders, both current, and potentially, showcase when under stress or pressure")
+    st.markdown("### What is the Behavior Under Pressure Grid? An evaluation tool for the behavior that leaders, both current, and potentially, showcase when under stress or pressure")
     st.markdown("""
     This grid shows how behavioral tools manifest in two states:
     - **Intentional Use:** Calm, focused, deliberate behavior.
     - **Under Duress:** How traits distort under stress.
     Use this tool for leadership diagnostics, hiring decisions, and team development.
     """)
-    #✅ SAME table
     data = {
         "Tool": ["Power", "Speed", "Fielding", "Hitting Avg.", "Arm Strength"],
         "Intentional Use": [
@@ -464,8 +431,6 @@ def render_module_3():
     }
     df = pd.DataFrame(data)
     st.dataframe(df, hide_index=True)
-    #✅ SAME input box
-    comments = st.text_area("Add your comments or observations", placeholder="e.g., This candidate freezes under pressure but excels in planning.")
     if st.button("Generate Insights"):
         if comments.strip():
             c_lower = comments.lower()
@@ -498,7 +463,6 @@ When Fielding distorts:
 - Rigidifies safeguards, blocks learning
 - Blames others when overwhelmed
 **Diagnostic Insight:** Lack of emotional maturity under uncertainty — foresight fails when ego is threatened.
-**Calibration Path:** Build anticipatory thinking through scenario planning and upstream risk exercises.
                 """
             elif any(word in c_lower for word in ["hitting", "average", "check out", "avoid", "change", "routine"]):
                 insight = """
@@ -507,7 +471,6 @@ When Hitting distorts:
 - Checks out or hides in routine
 - Avoids stretch assignments
 - Resents lack of recognition
-**Diagnostic Insight:** Reliability breaks when ambiguity rises — the quiet storm goes silent.
 **Calibration Path:** Reinforce rhythm through consistency rituals and recognition of base hits.
                 """
             elif any(word in c_lower for word in ["arm", "charm", "dominate", "mask", "clarity"]):
@@ -522,7 +485,7 @@ When Arm Strength distorts:
                 """
             else:
                 insight = "Comment detected. Match found across multiple tools — consider full 5-Tool evaluation under pressure."
-            st.markdown("###🔍 Behavior Under Pressure Insights")
+            st.markdown("### 🔍 Behavior Under Pressure Insights")
             st.markdown(insight)
         else:
             st.warning("Please add comments before generating insights.")
@@ -533,7 +496,6 @@ def render_module_4():
         "Urgency vs Foresight": "Speed without foresight creates reactive chaos. Leaders must balance urgency with strategic anticipation.",
         "Leadership Eligibility Filter": "Evaluates readiness for management roles using 5-Tool scoring and behavioral calibration.",
         "Messaging to Mask Misalignment": "How narrative optics hide behavioral misalignment and erode trust.",
-        "Risk-Sensitive Execution Roles": "Roles requiring precision under pressure demand foresight, agility, and clarity.",
         "Hidden Elements": "Anticipation, discipline, and preparation operate behind the scenes to prevent behavioral drift."
     }
     def interpret_score(total_score):
@@ -543,7 +505,6 @@ def render_module_4():
             return "Stretch-Capable", "Consider promotion only with targeted development on low-scoring areas. Assign trial leadership projects and monitor improvement."
         else:
             return "High-Risk", "Do not promote. Keep in current role or consider non-leadership growth. Focus on strengthening fundamentals before revisiting leadership readiness."
-     UI — 100% untouched
     st.title("Behavioral Calibration & Leadership Readiness")
     framework = st.selectbox("Select Framework", [
         "Behavioral Calibration Grid",
@@ -552,9 +513,8 @@ def render_module_4():
         "Risk-Sensitive Execution Roles",
         "Messaging to Mask Misalignment"
     ])
-     tables — unchanged
     if framework == "Behavioral Calibration Grid":
-        st.write("###Behavioral Calibration Grid")
+        st.write("### Behavioral Calibration Grid")
         st.table([
             ["Tool", "High Expression", "Under Pressure Behavior", "Tension Theme"],
             ["Speed", "Adaptive, intentional", "Performative, reactive", "Motion vs. Processing"],
@@ -564,17 +524,15 @@ def render_module_4():
             ["Arm Strength", "Authentic, connective", "Theatrical, dominating", "Clarity vs. Performance"]
         ])
     elif framework == "Leadership Eligibility Filter":
-        st.write("###Leadership Eligibility Filter")
+        st.write("### Leadership Eligibility Filter")
         st.table([
             ["Domain", "Behavioral Signal", "Eligibility Indicator"],
-            ["Fielding", "Responds with situational precision under ambiguity", "Can manage tension without emotional leakage"],
             ["Arm Strength", "Communicates clearly across hierarchy and function", "Delivers signal—not noise—to any audience"],
-            ["Speed", "Adapts quickly without skipping strategic foresight", "Demonstrates urgency with calibration"],
             ["Power", "Holds conviction without overpowering or rigid framing", "Anchored, not authoritarian"],
             ["Hitting for Average", "Maintains team rhythm, trust, and consistency", "Cultural glue; reduces friction organically"]
         ])
     elif framework == "SME Pitfall Table":
-        st.write("###SME Pitfall Table")
+        st.write("### SME Pitfall Table")
         st.table([
             ["Trait as SME", "Problem When Promoted", "Behavioral Impact"],
             ["Execution Excellence", "Over-indexes on personal output", "Micromanagement, resistance to delegation"],
@@ -583,7 +541,7 @@ def render_module_4():
             ["Low Emotional Calibration", "Talks down, corrects instead of connects", "Erosion of trust, psychological safety drain"]
         ])
     elif framework == "Risk-Sensitive Execution Roles":
-        st.write("###Risk-Sensitive Execution Roles")
+        st.write("### Risk-Sensitive Execution Roles")
         st.table([
             ["Trait", "Description"],
             ["Decision Load", "Frequent choices, each with layered impact"],
@@ -593,20 +551,18 @@ def render_module_4():
             ["Behavioral Calibration", "Adapting communication and behavior based on changing risk signals"]
         ])
     elif framework == "Messaging to Mask Misalignment":
-        st.write("###Messaging to Mask Misalignment")
+        st.write("### Messaging to Mask Misalignment")
         st.table([
             ["Tactic", "Impact"],
             ["Framing Over Function", "Creates illusion of unity while systems burn out"],
             ["Overuse of Abstract Values", "Signals alignment without behavioral sync"],
             ["Narrative Smoothing", "Hides disagreement or conflicting KPIs"],
             ["Visual Optics vs Operational Truth", "Curates optics while reality erodes"],
-            ["Intentional Ambiguity", "Postpones reckoning, masks misalignment"]
         ])
     st.subheader("Educational Panels")
     for title, content in educational_panels.items():
         with st.expander(title):
             st.write(content)
-     Q&A — now AI-free, instant, smart
     st.subheader("Ask About the Framework")
     follow = st.text_area("Ask a follow-up")
     if st.button("Get Answer"):
@@ -616,7 +572,6 @@ def render_module_4():
                 answer = """
 **Leadership Eligibility Filter**
 Only promote when:
-- Fielding ≥ 4 (foresight under ambiguity)
 - Arm Strength ≥ 4 (clear cross-hierarchy communication)
 - Speed ≥ 4 (calibrated urgency)
 - Power ≥ 4 (anchored conviction)
@@ -641,7 +596,6 @@ Tactics:
 - Abstract value spam
 - Narrative smoothing
 - Visual optics
-- Intentional ambiguity
 Result: Temporary illusion, long-term erosion of trust and performance.
                 """
             elif "risk" in q or "execution" in q or "precision" in q:
@@ -656,29 +610,25 @@ One weak link = system failure.
                 """
             else:
                 answer = "Ask about Eligibility Filter, SME Pitfalls, Messaging to Mask Misalignment, or Risk-Sensitive Roles for deep insights."
-            st.markdown("###Answer")
+            st.markdown("### Answer")
             st.markdown(answer)
         else:
             st.warning("Please enter a question")
-     scoring & radar — unchanged
     st.subheader("Score the Employee on Each Tool (1-5)")
     scores = [st.slider(tool, 1, 5, 3) for tool in TOOLS]
-    employee_notes = st.text_area("Enter notes about the employee")
     if st.button("Generate Scoring"):
         total_score = sum(scores)
         category, action = interpret_score(total_score)
-        analysis = f"###Evaluation Summarynn**Total Score:** {total_score}/25n**Leadership Category:** {category}n**Recommended Action:** {action}nn####Tool-by-Tooln"
+        analysis = f"### Evaluation Summary\n\n**Total Score:** {total_score}/25\n**Leadership Category:** {category}\n**Recommended Action:** {action}\n\n#### Tool-by-Tool\n"
         for tool, score in zip(TOOLS, scores):
             status = "Needs Development" if score <= 2 else "Effective" if score <= 4 else "Exceptional"
-            analysis += f"- **{tool}:** {score} ({status})n"
-        analysis += f"n**Notes:** {employee_notes or 'None'}"
+            analysis += f"- **{tool}:** {score} ({status})\n"
         st.markdown(analysis)
         fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="Behavioral Tool Scoring Radar")
         fig.update_traces(fill='toself')
         st.plotly_chart(fig)
-        #Follow-up under radar — now AI-free
+        # Follow-up under radar — now AI-free
         st.subheader("Ask a follow-up question about the radar:")
-        radar_q = st.text_area("Enter your question", placeholder="e.g., Training recommendations for low Power?")
         if st.button("Get Answer", key="radar_answer"):
             if radar_q.strip():
                 rq = radar_q.lower()
@@ -691,7 +641,6 @@ def render_module_5():
     import streamlit as st
     import plotly.express as px
     st.title("☢️ Toxicity in the Workplace")
-     Educational Expanders
     with st.expander("Padilla’s Toxic Triangle"):
         st.write("Destructive Leaders, Susceptible Followers, and Conducive Environments create toxic conditions.")
     with st.expander("Hogan’s Dark Side Derailers"):
@@ -700,46 +649,38 @@ def render_module_5():
         st.write("Machiavellianism, Narcissism, and Psychopathy are key indicators of toxic tendencies.")
     with st.expander("Behavioral Drift & 360-Degree Feedback"):
         st.write("Behavioral drift occurs when employees gradually deviate from norms; 360-degree feedback helps detect early signs.")
-     Rubric Table
     st.subheader("Toxicity Rubric")
     st.markdown("""
     <table style='width:100%; border:1px solid black; font-size:14px;'>
     <tr><th>Tool</th><th>Low Risk (3-4)</th><th>Moderate Risk (2)</th><th>High Risk (1)</th><th>Toxicity Triggers</th></tr>
-    <tr><td>Speed</td><td>Adapts quickly; integrates feedback without ego.</td><td>Slow to adapt; reacts impulsively.</td><td>Freezes or disengages; ignores feedback.</td><td>Erratic decisions under pressure; volatility derailer.</td></tr>
     <tr><td>Power</td><td>Owns outcomes; decisive and humble.</td><td>Hesitates; deflects blame occasionally.</td><td>Blames others; manipulates responsibility.</td><td>Arrogance derailer; shirking accountability.</td></tr>
-    <tr><td>Fielding</td><td>Anticipates risks; builds robust systems.</td><td>Misses risks; rigid under stress.</td><td>Ignores risks; fosters chaos.</td><td>Unchecked risk-taking; overconfidence derailer.</td></tr>
-    <tr><td>Hitting for Average</td><td>Delivers consistently; builds trust.</td><td>Inconsistent; skips documentation.</td><td>Silent quitting; erodes trust.</td><td>Detachment derailer; cultural drift.</td></tr>
     <tr><td>Arm Strength</td><td>Communicates clearly; inspires buy-in.</td><td>Dominates or charms without substance.</td><td>Manipulative; dismisses feedback.</td><td>Divisive communication; manipulativeness derailer.</td></tr>
     </table>
     """, unsafe_allow_html=True)
-     Q&A
     q = st.text_area("Ask about toxic leadership")
     if st.button("Get Response"):
         if q.strip():
             ql = q.lower()
             if "padilla" in ql or "triangle" in ql:
-                ans = "**Padilla’s Toxic Triangle**nDestructive Leaders + Susceptible Followers + Conducive Environment = Toxicity.nBreak any one leg and toxicity collapses."
+                ans = "**Padilla’s Toxic Triangle**\nDestructive Leaders + Susceptible Followers + Conducive Environment = Toxicity.\nBreak any one leg and toxicity collapses."
             elif "hogan" in ql or "derailer" in ql:
-                ans = "**Hogan’s Dark-Side Derailers**n- Volatility (Speed)n- Arrogance (Power)n- Overconfidence (Fielding)n- Detachment (Hitting)n- Manipulativeness (Arm Strength)"
+                ans = "**Hogan’s Dark-Side Derailers**\n- Volatility (Speed)\n- Arrogance (Power)\n- Overconfidence (Fielding)\n- Detachment (Hitting)\n- Manipulativeness (Arm Strength)"
             elif "machiavell" in ql or "dark triad" in ql:
-                ans = "**Dark Triad Traits**n- Machiavellianism → Manipulative Arm Strengthn- Narcissism → Inflated Powern- Psychopathy → Detached Hitting + Volatile Speed"
+                ans = "**Dark Triad Traits**\n- Machiavellianism → Manipulative Arm Strength\n- Narcissism → Inflated Power\n- Psychopathy → Detached Hitting + Volatile Speed"
             elif "drift" in ql or "360" in ql:
-                ans = "**Behavioral Drift Detection**n360-degree feedback catches gradual deviation before it becomes cultural cancer.nEarly signals: dropping Hitting for Average, rising Power dysfunction."
+                ans = "**Behavioral Drift Detection**\n360-degree feedback catches gradual deviation before it becomes cultural cancer.\nEarly signals: dropping Hitting for Average, rising Power dysfunction."
             else:
                 ans = "Ask about Padilla’s Triangle, Hogan’s Derailers, Dark Triad, or Behavioral Drift for deep insights."
-            st.markdown("###Response")
+            st.markdown("### Response")
             st.markdown(ans)
         else:
             st.warning("Enter a question first")
-     Scoring Sliders
     st.subheader("Rate the Employee on Each Dimension")
     speed = st.slider("Speed", 1, 5, 3)
     power = st.slider("Power", 1, 5, 3)
     fielding = st.slider("Fielding", 1, 5, 3)
     hitting = st.slider("Hitting for Average", 1, 5, 3)
     arm_strength = st.slider("Arm Strength", 1, 5, 3)
-    notes = st.text_area("Additional Notes")
-     Generate Profile + Radar + Table
     if st.button("Generate Profile"):
         total_score = speed + power + fielding + hitting + arm_strength
         if total_score >= 15:
@@ -750,7 +691,6 @@ def render_module_5():
             action_plan = "Provide coaching and monitor closely for improvement."
         else:
             risk_level = "High Risk"
-            action_plan = "Immediate intervention required; consider reassignment or exit strategy."
         st.write(f"**Total Score:** {total_score}/25")
         st.write(f"**Risk Level:** {risk_level}")
         st.write(f"**Action Plan:** {action_plan}")
@@ -766,45 +706,34 @@ def render_module_5():
         <tr><th>Score Range</th><th>Risk Level</th><th>Description</th></tr>
         <tr><td>15-20</td><td>Low Risk</td><td>Employee demonstrates strong alignment with organizational values.</td></tr>
         <tr><td>10-14</td><td>Moderate Risk</td><td>Employee shows signs of disengagement or minor toxic behaviors.</td></tr>
-        <tr><td>Below 10</td><td>High Risk</td><td>Immediate intervention required; behaviors are harmful to team culture.</td></tr>
         </table>
         """, unsafe_allow_html=True)
-        #Contextual Insight — keyword-based, now with proper colons
-        if notes.strip():
-            n = notes.lower()
-            insight = "No strong toxic signals detected from notes."
+        # Contextual Insight — keyword-based, now with proper colons
             if any(w in n for w in ["blame", "fault", "not me", "they", "others"]):
                 insight = ""**High Power Toxicity Risk**
 Blame-shifting detected, classic arrogance derailer.
-Immediate coaching on ownership required."""
             elif any(w in n for w in ["charm", "everyone loves", "optics", "image", "perform"]):
                 insight = ""**High Arm Strength Toxicity Risk**
 Manipulative charm without substance — theater over truth and substance."""
-            elif any(w in n for w in ["quiet", "disengage", "silent", "checked out", "quit"]):
                 insight = ""**High Hitting Toxicity Risk
 def render_module_6():
     st.title("SWOT 2.0 Strategic Framework")
     st.markdown("Designed by Bryan Barrera – Bias-Resistant, Systems-Driven")
-    notes = st.text_area("Raw notes / challenges", height=180)
     if st.button("Generate Bias-Resistant SWOT 2.0", type="primary"):
-        if not notes.strip():
-            st.warning("Please enter notes first")
             return
-        n = notes.lower()
-        #=== Extract key themes using keyword logic (your book + SWOT 2.0) ===
+        # === Extract key themes using keyword logic (your book + SWOT 2.0) ===
         strengths = []
         weaknesses = []
         opportunities = []
         threats = []
-        #Strengths
+        # Strengths
         if any(w in n for w in ["strong", "great", "leader", "team", "skill", "expert", "reliable", "consistent", "culture", "process", "system", "tool"]):
             strengths.append("Strong leadership and/or team cohesion")
         if any(w in n for w in ["data", "tech", "tool", "system", "process", "efficient", "lean"]):
             strengths.append("Robust systems or technical capability")
         if any(w in n for w in ["loyal", "long-term", "tenured", "experienced"]):
             strengths.append("Experienced, loyal workforce")
-        #Weaknesses
-        if any(w in n for w in ["toxic", "blame", "ego", "arrogant", "disengage", "quiet quit", "drift", "burnout", "turnover"]):
+        # Weaknesses
             weaknesses.append("Toxic behavior or behavioral drift")
         if any(w in n for w in ["rigid", "slow", "resist", "change", "old", "outdated"]):
             weaknesses.append("Resistance to change / outdated processes")
@@ -812,7 +741,7 @@ def render_module_6():
             weaknesses.append("Reactive culture / lack of foresight")
         if any(w in n for w in ["silo", "misalign", "communication", "dominate", "charm"]):
             weaknesses.append("Poor cross-functional communication or misalignment")
-        #Opportunities
+        # Opportunities
         if any(w in n for w in ["train", "coach", "develop", "grow", "upskill"]):
             opportunities.append("Leadership development & coaching programs")
         if any(w in n for w in ["system", "process", "lean", "5-tool", "framework"]):
@@ -820,31 +749,29 @@ def render_module_6():
         if any(w in n for w in ["360", "feedback", "drift", "toxicity"]):
             opportunities.append("Introduce 360-degree feedback to catch drift early")
         if any(w in n for w in ["culture", "value", "trust"]):
-            opportunities.append("Rebuild trust through consistency and recognition")
-        #Threats
+        # Threats
         if any(w in n for w in ["competitor", "market", "economy", "lose", "talent"]):
             threats.append("Talent flight to competitors")
-        if any(w in n for w in ["toxic", "lawsuit", "reputation"]):
             threats.append("Reputational damage from unresolved toxicity")
         if any(w in n for w in ["burnout", "turnover", "drift"]):
             threats.append("Cultural collapse from unchecked behavioral drift")
-        #Default fallback if no keywords
+        # Default fallback if no keywords
         if not (strengths or weaknesses or opportunities or threats):
             st.info("No strong signals detected — try adding more detail about people, processes, or culture.")
             return
-        #=== Display Quadrants (your exact layout) ===
+        # === Display Quadrants (your exact layout) ===
         st.subheader("✅ Generated SWOT Analysis")
         col1, col2 = st.columns(2)
         with col1:
-            st.markdown("###**Strengths**")
+            st.markdown("### **Strengths**")
             for s in strengths or ["(None detected)"]:
                 st.markdown(f
 def render_module_7():
     st.title("🚧 Page 8: Under Construction")
     st.markdown("This page is not yet implemented.")
-#-------------------------------
-#Navigation
-#-------------------------------
+# -------------------------------
+# Navigation
+# -------------------------------
 PAGES = [
     "Page 1: The 5 Tool Employee Framework",
     "Page 2: The 5 Tool Employee Framework: Deep Research Version",
@@ -855,7 +782,6 @@ PAGES = [
     "Page 7: Repository",
 ]
 selected_page = st.sidebar.selectbox("Choose a page", PAGES)
-#✅ Page rendering logic (unchanged for now)
 if selected_page == "Page 1: The 5 Tool Employee Framework":
     render_module_1()
 elif selected_page == "Page 2: The 5 Tool Employee Framework: Deep Research Version":
