@@ -7,7 +7,8 @@ from docx import Document
 # -------------------------------
 # Load Book Content for Keyword Logic
 # -------------------------------
-"book_path = "/mount/src/five_tool_web/The 5 Tool Employee Framework .docx"  # Ensure this file is in the same directory
+"book_path = "/mount/src/five_tool_web/The 5 Tool Employee Framework .docx"  
+# Ensure this file is in the same directory
 doc = Document(book_path)
 book_text = "
 ".join([p.text for p in doc.paragraphs if p.text.strip()])
