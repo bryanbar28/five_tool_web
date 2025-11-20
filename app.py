@@ -185,7 +185,7 @@ Job reviews can be formal (annual performance reviews) or informal (feedback ses
 # -------------------------------
 def page_parser():
     st.title("Smart Business Parser")
-    desc = st.text_area("Describe your business", height=120,
+    desc = st.text_area("Describe your business", height=120,)
     if st.button("Parse", type="primary"):
         if desc.strip():
             with st.spinner("Analyzing..."):
