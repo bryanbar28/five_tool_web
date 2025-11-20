@@ -176,7 +176,7 @@ else:
             temperature=0.7,
             max_tokens=800
         )
-        st.session_state.prompt_count += 1  # Increment after successful call
+        st.session_state.prompt_count += 1 
         review_text = response.choices[0].message.content
         st.markdown("### 🧾 Realistic Job Review")
         st.write(review_text)
@@ -529,7 +529,7 @@ def render_module_2():
                     temperature=0.7,
                     max_tokens=1000
                 )
-                st.session_state.prompt_count += 1  # Increment after successful call
+                st.session_state.prompt_count += 1 
                 ai_answer = response.choices[0].message.content
                 st.markdown("### 🔍 Deep Dive Answer")
                 st.markdown(ai_answer)
@@ -590,7 +590,7 @@ def render_module_3():
                 temperature=0.7,
                 max_tokens=400
             )
-            st.session_state.prompt_count += 1  # Increment after successful call
+            st.session_state.prompt_count += 1 
             st.write(response.choices[0].message.content)
         else:
             st.warning("Please add comments before generating insights.")
@@ -725,7 +725,7 @@ def render_module_4():
                 temperature=0.7,
                 max_tokens=700
             )
-            st.session_state.prompt_count += 1  # Increment after successful call
+            st.session_state.prompt_count += 1  
             st.markdown("### AI Answer")
             st.write(response.choices[0].message.content)
             st.markdown("**Recommended Training Links:**")
@@ -768,7 +768,7 @@ def render_module_4():
                     temperature=0.7,
                     max_tokens=700
                 )
-                st.session_state.prompt_count += 1  # Increment after successful call
+                st.session_state.prompt_count += 1 
                 st.markdown("### AI Answer")
                 st.write(response.choices[0].message.content)
                 st.markdown("**Recommended Training Links:**")
@@ -807,7 +807,7 @@ def render_module_5():
             temperature=0.7,
             max_tokens=700
         )
-        st.session_state.prompt_count += 1  # Increment after successful call
+        st.session_state.prompt_count += 1 
         return response.choices[0].message.content
 
     # --- Helper: Contextual Insight combining notes and score ---
@@ -832,7 +832,7 @@ def render_module_5():
             temperature=0.7,
             max_tokens=500
         )
-        st.session_state.prompt_count += 1  # Increment after successful call
+        st.session_state.prompt_count += 1  
         return response.choices[0].message.content
 
     # --- UI Layout ---
