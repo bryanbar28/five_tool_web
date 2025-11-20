@@ -1,363 +1,127 @@
-# -------------------------------
-# Imports
-# -------------------------------
 import os
 import pandas as pd
 import streamlit as st
 import plotly.express as px
-from openai import OpenAI
-from googleapiclient.discovery import build
+from docx import Document
 
 # -------------------------------
-# Page Config
+# Load Book Content for Keyword Logic
 # -------------------------------
-st.set_page_config(page_title="Five-Tool App", layout="wide")
+book_path = "The 5 Tool Employee Framework .docx"  # Ensure this file is in the same directory
+doc = Document(book_path)
+book_text = "
+".join([p.text for p in doc.paragraphs if p.text.strip()])
 
-# -------------------------------
-# Session State Setup
-# -------------------------------
-if "initial_review" not in st.session_state:
-    st.session_state.initial_review = ""
-if "show_repository" not in st.session_state:
-    st.session_state.show_repository = False
-
-# -------------------------------
-# OpenAI Client Setup
-# -------------------------------
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))  # ✅ Use environment variable
-
-# -------------------------------
-# API Keys
-# -------------------------------
-YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
-CHANNEL_ID = "YOUR_CHANNEL_ID"
-
-# -------------------------------
-# Helper Functions
-# -------------------------------
-def fetch_youtube_videos():
-    youtube = build("youtube", "v3", developerKey=YOUTUBE_API_KEY)
-    request = youtube.search().list(
-        part="snippet",
-        channelId=CHANNEL_ID,
-        maxResults=20,
-        order="date"
-    )
-    response = request.execute()
-    videos = []
-    for item in response.get("items", []):
-        video_title = item["snippet"]["title"]
-        video_url = f"https://www.youtube.com/watch?v={item['id']['videoId']}"
-        videos.append({"title": video_title, "url": video_url})
-    return videos
-
-def map_videos_to_tools(videos):
-    mapping = {
-        "Hitting for Average": None,
-        "Fielding": None,
-        "Speed": None,
-        "Arm Strength": None,
-        "Power": None
-    }
-    for video in videos:
-        title = video["title"].lower()
-        if "technical" in title or "competence" in title or "hitting" in title:
-            mapping["Hitting for Average"] = video["url"]
-        elif "problem" in title or "fielding" in title or "solution" in title:
-            mapping["Fielding"] = video["url"]
-        elif "adaptability" in title or "speed" in title or "learning" in title:
-            mapping["Speed"] = video["url"]
-        elif "communication" in title or "leadership" in title or "arm" in title:
-            mapping["Arm Strength"] = video["url"]
-        elif "strategy" in title or "decision" in title or "power" in title:
-            mapping["Power"] = video["url"]
-    return mapping
-
-# -------------------------------
-# Subscription Logic
-# -------------------------------
-PAID_PAGES = {
-    "Page 7: Repository": "$9.99/mo"
+# Keyword mapping for responses
+keyword_map = {
+    "hitting": "Hitting for Average – Reliability, Rhythm & Repeatability",
+    "technical": "Hitting for Average – Reliability, Rhythm & Repeatability",
+    "fielding": "Fielding – Strategic Foresight & System Protection",
+    "problem": "Fielding – Strategic Foresight & System Protection",
+    "speed": "Speed – Adaptability & Continuous Learning",
+    "adapt": "Speed – Adaptability & Continuous Learning",
+    "arm": "Arm Strength – Communication & Leadership",
+    "communication": "Arm Strength – Communication & Leadership",
+    "power": "Power – Strategic Decision-Making",
+    "strategy": "Power – Strategic Decision-Making"
 }
 
-def is_unlocked(page):
-    return False  # Placeholder for future subscription logic
+# Extract section from book text
+def extract_section(section_title):
+    lines = book_text.split("
+")
+    for i, line in enumerate(lines):
+        if section_title.split(" – ")[0] in line:
+            return " ".join(lines[i:i+5])
+    return "Details not found in book."
 
-def unlock_page(page, price):
-    st.warning(f"This page requires a subscription: {price}")
-    st.button("Unlock Now")
+# Get response based on keywords
+def get_response(user_input):
+    for key, section in keyword_map.items():
+        if key in user_input.lower():
+            return f"### {section}
+
+{extract_section(section)}"
+    return "### Overview
+The 5 Tool Employee Framework emphasizes:
+- Speed (Adaptability & Continuous Learning)
+- Power (Strategic Decision-Making)
+- Fielding (Problem-Solving & Foresight)
+- Hitting for Average (Reliability & Rhythm)
+- Arm Strength (Communication & Leadership)"
 
 # -------------------------------
-# 🔍 OpenAI Setup
-client = OpenAI()
+# Streamlit UI
+# -------------------------------
+st.set_page_config(page_title="Module 1 – 5 Tool Employee Framework", layout="wide")
+st.title("Module 1 – The 5 Tool Employee Framework")
+
+# Intro visuals and explanation (Baseball analogy + Professional mapping)
+st.markdown("""
+## ⚾ Baseball Analogy Meets Business
+The original 5-Tool Baseball Player concept evaluates players on:
+- **Hitting for Average** – Consistency
+- **Hitting for Power** – Big plays
+- **Speed** – Quickness
+- **Fielding** – Defensive ability
+- **Arm Strength** – Throwing power
+
+We’ve adapted this to business:
+- **Hitting for Average → Technical Competence & Reliability**
+- **Fielding → Problem-Solving & Strategic Foresight**
+- **Speed → Adaptability & Continuous Learning**
+- **Arm Strength → Communication & Leadership**
+- **Power → Strategic Decision-Making**
+
+Every professional needs all five tools to thrive in today’s dynamic environment.
+""")
 
 # -------------------------------
-# 🧠 Template Discovery Module
+# Sliders for scoring
 # -------------------------------
-def render_template_discovery():
-    st.title("🧠 Behavioral Intelligence App — Template Discovery")
+st.subheader("Rate Candidate on 5 Tools")
+speed = st.slider("Speed (Adaptability)", 1, 10, 5)
+power = st.slider("Power (Decision-Making)", 1, 10, 5)
+fielding = st.slider("Fielding (Problem-Solving)", 1, 10, 5)
+hitting = st.slider("Hitting for Average (Reliability)", 1, 10, 5)
+arm = st.slider("Arm Strength (Communication)", 1, 10, 5)
 
-    role_query = st.text_input(
-        "Ask me anything about job reviews, templates, or phrases",
-        placeholder="e.g., steel machinist, mechanic, I need help writing a review"
-    )
+# Radar chart visualization
+scores = pd.DataFrame({
+    "Tool": ["Speed", "Power", "Fielding", "Hitting", "Arm"],
+    "Score": [speed, power, fielding, hitting, arm]
+})
+fig = px.line_polar(scores, r="Score", theta="Tool", line_close=True,
+                    title="Candidate 5 Tool Profile", range_r=[0, 10])
+fig.update_traces(fill='toself')
+st.plotly_chart(fig)
 
-    if role_query:
-        st.markdown(f"🔍 You asked: **{role_query}**")
-        role = role_query.lower()
-
-        # ✅ Conversational explanation for open-ended questions
-        if "what is a job review" in role or "define job review" in role:
-            st.markdown("### 📘 What Is a Job Review?")
-            st.markdown("""
-            A **job review** is a structured evaluation of an employee's performance, responsibilities, and contributions in a specific role. It often includes:
-            - A summary of duties and expectations  
-            - Feedback on strengths and areas for improvement  
-            - Discussion of goals, compensation, or promotion potential  
-            - A record for HR and future reference  
-
-            Job reviews can be formal (annual performance reviews) or informal (feedback sessions), and they vary by industry and company culture.
-            """)
-            return
-
-        # ✅ Conversational fallback for vague help requests
-        if "help" in role or "phrases" in role or "statements" in role:
-            st.markdown("### 💬 Helpful Job Review Phrases & Comments")
-            st.markdown("- [Status.net: Job Knowledge Phrases](https://status.net/articles/job-knowledge-performance-review-phrases-paragraphs-examples/)")
-            st.markdown("- [BuddiesHR: 75 Review Phrases](https://blog.buddieshr.com/75-effective-performance-review-phrases-examples/)")
-            st.markdown("- [Engage & Manage: 120 Review Comments](https://engageandmanage.com/blog/performance-review-example-phrases-comments/)")
-            return
-
-        # ✅ Role-specific or general template links
-        st.markdown("### 🌐 General Review Templates and Examples")
-        st.markdown("- [Native Teams: 30 Role-Based Review Examples](https://nativeteams.com/blog/performance-review-examples)")
-        st.markdown("- [BetterUp: 53 Performance Review Examples](https://www.betterup.com/blog/performance-review-examples)")
-        st.markdown("- [Indeed: Review Template Library](https://www.indeed.com/career-advice/career-development/performance-review-template)")
 # -------------------------------
-# 🎬 Gritty Job Review Generator
+# Notes section
 # -------------------------------
-def generate_job_review(role, notes=None):
-    st.info(f"🔍 Generating realistic job review for: **{role}**")
+notes = st.text_area("Add Notes about Candidate", placeholder="e.g., strong leadership, adaptable, great communicator")
 
-    prompt = f"""
-    Write a realistic, role-specific job review for the position: {role}.
-    Use a clear, professional tone with practical insights. Include:
-
-    - Job Summary
-    - Key Responsibilities
-    - Required Skills and Tools
-    - Compensation and Schedule
-    - Pros and Cons
-    - Interview Tips
-    - Career Path
-
-    Avoid generic corporate language. Make it useful for someone considering this job.
-    """
-
-    if notes:
-        prompt += f"\n\nIncorporate these user-provided notes into the review:\n{notes}"
-
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are a workplace analyst writing realistic job reviews for professionals."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.7,
-            max_tokens=800
-        )
-
-        review_text = response.choices[0].message.content
-        st.markdown("### 🧾 Realistic Job Review")
-        st.write(review_text)
-
-    except Exception as e:
-        st.error(f"❌ Error generating review: {e}")
 # -------------------------------
-# ✅ Module 1 Wrapper
+# Chat interface for keyword Q&A
 # -------------------------------
-def render_module_1():
-    # ✅ Title and Intro
-    st.title("The 5 Tool Employee Framework")
-    st.markdown("### _Introduction into the 5 Tool Employee Framework_")
-    st.markdown("An Interchangeable Model. Finding the Right Fit.")
+st.subheader("Ask About a Tool")
+user_query = st.text_input("Enter your question (e.g., Tell me about Speed)")
+if user_query:
+    st.markdown(get_response(user_query))
 
-    # ✅ Framework Section
-    st.markdown("#### 5 Tool Baseball Player")
-    st.markdown("""
-    - **Hitting for Average** – Consistently making contact and getting on base.
-    - **Hitting for Power** – Ability to drive the ball for extra bases or home runs.
-    - **Speed** – Quickness on the bases and in the field.
-    - **Fielding** – Defensive ability, including range and reaction time.
-    - **Arm Strength** – Throwing ability, especially for outfielders and infielders.
-    """)
+# -------------------------------
+# Premium Features Placeholders
+# -------------------------------
+st.subheader("Premium Features")
+st.button("Convert to PDF (Upgrade for $9.99/month)", disabled=True)
+st.button("Save to Repository (Upgrade for $9.99/month)", disabled=True)
+st.info("Upgrade in Module 7 to unlock PDF download and repository save.")
 
-    st.markdown("#### Baseball Tools vs. Professional Skills")
-    st.markdown("""
-    - ⚾ **Hitting → Technical Competence**  
-      Just like hitting is fundamental for a baseball player, mastering core skills is crucial for a professional.
-    - 🛡 **Fielding → Problem-Solving Ability**  
-      A great fielder reacts quickly and prevents errors—just like a skilled problem solver.
-    - ⚡ **Speed → Adaptability & Continuous Learning**  
-      Speed gives a player a competitive edge; adaptability ensures professionals stay relevant.
-    - 💪 **Arm Strength → Communication & Leadership**  
-      A powerful arm makes impactful plays—just like effective communication drives team success.
-    - 🚀 **Power → Strategic Decision-Making**  
-      Power hitters change the game—just like leaders who make high-impact decisions.
-    """)
+# -------------------------------
+# Subscription Logic Placeholder
+# -------------------------------
+st.write("Subscription logic will be integrated in Module 7.")
 
-    st.markdown("---")
-
-    # ✅ Chatbox Section
-    st.subheader("🤖 Ask AI About the Framework")
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history = []
-
-    user_question = st.text_input("Ask a question (e.g., 'Tell me more about hitting for average', 'Explain adaptability')")
-
-    if st.button("Send Question"):
-        if user_question.strip():
-            # ✅ Rich descriptive answers based on question keywords
-            q_lower = user_question.lower()
-            if "hitting" in q_lower or "technical" in q_lower:
-                ai_answer = """
-                **Hitting for Average → Technical Competence**
-                This tool represents a professional’s ability to perform job-specific duties effectively and consistently.
-                - **Why It Matters:** Without strong technical fundamentals, everything else suffers.
-                - **Behavioral Insight:** High scores indicate rhythm and repeatability under pressure; low scores often signal avoidance of ambiguity or over-reliance on routine.
-                - **Development Path:** Build structured training plans, reinforce accountability, and encourage precision under stress.
-                """
-            elif "fielding" in q_lower or "problem" in q_lower:
-                ai_answer = """
-                **Fielding → Problem-Solving Ability**
-                A great fielder anticipates and adjusts—just like a skilled problem solver who diagnoses inefficiencies early.
-                - **Why It Matters:** Prevents chaos and costly errors.
-                - **Behavioral Insight:** High scores show foresight and composure; low scores reveal rigidity or blame-shifting.
-                - **Development Path:** Scenario planning and root-cause analysis training.
-                """
-            elif "speed" in q_lower or "adaptability" in q_lower:
-                ai_answer = """
-                **Speed → Adaptability & Continuous Learning**
-                Speed in business means agility and learning under pressure.
-                - **Why It Matters:** Keeps employees relevant in fast-changing environments.
-                - **Behavioral Insight:** High scores reflect emotional agility and proactive learning; low scores suggest resistance to change.
-                - **Development Path:** Micro-learning programs and resilience coaching.
-                """
-            elif "arm" in q_lower or "communication" in q_lower:
-                ai_answer = """
-                **Arm Strength → Communication & Leadership**
-                Communication drives clarity and influence across teams.
-                - **Why It Matters:** Aligns stakeholders and builds trust.
-                - **Behavioral Insight:** High scores show authentic leadership; low scores risk optics-driven behavior or dominance.
-                - **Development Path:** Coaching on clarity, empathy, and feedback loops.
-                """
-            elif "power" in q_lower or "strategic" in q_lower:
-                ai_answer = """
-                **Power → Strategic Decision-Making**
-                Power is about foresight and decisive action.
-                - **Why It Matters:** Shapes long-term success and prevents costly missteps.
-                - **Behavioral Insight:** High scores indicate confidence with humility; low scores reveal impulsiveness or short-term thinking.
-                - **Development Path:** Strategic frameworks and risk analysis training.
-                """
-            else:
-                ai_answer = """
-                The 5 Tool Employee Framework evaluates five core skills:
-                - Technical Competence
-                - Problem-Solving Ability
-                - Adaptability & Continuous Learning
-                - Communication & Leadership
-                - Strategic Decision-Making
-                Ask about any tool for a detailed explanation.
-                """
-            st.session_state.chat_history.append((user_question, ai_answer.strip()))
-        else:
-            st.warning("Please enter a question before sending.")
-
-    if st.session_state.chat_history:
-        st.markdown("### 💬 Conversation History")
-        for q, a in st.session_state.chat_history:
-            st.markdown(f"**You:** {q}")
-            st.markdown(f"**AI:** {a}")
-            st.markdown("---")
-
-    st.markdown("---")
-
-    # ✅ Notes and Sliders Section
-    st.subheader("🛠 Create Your Own 5 Tool Employee")
-    notes_input = st.text_area("Enter notes about your ideal employee or evaluation criteria", placeholder="e.g., strong leadership, adaptable, great communicator")
-
-    st.subheader("Rate the Employee on Each Tool (1–10)")
-    TOOLS = [
-        "Technical Competence",
-        "Problem-Solving Ability",
-        "Adaptability & Continuous Learning",
-        "Communication & Leadership",
-        "Strategic Decision-Making"
-    ]
-    scores = [st.slider(tool, 1, 10, 5) for tool in TOOLS]
-
-    # ✅ Generate Profile Button
-    if st.button("Generate 5 Tool Employee"):
-        if notes_input.strip():
-            st.markdown("### 🧠 Your Custom 5 Tool Employee Profile")
-
-            for tool, score in zip(TOOLS, scores):
-                st.markdown(f"**{tool} (Score: {score}/10)**")
-
-                # ✅ Detailed interpretation based on your book
-                if score <= 3:
-                    st.write("- **Behavioral Reality:** Needs Development.")
-                    if tool == "Technical Competence":
-                        st.write("  • Misses execution rhythm; avoids ambiguity; may disengage under pressure.")
-                        st.write("  • Risk: Reliability gaps erode trust and team cadence.")
-                        st.write("  • Development: Structured technical training and accountability systems.")
-                    elif tool == "Problem-Solving Ability":
-                        st.write("  • Reactive firefighting; freezes or blames others when overwhelmed.")
-                        st.write("  • Risk: Creates chaos instead of solutions.")
-                        st.write("  • Development: Build analytical discipline and scenario planning.")
-                    elif tool == "Adaptability & Continuous Learning":
-                        st.write("  • Resistant to change; lacks proactive learning habits.")
-                        st.write("  • Risk: Falls behind in dynamic environments.")
-                        st.write("  • Development: Micro-learning and resilience coaching.")
-                    elif tool == "Communication & Leadership":
-                        st.write("  • Communication lacks clarity; influence minimal.")
-                        st.write("  • Risk: Team misalignment and low morale.")
-                        st.write("  • Development: Authentic leadership coaching and feedback loops.")
-                    elif tool == "Strategic Decision-Making":
-                        st.write("  • Decisions lack foresight; may chase optics over substance.")
-                        st.write("  • Risk: High chance of costly missteps under pressure.")
-                        st.write("  • Development: Train in strategic frameworks and risk analysis.")
-                elif score <= 6:
-                    st.write("- **Behavioral Reality:** Effective but inconsistent.")
-                    st.write("  • Strength: Handles routine tasks and moderate complexity.")
-                    st.write("  • Growth Area: Needs calibration for high-pressure scenarios.")
-                    st.write("  • Development Path: Reinforce rhythm and foresight through structured coaching.")
-                else:
-                    st.write("- **Behavioral Reality:** Exceptional.")
-                    st.write("  • Strength: Demonstrates mastery under pressure; inspires confidence.")
-                    st.write("  • Watch Out: Overuse can drift into dysfunction (e.g., dominance, rigidity).")
-                    st.write("  • Development Path: Maintain humility and balance; leverage as a leadership strength.")
-
-                st.markdown("---")
-
-            # ✅ Notes Section
-            st.markdown("**Notes:**")
-            st.write(notes_input)
-
-            # ✅ Radar Chart Visualization
-            st.subheader("📊 5-Tool Employee Profile Radar")
-            fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="5-Tool Employee Radar Chart")
-            fig.update_traces(fill='toself')
-            st.plotly_chart(fig)
-        else:
-            st.warning("Please add notes before generating the profile.")
-
-    # ✅ Clear History Button
-    if st.button("Clear History"):
-        st.session_state.chat_history = []
-        st.experimental_rerun()
-        
 def render_module_2():
     import streamlit as st
 
