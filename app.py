@@ -523,7 +523,7 @@ def render_module_2():
                 response = client.chat.completions.create(
                     model="gpt-4-mini",
                     messages=[
-                        {"role": "system", "content": system_prompt}, # ✅ prompt exists here
+                        {"role": "system", "content": question}, 
                         {"role": "user", "content": question}
                     ],
                     temperature=0.7,
@@ -585,7 +585,7 @@ def render_module_3():
                 model="gpt-4-mini",
                 messages=[
                     {"role": "system", "content": "You are an organizational psychologist analyzing behavior under pressure."},
-                {"role": "user", "content": f"Analyze this comment in context of the Behavior Under Pressure Grid: {user_comments}"} # ✅ prompt exists here
+                {"role": "user", "content": f"Analyze this comment in context of the Behavior Under Pressure Grid: {user_comments}"} 
                 ], 
                 temperature=0.7,
                 max_tokens=400
@@ -720,7 +720,7 @@ def render_module_4():
                         "Always include a link to our YouTube channel: https://www.youtube.com/@5toolemployeeframework "
                         "and add recommended training links."
                     )},
-                    {"role": "user", "content": user_question} # ✅ prompt exists here
+                    {"role": "user", "content": user_question} 
                 ],
                 temperature=0.7,
                 max_tokens=700
@@ -763,7 +763,7 @@ def render_module_4():
                             "Always include a link to our YouTube channel: https://www.youtube.com/@5toolemployeeframework "
                             "and add recommended training links."
                         )},
-                        {"role": "user", "content": follow_up_question} # ✅ prompt exists here
+                        {"role": "user", "content": follow_up_question} 
                     ],
                     temperature=0.7,
                     max_tokens=700
@@ -801,7 +801,7 @@ def render_module_5():
         response = client.chat.completions.create(
             model="gpt-4-mini",
             messages=[
-                {"role": "system", "content": system_prompt}, # ✅ prompt exists here
+                {"role": "system", "content": contextual_prompt},
                 {"role": "user", "content": question}
             ],
             temperature=0.7,
