@@ -37,7 +37,7 @@ The five tools:
 Always reference behavior under pressure, dysfunction signals, toxicity, leadership eligibility, behavioral drift, and systems thinking. Use baseball analogies when helpful.
 Never give generic advice - stay grounded in the framework and the user's input.
 """
-    response = client.chat.completions.create(
+    response = client.chat.completions.create()
         model="gpt-4o-mini",
         temperature=temperature,
         messages=[
@@ -66,7 +66,7 @@ Extract ONLY valid JSON (no markdown):
 User description: "{description}"
 """
     try:
-        resp = client.chat.completions.create(
+        resp = client.chat.completions.create()
             model="gpt-4o-mini",
             temperature=0,
             messages=[{"role": "user", "content": prompt}]
@@ -85,7 +85,7 @@ CHANNEL_ID = "YOUR_CHANNEL_ID"  # Replace with your actual channel ID
 # Helper Functions
 # -------------------------------
 def fetch_youtube_videos():
-    request = youtube.search().list(
+    request = youtube.search().list()
         part="snippet",
         channelId=CHANNEL_ID,
         maxResults=20,
@@ -143,7 +143,7 @@ Use a clear, professional tone with practical insights. Include:
 - Career Path
 Avoid generic corporate language. Make it useful for someone considering this job.
 """
-    response = client.chat.completions.create(
+    response = client.chat.completions.create()
         model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}]
     )
@@ -153,7 +153,7 @@ Avoid generic corporate language. Make it useful for someone considering this jo
 # -------------------------------
 def render_template_discovery():
     st.title("🧠 Behavioral Intelligence App - Template Discovery")
-    role_query = st.text_input(
+    role_query = st.text_input()
         "Ask me anything about job reviews, templates, or phrases",
     )
     if role_query:
@@ -161,7 +161,7 @@ def render_template_discovery():
         role = role_query.lower()
         if "what is a job review" in role or "define job review" in role:
             st.markdown("### 📘 What Is a Job Review?")
-            st.markdown("""
+            st.markdown(""")
 A **job review** is a structured evaluation of an employee's performance, responsibilities, and contributions in a specific role. It often includes:
 - A summary of duties and expectations
 - Feedback on strengths and areas for improvement
@@ -201,14 +201,14 @@ def page_1():
     st.markdown("### Introduction into the 5 Tool Employee Framework")
     st.markdown("An Interchangeable Model. Finding the Right Fit.")
     st.markdown("#### 5 Tool Baseball Player")
-    st.markdown("""
+    st.markdown(""")
 - **Hitting for Average** – Consistently making contact and getting on base.
 - **Hitting for Power** – Ability to drive the ball for extra bases or home runs.
 - **Fielding** – Defensive ability, including range and reaction time.
 - **Arm Strength** – Throwing ability, especially for outfielders and infielders.
     """)
     st.markdown("#### Baseball Tools vs. Professional Skills")
-    st.markdown("""
+    st.markdown(""")
 - ⚾ **Hitting → Technical Competence**
   Just like hitting is fundamental for a baseball player, mastering core skills is crucial for a professional.
 - 🧤 **Fielding → Problem-Solving Ability**
@@ -252,7 +252,7 @@ def page_1():
             fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="5-Tool Radar")
             fig.update_traces(fill='toself')
             st.plotly_chart(fig)
-            else:
+        else:
     if st.button("Clear History"):
         st.session_state.chat_history = []
         st.rerun()
@@ -350,7 +350,7 @@ def render_module_2():
     - Cross-functional translators
     - Cultural brokers and stakeholder wranglers
     """
-    st.markdown(
+    st.markdown()
         f"<div style='height:500px; overflow-y:auto; border:1px solid #ccc; padding:10px;'>{pdf_content}</div>",
         unsafe_allow_html=True
     )
@@ -409,7 +409,7 @@ def render_module_2():
 def render_module_3():
     st.title("Behavior Under Pressure")
     st.markdown("### What is the Behavior Under Pressure Grid? An evaluation tool for the behavior that leaders, both current, and potentially, showcase when under stress or pressure")
-    st.markdown("""
+    st.markdown(""")
     This grid shows how behavioral tools manifest in two states:
     - **Intentional Use:** Calm, focused, deliberate behavior.
     - **Under Duress:** How traits distort under stress.
@@ -511,7 +511,7 @@ def render_module_4():
         else:
             return "High-Risk", "Do not promote. Keep in current role or consider non-leadership growth. Focus on strengthening fundamentals before revisiting leadership readiness."
     st.title("Behavioral Calibration & Leadership Readiness")
-    framework = st.selectbox("Select Framework", [
+    framework = st.selectbox("Select Framework", [)
         "Behavioral Calibration Grid",
         "Leadership Eligibility Filter",
         "SME Pitfall Table",
@@ -520,7 +520,7 @@ def render_module_4():
     ])
     if framework == "Behavioral Calibration Grid":
         st.write("### Behavioral Calibration Grid")
-        st.table([
+        st.table([)
             ["Tool", "High Expression", "Under Pressure Behavior", "Tension Theme"],
             ["Speed", "Adaptive, intentional", "Performative, reactive", "Motion vs. Processing"],
             ["Power", "Accountable, decisive", "Ego-driven, controlling", "Drive vs. Humility"],
@@ -530,7 +530,7 @@ def render_module_4():
         ])
     elif framework == "Leadership Eligibility Filter":
         st.write("### Leadership Eligibility Filter")
-        st.table([
+        st.table([)
             ["Domain", "Behavioral Signal", "Eligibility Indicator"],
             ["Arm Strength", "Communicates clearly across hierarchy and function", "Delivers signal-not noise-to any audience"],
             ["Power", "Holds conviction without overpowering or rigid framing", "Anchored, not authoritarian"],
@@ -538,7 +538,7 @@ def render_module_4():
         ])
     elif framework == "SME Pitfall Table":
         st.write("### SME Pitfall Table")
-        st.table([
+        st.table([)
             ["Trait as SME", "Problem When Promoted", "Behavioral Impact"],
             ["Execution Excellence", "Over-indexes on personal output", "Micromanagement, resistance to delegation"],
             ["Deep Knowledge", "Weaponizes expertise to dominate", "Dismissiveness, lack of collaborative fluency"],
@@ -547,7 +547,7 @@ def render_module_4():
         ])
     elif framework == "Risk-Sensitive Execution Roles":
         st.write("### Risk-Sensitive Execution Roles")
-        st.table([
+        st.table([)
             ["Trait", "Description"],
             ["Decision Load", "Frequent choices, each with layered impact"],
             ["Pressure Tolerance", "Working amid tension without emotional leakage"],
@@ -557,7 +557,7 @@ def render_module_4():
         ])
     elif framework == "Messaging to Mask Misalignment":
         st.write("### Messaging to Mask Misalignment")
-        st.table([
+        st.table([)
             ["Tactic", "Impact"],
             ["Framing Over Function", "Creates illusion of unity while systems burn out"],
             ["Overuse of Abstract Values", "Signals alignment without behavioral sync"],
@@ -658,7 +658,7 @@ def render_module_5():
         st.write("Behavioral drift occurs when employees gradually deviate from norms; 360-degree feedback helps detect early signs.")
     # SAME Rubric Table
     st.subheader("Toxicity Rubric")
-    st.markdown("""
+    st.markdown(""")
     <table style='width:100%; border:1px solid black; font-size:14px;'>
     <tr><th>Tool</th><th>Low Risk (3-4)</th><th>Moderate Risk (2)</th><th>High Risk (1)</th><th>Toxicity Triggers</th></tr>
     <tr><td>Power</td><td>Owns outcomes; decisive and humble.</td><td>Hesitates; deflects blame occasionally.</td><td>Blames others; manipulates responsibility.</td><td>Arrogance derailer; shirking accountability.</td></tr>
@@ -711,7 +711,7 @@ def render_module_5():
         fig.update_traces(fill='toself')
         fig.update_layout(title="Toxicity Profile Radar Chart")
         st.plotly_chart(fig)
-        st.markdown("""
+        st.markdown(""")
         <h4>Total Score Interpretation</h4>
         <table style='width:100%; border:1px solid black;'>
         <tr><th>Score Range</th><th>Risk Level</th><th>Description</th></tr>
@@ -776,7 +776,7 @@ def render_module_6():
         with col1:
             st.markdown("### **Strengths**")
             for s in strengths or ["(None detected)"]:
-                st.markdown(f
+                st.markdown(f)
 def render_module_7():
     st.title("🚧 Page 8: Under Construction")
     st.markdown("This page is not yet implemented.")
@@ -806,4 +806,8 @@ elif selected_page == "Page 5: Toxicity in the Workplace":
 elif selected_page == "Page 6: SWOT 2.0":
     render_module_6()
 elif selected_page == "Page 7: Repository":
-    render_module_7()"""
+    render_module_7()
+"""
+
+def render_module_1():
+    st.write('Module 1 placeholder - logic preserved where possible')
