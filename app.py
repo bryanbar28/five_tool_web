@@ -159,12 +159,14 @@ def generate_job_review(role, notes=None):
     Avoid generic corporate language. Make it useful for someone considering this job.
     """
 
-    if notes:
-        prompt += f"\n\nIncorporate these user-provided notes into the review:\n{notes}"
+
+prompt = f"Write a realistic, role-specific job review for the position: {role}..."
+if notes:
+    prompt += f"\n\nIncorporate these user-provided notes into the review:\n{notes}"
 
 if st.session_state.prompt_count >= MAX_PROMPTS:
     st.warning("🚫 You have reached your free limit of 5 prompts this month. Upgrade to premium for unlimited access.")
-
+else:
     try:
         response = client.chat.completions.create(
             model="gpt-4-mini",
