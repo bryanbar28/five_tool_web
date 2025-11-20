@@ -20,6 +20,12 @@ if "initial_review" not in st.session_state:
     st.session_state.initial_review = ""
 if "show_repository" not in st.session_state:
     st.session_state.show_repository = False
+    # Initialize prompt counter
+if "prompt_count" not in st.session_state:
+    st.session_state.prompt_count = 0
+
+# Define max prompts for free tier
+MAX_PROMPTS = 5
 
 # -------------------------------
 # OpenAI Client Setup
