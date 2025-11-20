@@ -529,7 +529,7 @@ def render_module_2():
                     temperature=0.7,
                     max_tokens=1000
                 )
-                  st.session_state.prompt_count += 1  # Increment after successful call
+                st.session_state.prompt_count += 1  # Increment after successful call
                 ai_answer = response.choices[0].message.content
                 st.markdown("### 🔍 Deep Dive Answer")
                 st.markdown(ai_answer)
