@@ -983,64 +983,6 @@ def generate_roadmap(df):
 
 # --- Streamlit UI ---
 
-def render_module_6():
-    st.title("📊 SWOT 2.0 Strategic Framework")
-    st.markdown("Designed by Bryan Barrera & Microsoft Copilot")
-
-    notes = st.text_area("Additional Notes and Input")
-
-    view_mode = st.radio("Select View Mode", ["Basic SWOT", "Advanced SWOT 2.0"])
-
-    if st.button("🎯 Generate AI-Powered SWOT"):
-        strengths, weaknesses, opportunities, threats = generate_ai_swot(notes, ai_chat)
-
-        # Quadrant Layout
-        st.subheader("✅ Generated SWOT Analysis")
-        col1, col2 = st.columns(2)
-        with col1:
-            st.markdown("### **Strengths**")
-            for s in strengths:
-                st.markdown(f"- {s}")
-            st.markdown("### **Opportunities**")
-            for o in opportunities:
-                st.markdown(f"- {o}")
-        with col2:
-            st.markdown("### **Weaknesses**")
-            for w in weaknesses:
-                st.markdown(f"- {w}")
-            st.markdown("### **Threats**")
-            for t in threats:
-                st.markdown(f"- {t}")
-
-        if view_mode == "Advanced SWOT 2.0":
-            st.subheader("📈 Narrative Summary")
-            st.write("This analysis blends internal insights with external best practices. "
-                     "Key focus: manage cultural risks, leverage new hire's network, and mitigate attrition through upskilling.")
-
-            st.subheader("📊 Weighted Scoring Table")
-            st.write("Criteria: Impact (40%), Feasibility (30%), Urgency (20%), Confidence (10%)")
-
-            data = []
-            for category, items in zip(["Strength", "Weakness", "Opportunity", "Threat"], [strengths, weaknesses, opportunities, threats]):
-                for item in items:
-                    scores = score_factor()
-                    total = calculate_weighted_score(scores)
-                    row = {"Category": category, "Factor": item, **scores, "Total Score": round(total, 2)}
-                    data.append(row)
-
-            df = pd.DataFrame(data)
-            st.dataframe(df.sort_values(by="Total Score", ascending=False))
-
-            st.subheader("🛠 Dynamic KPIs")
-            st.write("Actionable steps with milestones, ownership, and scenario planning.")
-            roadmap_df = generate_roadmap(df)
-            st.dataframe(roadmap_df)
-
-# Integrate with your app navigation
-# Example:
-# if selected_page == "Module 6":
-#     render_module_6()
-
 def render_module_7():
     st.title("🚧 Page 8: Under Construction")
     st.markdown("This page is not yet implemented.")
@@ -1054,8 +996,7 @@ PAGES = [
     "Page 3: Behavior Under Pressure Grid",
     "Page 4: Behavioral Calibration Grid",
     "Page 5: Toxicity in the Workplace",
-    "Page 6: SWOT 2.0",
-    "Page 7: Repository",
+    "Page 6: Repository",
 ]
 
 selected_page = st.sidebar.selectbox("Choose a page", PAGES)
@@ -1071,9 +1012,7 @@ elif selected_page == "Page 4: Behavioral Calibration Grid":
     render_module_4()
 elif selected_page == "Page 5: Toxicity in the Workplace":
     render_module_5()
-elif selected_page == "Page 6: SWOT 2.0":
+elif selected_page == "Page 6: Repository":
     render_module_6()
-elif selected_page == "Page 7: Repository":
-    render_module_7()
     
 
