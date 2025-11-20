@@ -144,6 +144,7 @@ def render_template_discovery():
 def generate_job_review(role, notes=None):
     st.info(f"🔍 Generating realistic job review for: **{role}**")
 
+    # Build the prompt inside the function
     prompt = f"""
     Write a realistic, role-specific job review for the position: {role}.
     Use a clear, professional tone with practical insights. Include:
@@ -159,31 +160,30 @@ def generate_job_review(role, notes=None):
     Avoid generic corporate language. Make it useful for someone considering this job.
     """
 
+    if notes:
+        prompt += f"\n\nIncorporate these user-provided notes into the review:\n{notes}"
 
-prompt = f"Write a realistic, role-specific job review for the position: {role}..."
-if notes:
-    prompt += f"\n\nIncorporate these user-provided notes into the review:\n{notes}"
+    # Check prompt limit
+    if st.session_state.prompt_count >= MAX_PROMPTS:
+        st.warning("🚫 You have reached your free limit of 5 prompts this month. Upgrade to premium for unlimited access.")
+    else:
+        try:
+            response = client.chat.completions.create(
+                model="gpt-4-mini",
+                messages=[
+                    {"role": "system", "content": "You are a workplace analyst writing realistic job reviews for professionals."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
+                max_tokens=800
+            )
+            st.session_state.prompt_count += 1
+            review_text = response.choices[0].message.content
+            st.markdown("### 🧾 Realistic Job Review")
+            st.write(review_text)
 
-if st.session_state.prompt_count >= MAX_PROMPTS:
-    st.warning("🚫 You have reached your free limit of 5 prompts this month. Upgrade to premium for unlimited access.")
-else:
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4-mini",
-            messages=[
-                {"role": "system", "content": "You are a workplace analyst writing realistic job reviews for professionals."},
-                {"role": "user", "content": prompt} # ✅ prompt exists here
-            ],
-            temperature=0.7,
-            max_tokens=800
-        )
-        st.session_state.prompt_count += 1 
-        review_text = response.choices[0].message.content
-        st.markdown("### 🧾 Realistic Job Review")
-        st.write(review_text)
-
-    except Exception as e:
-        st.error(f"❌ Error generating review: {e}")
+        except Exception as e:
+            st.error(f"❌ Error generating review: {e}")
 # -------------------------------
 # ✅ Module 1 Wrapper
 # -------------------------------
