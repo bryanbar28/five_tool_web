@@ -23,7 +23,13 @@ def load_prompt_usage():
 def save_prompt_usage(data):
     with open(PROMPT_FILE, "w") as f:
         json.dump(data, f)
-
+# ----------------------------
+# Premium Upgrade Helper
+# ----------------------------
+def upgrade_to_premium():
+    usage[user_id]["premium"] = True
+    save_prompt_usage(usage)
+    st.success("✅ Premium activated! Unlimited prompts and repository access.")
 # -------------------------------
 # Page Config
 # -------------------------------
@@ -186,10 +192,15 @@ def generate_job_review(role, notes=None):
     if notes:
         prompt += f"\n\nIncorporate these user-provided notes into the review:\n{notes}"
 
-    # Check prompt limit
-    if st.session_state.prompt_count >= MAX_PROMPTS:
+    # Check prompt limit  
+    if not usage[user_id]["premium"] and usage[user_id]["count"] >= MAX_PROMPTS:
         st.warning("🚫 You have reached your free limit of 5 prompts this month. Upgrade to premium for unlimited access.")
+        if st.button("Upgrade to Premium ($9.99/month)"):
+            upgrade_to_premium()
     else:
+        # After generating AI response:
+        usage[user_id]["count"] += 1
+        save_prompt_usage(usage)
         try:
             response = client.chat.completions.create(
                 model="gpt-4o-mini",
@@ -1021,9 +1032,22 @@ def generate_roadmap(df):
 
 # --- Streamlit UI ---
 
-def render_module_7():
-    st.title("🚧 Page 8: Under Construction")
-    st.markdown("This page is not yet implemented.")
+def render_module_6():
+    def render_module_6():
+    st.title("📂 Repository")
+    if not usage[user_id]["premium"]:
+        st.warning("This feature requires premium ($9.99/month).")
+        if st.button("Upgrade to Premium"):
+            upgrade_to_premium()
+    else:
+        st.success("Premium active! Save your work below.")
+        folder_name = st.text_input("Folder Name")
+        if st.button("Create Folder"):
+            os.makedirs(folder_name, exist_ok=True)
+            st.success(f"Folder '{folder_name}' created.")
+        if st.button("Download PDF"):
+            # For now, just download a placeholder text
+            st.download_button("Download PDF", data="Your saved work goes here", file_name="work.pdf")
     
 # -------------------------------
 # Navigation
