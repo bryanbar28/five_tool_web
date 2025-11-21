@@ -41,6 +41,13 @@ if "prompt_count" not in st.session_state:
     st.session_state.prompt_count = 0
 
 MAX_PROMPTS = 5  # Free tier limit
+# ----------------------------
+# Persistent User Tracking
+# ----------------------------
+user_id = "demo_user@example.com"  # Replace with actual login email later
+usage = load_prompt_usage()
+if user_id not in usage:
+    usage[user_id] = {"count": 0, "month": "2025-11", "premium": False}
 
 # -------------------------------
 # OpenAI Client Setup
