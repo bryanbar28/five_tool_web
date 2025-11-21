@@ -524,7 +524,7 @@ def render_module_2():
                     - Practical implications
                     - References to leadership theories where relevant
                     """
-try:
+    try:
                 response = client.chat.completions.create(
                     model="gpt-4o-mini",
                     messages=[
