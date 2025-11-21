@@ -766,14 +766,13 @@ if st.button("Send Question"):
         fig.update_traces(fill='toself')
         st.plotly_chart(fig)
 
-        # ✅ Follow-up question box under radar
-        st.subheader("Ask a follow-up question about the radar:")
-        follow_up_question = st.text_area("Enter your question", placeholder="e.g., Can you make some training recommendations?")
-        if st.button("Get AI Answer"):
-            if check_prompt_limit():
-    response = client.chat.completions.create(...)
-    st.session_state.prompt_count += 1
-            if follow_up_question.strip():
+# ✅ Follow-up question box under radar
+st.subheader("Ask a follow-up question about the radar:")
+follow_up_question = st.text_area("Enter your question", placeholder="e.g., Can you make some training recommendations?")
+if st.button("Get AI Answer"):
+    if check_prompt_limit():
+        if follow_up_question.strip():
+            try:
                 response = client.chat.completions.create(
                     model="gpt-4o-mini",
                     messages=[
@@ -783,22 +782,28 @@ if st.button("Send Question"):
                             "Always include a link to our YouTube channel: https://www.youtube.com/@5toolemployeeframework "
                             "and add recommended training links."
                         )},
-                        {"role": "user", "content": follow_up_question} 
+                        {"role": "user", "content": follow_up_question}
                     ],
                     temperature=0.7,
                     max_tokens=700
                 )
-                st.session_state.prompt_count += 1 
+                st.session_state.prompt_count += 1
+
+                # Display AI answer
                 st.markdown("### AI Answer")
                 st.write(response.choices[0].message.content)
+
+                # Updated clickable recommended links
                 st.markdown("**Recommended Training Links:**")
                 st.markdown("- Developing Emotional Intelligence – LinkedIn Learning")
                 st.markdown("- Time Management Fundamentals – LinkedIn Learning")
                 st.markdown("- Resilience Training – Coursera")
-                st.markdown("- Scenario-Based Leadership – Harvard Business Publishing")
-                st.markdown("- Watch tutorials on YouTube")
-            else:
-                st.warning("Please enter a question before clicking 'Get AI Answer'.")
+                st.markdown("- [Scenario-Based Leadership – Harvard Business Publishing](https://www.harvard.edu/executive-educationals on YouTube")
+
+            except Exception as e:
+                st.error(f"❌ Error generating AI response: {e}")
+        else:
+            st.warning("Please enter a question before clicking 'Get AI Answer'.")
                 
 def render_module_5():
     import streamlit as st
