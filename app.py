@@ -1041,6 +1041,7 @@ PAGES = [
 ]
 
 selected_page = st.sidebar.selectbox("Choose a page", PAGES)
+st.write("DEBUG: Prompt count =", st.session_state.prompt_count)
 
 # ✅ Page rendering logic (unchanged for now)
 if selected_page == "Page 1: The 5 Tool Employee Framework":
