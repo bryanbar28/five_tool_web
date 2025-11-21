@@ -401,6 +401,12 @@ def render_module_1():
     if st.button("Clear History"):
         st.session_state.chat_history = []
         st.experimental_rerun()
+    # ✅ After generating the profile and radar chart
+    if st.button("Save to Repository"):
+    st.session_state["saved_notes"] = notes_input if "notes_input" in locals() else st.session_state.get("saved_notes", "")
+    st.session_state["saved_scores"] = scores if "scores" in locals() else st.session_state.get("saved_scores", "")
+    st.session_state["saved_review"] = "Your 5-Tool Employee Profile"
+    st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
         
 def render_module_2():
     import streamlit as st
@@ -573,7 +579,12 @@ def render_module_2():
                 st.error(f"❌ Error generating AI response: {e}")
         else:
             st.warning("Please enter a question before diving further.")
-
+    # ✅ After generating the profile and radar chart
+    if st.button("Save to Repository"):
+    st.session_state["saved_notes"] = notes_input if "notes_input" in locals() else st.session_state.get("saved_notes", "")
+    st.session_state["saved_scores"] = scores if "scores" in locals() else st.session_state.get("saved_scores", "")
+    st.session_state["saved_review"] = "Your 5-Tool Employee Profile"
+    st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
 def render_module_3():
     st.title("Behavior Under Pressure")
     st.markdown("### What is the Behavior Under Pressure Grid? An evaluation tool for the behavior that leaders, both current, and potentially, showcase when under stress or pressure")
@@ -629,7 +640,12 @@ def render_module_3():
             st.write(response.choices[0].message.content)
         else:
             st.warning("Please add comments before generating insights.")
-                    
+    # ✅ After generating the profile and radar chart
+    if st.button("Save to Repository"):
+    st.session_state["saved_notes"] = notes_input if "notes_input" in locals() else st.session_state.get("saved_notes", "")
+    st.session_state["saved_scores"] = scores if "scores" in locals() else st.session_state.get("saved_scores", "")
+    st.session_state["saved_review"] = "Your 5-Tool Employee Profile"
+    st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")          
 def render_module_4():
     import plotly.express as px
 
@@ -814,7 +830,12 @@ def render_module_4():
                 st.markdown("- Watch tutorials on YouTube")
             else:
                 st.warning("Please enter a question before clicking 'Get AI Answer'.")
-                
+    # ✅ After generating the profile and radar chart
+    if st.button("Save to Repository"):
+    st.session_state["saved_notes"] = notes_input if "notes_input" in locals() else st.session_state.get("saved_notes", "")
+    st.session_state["saved_scores"] = scores if "scores" in locals() else st.session_state.get("saved_scores", "")
+    st.session_state["saved_review"] = "Your 5-Tool Employee Profile"
+    st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")        
 def render_module_5():
     import streamlit as st
     import plotly.express as px
@@ -1031,6 +1052,12 @@ def generate_roadmap(df):
     return pd.DataFrame(roadmap)
 
 # --- Streamlit UI ---
+    # ✅ After generating the profile and radar chart
+    if st.button("Save to Repository"):
+    st.session_state["saved_notes"] = notes_input if "notes_input" in locals() else st.session_state.get("saved_notes", "")
+    st.session_state["saved_scores"] = scores if "scores" in locals() else st.session_state.get("saved_scores", "")
+    st.session_state["saved_review"] = "Your 5-Tool Employee Profile"
+    st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
 def render_module_6():
     st.title("📂 Repository")
     if not usage[user_id]["premium"]:
