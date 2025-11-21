@@ -907,12 +907,13 @@ if st.button("Get AI Response"):
 
     notes = st.text_area("Additional Notes")
 
-    # Generate Profile
-    if st.button("Generate Profile"):
-        if check_prompt_limit():
-    response = client.chat.completions.create(...)
-    st.session_state.prompt_count += 1
+# Generate Profile
+if st.button("Generate Profile"):
+    if check_prompt_limit():
+        # Calculate total score
         total_score = speed + power + fielding + hitting + arm_strength
+
+        # Determine risk level and action plan
         if total_score >= 15:
             risk_level = "Low Risk"
             action_plan = "Retain and support; encourage continued engagement."
@@ -923,6 +924,7 @@ if st.button("Get AI Response"):
             risk_level = "High Risk"
             action_plan = "Immediate intervention required; consider reassignment or exit strategy."
 
+        # Display results
         st.write(f"**Total Score:** {total_score}")
         st.write(f"**Risk Level:** {risk_level}")
         st.write(f"**Action Plan:** {action_plan}")
@@ -946,14 +948,20 @@ if st.button("Get AI Response"):
         </table>
         """, unsafe_allow_html=True)
 
-        # AI Insights
-        st.subheader("AI Insights")
-        st.markdown(get_ai_response("toxicity in workplace"))
+        # AI Insights (optional)
+        try:
+            st.subheader("AI Insights")
+            st.markdown(get_ai_response("toxicity in workplace"))
+        except Exception as e:
+            st.error(f"❌ Error generating AI insights: {e}")
 
-        # Contextual Insight
+        # Contextual Insight if notes exist
         if notes.strip():
-            st.subheader("Contextual Insight")
-            st.markdown(get_contextual_insight(notes, total_score, risk_level))
+            try:
+                st.subheader("Contextual Insight")
+                st.markdown(get_contextual_insight(notes, total_score, risk_level))
+            except Exception as e:
+                st.error(f"❌ Error generating contextual insight: {e}")
 
 import streamlit as st
 import random
