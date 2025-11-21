@@ -715,37 +715,42 @@ def render_module_4():
     for title, content in educational_panels.items():
         with st.expander(title):
             st.write(content)
-
-    # ✅ Original AI Q&A Box
-    st.subheader("Ask AI About the Framework")
-    user_question = st.text_area("Ask a question (e.g., 'Tell me more about this')")
-    if st.button("Send Question"):
-        if check_prompt_limit():
-    response = client.chat.completions.create(...)
-    st.session_state.prompt_count += 1
+# ✅ Original AI Q&A Box
+st.subheader("Ask AI About the Framework")
+user_question = st.text_area("Ask a question (e.g., 'Tell me more about this')")
+if st.button("Send Question"):
+    if check_prompt_limit():
         if user_question.strip():
-            response = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[
-                    {"role": "system", "content": (
-                        "You are an expert on the 5-Tool Employee Framework. "
-                        "Always include a link to our YouTube channel: https://www.youtube.com/@5toolemployeeframework "
-                        "and add recommended training links."
-                    )},
-                    {"role": "user", "content": user_question} 
-                ],
-                temperature=0.7,
-                max_tokens=700
-            )
-            st.session_state.prompt_count += 1  
-            st.markdown("### AI Answer")
-            st.write(response.choices[0].message.content)
-            st.markdown("**Recommended Training Links:**")
-            st.markdown("- Developing Emotional Intelligence – LinkedIn Learning")
-            st.markdown("- Time Management Fundamentals – LinkedIn Learning")
-            st.markdown("- Resilience Training – Coursera")
-            st.markdown("- Scenario-Based Leadership – Harvard Business Publishing")
-            st.markdown("- Watch tutorials on YouTube")
+            try:
+                response = client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[
+                        {"role": "system", "content": (
+                            "You are an expert on the 5-Tool Employee Framework. "
+                            "Always include a link to our YouTube channel: https://www.youtube.com/@5toolemployeeframework "
+                            "and add recommended training links."
+                        )},
+                        {"role": "user", "content": user_question}
+                    ],
+                    temperature=0.7,
+                    max_tokens=700
+                )
+                st.session_state.prompt_count += 1
+
+                # Display AI answer
+                st.markdown("### AI Answer")
+                st.write(response.choices[0].message.content)
+
+                # Updated clickable recommended links
+                st.markdown("**Recommended Training Links:**")
+                st.markdown("- Developing Emotional Intelligence – LinkedIn Learning")
+                st.markdown("- Time Management Fundamentals – LinkedIn Learning")
+                st.markdown("- Resilience Training – Coursera")
+                st.markdown("- Scenario-Based Leadership – Harvard Business Publishing")
+                st.markdown("- Watch tutorials on YouTube")
+
+            except Exception as e:
+                st.error(f"❌ Error generating AI response: {e}")
         else:
             st.warning("Please enter a question before sending.")
 
