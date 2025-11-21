@@ -490,7 +490,6 @@ def render_module_2():
 
     # ✅ Question input
     question = st.text_input("Ask a question about the framework:")
-
 # ✅ Dive Further button
 if st.button("Dive Further"):
     if check_prompt_limit():
@@ -544,6 +543,7 @@ if st.button("Dive Further"):
                 st.error(f"❌ Error generating AI response: {e}")
         else:
             st.warning("Please enter a question before diving further.")
+
 def render_module_3():
     st.title("Behavior Under Pressure")
     st.markdown("### What is the Behavior Under Pressure Grid? An evaluation tool for the behavior that leaders, both current, and potentially, showcase when under stress or pressure")
@@ -715,6 +715,7 @@ def render_module_4():
     for title, content in educational_panels.items():
         with st.expander(title):
             st.write(content)
+
 # ✅ Original AI Q&A Box
 st.subheader("Ask AI About the Framework")
 user_question = st.text_area("Ask a question (e.g., 'Tell me more about this')")
@@ -736,19 +737,16 @@ if st.button("Send Question"):
                     max_tokens=700
                 )
                 st.session_state.prompt_count += 1
-
-                # Display AI answer
                 st.markdown("### AI Answer")
                 st.write(response.choices[0].message.content)
 
-                # Updated clickable recommended links
+                # Clickable links
                 st.markdown("**Recommended Training Links:**")
                 st.markdown("- Developing Emotional Intelligence – LinkedIn Learning")
                 st.markdown("- Time Management Fundamentals – LinkedIn Learning")
                 st.markdown("- Resilience Training – Coursera")
                 st.markdown("- Scenario-Based Leadership – Harvard Business Publishing")
                 st.markdown("- Watch tutorials on YouTube")
-
             except Exception as e:
                 st.error(f"❌ Error generating AI response: {e}")
         else:
@@ -788,18 +786,16 @@ if st.button("Get AI Answer"):
                     max_tokens=700
                 )
                 st.session_state.prompt_count += 1
-
-                # Display AI answer
                 st.markdown("### AI Answer")
                 st.write(response.choices[0].message.content)
 
-                # Updated clickable recommended links
+                # Clickable links
                 st.markdown("**Recommended Training Links:**")
                 st.markdown("- Developing Emotional Intelligence – LinkedIn Learning")
                 st.markdown("- Time Management Fundamentals – LinkedIn Learning")
                 st.markdown("- Resilience Training – Coursera")
-                st.markdown("- [Scenario-Based Leadership – Harvard Business Publishing](https://www.harvard.edu/executive-educationals on YouTube")
-
+                st.markdown("- Scenario-Based Leadership – Harvard Business Publishing")
+                st.markdown("- Watch tutorials on YouTube")
             except Exception as e:
                 st.error(f"❌ Error generating AI response: {e}")
         else:
@@ -910,10 +906,8 @@ if st.button("Get AI Response"):
 # Generate Profile
 if st.button("Generate Profile"):
     if check_prompt_limit():
-        # Calculate total score
         total_score = speed + power + fielding + hitting + arm_strength
 
-        # Determine risk level and action plan
         if total_score >= 15:
             risk_level = "Low Risk"
             action_plan = "Retain and support; encourage continued engagement."
@@ -924,7 +918,6 @@ if st.button("Generate Profile"):
             risk_level = "High Risk"
             action_plan = "Immediate intervention required; consider reassignment or exit strategy."
 
-        # Display results
         st.write(f"**Total Score:** {total_score}")
         st.write(f"**Risk Level:** {risk_level}")
         st.write(f"**Action Plan:** {action_plan}")
@@ -948,7 +941,7 @@ if st.button("Generate Profile"):
         </table>
         """, unsafe_allow_html=True)
 
-        # AI Insights (optional)
+        # AI Insights
         try:
             st.subheader("AI Insights")
             st.markdown(get_ai_response("toxicity in workplace"))
