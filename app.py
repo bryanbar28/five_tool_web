@@ -172,22 +172,22 @@ def generate_job_review(role, notes=None):
 if st.session_state.prompt_count >= MAX_PROMPTS:
     st.warning("🚫 Free limit reached. Upgrade for unlimited prompts.")
 elif check_prompt_limit():
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "You are a workplace analyst writing realistic job reviews for professionals."},
-            {"role": "user", "content": prompt}
-        ],
-        temperature=0.7,
-        max_tokens=800
-    )
-    st.session_state.prompt_count += 1
-    review_text = response.choices[0].message.content
-    st.markdown("### 🧾 Realistic Job Review")
-    st.write(review_text)
-
-        except Exception as e:
-            st.error(f"❌ Error generating review: {e}")
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a workplace analyst writing realistic job reviews for professionals."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+            max_tokens=800
+        )
+        st.session_state.prompt_count += 1
+        review_text = response.choices[0].message.content
+        st.markdown("### 🧾 Realistic Job Review")
+        st.write(review_text)
+    except Exception as e:
+        st.error(f"❌ Error generating review: {e}")
 # -------------------------------
 # ✅ Module 1 Wrapper
 # -------------------------------
