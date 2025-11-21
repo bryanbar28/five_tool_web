@@ -171,7 +171,7 @@ def generate_job_review(role, notes=None):
     # Check prompt limit
     if st.session_state.prompt_count >= MAX_PROMPTS:
         st.warning("🚫 You have reached your free limit of 5 prompts this month. Upgrade to premium for unlimited access.")
-    else:if check_prompt_limit():
+    elif check_prompt_limit():
     response = client.chat.completions.create(...)
     st.session_state.prompt_count += 1
         
