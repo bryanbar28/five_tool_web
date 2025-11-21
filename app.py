@@ -1033,7 +1033,6 @@ def generate_roadmap(df):
 # --- Streamlit UI ---
 
 def render_module_6():
-    def render_module_6():
     st.title("📂 Repository")
     if not usage[user_id]["premium"]:
         st.warning("This feature requires premium ($9.99/month).")
