@@ -491,11 +491,9 @@ def render_module_2():
     # ✅ Question input
     question = st.text_input("Ask a question about the framework:")
 
-    # ✅ Dive Further button
-    if st.button("Dive Further"):
-        if check_prompt_limit():
-    response = client.chat.completions.create(...)
-    st.session_state.prompt_count += 1
+# ✅ Dive Further button
+if st.button("Dive Further"):
+    if check_prompt_limit():
         if question.strip():
             try:
                 hidden_context = """
@@ -531,13 +529,13 @@ def render_module_2():
                 response = client.chat.completions.create(
                     model="gpt-4o-mini",
                     messages=[
-                        {"role": "system", "content": question}, 
+                        {"role": "system", "content": system_prompt},
                         {"role": "user", "content": question}
                     ],
                     temperature=0.7,
                     max_tokens=1000
                 )
-                st.session_state.prompt_count += 1 
+                st.session_state.prompt_count += 1
                 ai_answer = response.choices[0].message.content
                 st.markdown("### 🔍 Deep Dive Answer")
                 st.markdown(ai_answer)
@@ -546,7 +544,6 @@ def render_module_2():
                 st.error(f"❌ Error generating AI response: {e}")
         else:
             st.warning("Please enter a question before diving further.")
-
 def render_module_3():
     st.title("Behavior Under Pressure")
     st.markdown("### What is the Behavior Under Pressure Grid? An evaluation tool for the behavior that leaders, both current, and potentially, showcase when under stress or pressure")
