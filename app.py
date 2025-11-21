@@ -582,24 +582,25 @@ def render_module_3():
     # ✅ Add comments input
     user_comments = st.text_area("Add your comments or observations", placeholder="e.g., This candidate freezes under pressure but excels in planning.")
 
-    # ✅ Generate AI insights
-    if st.button("Generate Insights"):
-        if check_prompt_limit():
-    response = client.chat.completions.create(...)
-    st.session_state.prompt_count += 1
+# ✅ Generate AI insights
+if st.button("Generate Insights"):
+    if check_prompt_limit():
         if user_comments.strip():
             st.subheader("🔍 AI Insights Based on Your Comments")
-            response = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[
-                    {"role": "system", "content": "You are an organizational psychologist analyzing behavior under pressure."},
-                {"role": "user", "content": f"Analyze this comment in context of the Behavior Under Pressure Grid: {user_comments}"} 
-                ], 
-                temperature=0.7,
-                max_tokens=400
-            )
-            st.session_state.prompt_count += 1 
-            st.write(response.choices[0].message.content)
+            try:
+                response = client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[
+                        {"role": "system", "content": "You are an organizational psychologist analyzing behavior under pressure."},
+                        {"role": "user", "content": f"Analyze this comment in context of the Behavior Under Pressure Grid: {user_comments}"}
+                    ],
+                    temperature=0.7,
+                    max_tokens=400
+                )
+                st.session_state.prompt_count += 1
+                st.write(response.choices[0].message.content)
+            except Exception as e:
+                st.error(f"❌ Error generating AI response: {e}")
         else:
             st.warning("Please add comments before generating insights.")
                     
