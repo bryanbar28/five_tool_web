@@ -11,6 +11,7 @@ import json
 import matplotlib.pyplot as plt 
 import numpy as np 
 from fpdf import FPDF 
+import ast 
 
 SAVE_DIR = "user_saves"
 os.makedirs(SAVE_DIR, exist_ok=True)
@@ -33,9 +34,20 @@ def render_saved_files():
         if st.button("Load Selected"):
             with open(os.path.join(SAVE_DIR, choice)) as f:
                 data = json.load(f)
+            # ✅ After loading the JSON, assign values into session_state
+            
             st.session_state.saved_notes = data.get("notes", "")
             st.session_state.saved_scores = data.get("scores", {})
             st.session_state.saved_review = data.get("review", "")
+            # 🔧 Fix type if scores came back as a string
+            import ast
+            if isinstance(st.session_state.saved_scores, str):
+                try:
+                    st.session_state.saved_scores = ast.literal_eval(st.session_state.saved_scores)
+                except Exception:
+                    st.session_state.saved_scores = {}
+            st.write("DEBUG saved_scores type:", type(st.session_state.saved_scores))
+            st.write("DEBUG saved_scores value:", st.session_state.saved_scores)  
             st.success("✅ Work loaded successfully!")
     else:
         st.info("No saved work yet.")
