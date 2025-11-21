@@ -8,6 +8,46 @@ import plotly.express as px
 from openai import OpenAI
 from googleapiclient.discovery import build
 import json
+import matplotlib.pyplot as plt 
+import numpy as np 
+from fpdf import FPDF 
+
+SAVE_DIR = "user_saves"
+os.makedirs(SAVE_DIR, exist_ok=True)
+
+def save_work(name):
+    filepath = os.path.join(SAVE_DIR, f"{name}.txt")
+    with open(filepath, "w") as f:
+        f.write("Notes:\n" + str(st.session_state.get("saved_notes", "")) + "\n\n")
+        f.write("Scores:\n" + str(st.session_state.get("saved_scores", "")) + "\n\n")
+        f.write("Review:\n" + str(st.session_state.get("saved_review", "")))
+    st.success(f"✅ Work saved as {name}.txt")
+
+def render_saved_files():
+    files = sorted([f for f in os.listdir(SAVE_DIR) if f.endswith(".txt")])
+    if files:
+        choice = st.selectbox("Choose a saved file:", files, key="saved_file_choice")
+        if st.button("Load Selected"):
+            with open(os.path.join(SAVE_DIR, choice)) as f:
+                st.text(f.read())
+    else:
+        st.info("No saved work yet.")
+
+def generate_radar(scores_dict):
+    labels = list(scores_dict.keys())
+    values = list(scores_dict.values())
+    if not labels:
+        return None
+
+    angles = np.linspace(0, 2*np.pi, len(labels), endpoint=False).tolist()
+    values += values[:1]
+    angles += angles[:1]
+
+    fig, ax = plt.subplots(figsize=(6,6), subplot_kw=dict(polar=True))
+    ax.plot(angles, values, "o-", linewidth=2)
+    ax.fill(angles, values, alpha=0.25)
+    ax.set_thetagrids(np.degrees(angles[:-1]), labels)
+    return fig
 
 # ----------------------------
 # Persistent Prompt Tracking
@@ -1058,8 +1098,10 @@ def generate_roadmap(df):
         st.session_state["saved_scores"] = scores if "scores" in locals() else st.session_state.get("saved_scores", "")
         st.session_state["saved_review"] = "Your 5-Tool Employee Profile"
         st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
+
 def render_module_6():
     st.title("📂 Repository")
+
     if not usage[user_id]["premium"]:
         st.warning("This feature requires premium ($9.99/month).")
         if st.button("Upgrade to Premium"):
@@ -1073,27 +1115,120 @@ def render_module_6():
         st.write("Scores:", st.session_state.get("saved_scores", "No scores yet"))
         st.write("Review:", st.session_state.get("saved_review", "No review yet"))
 
-        # Save Work Button
+        # --- Named Save ---
+        save_name = st.text_input("Save work as:")
         if st.button("Save Work"):
-            with open("saved_work.txt", "w") as f:
-                f.write("Notes:\n" + str(st.session_state.get("saved_notes", "")) + "\n\n")
-                f.write("Scores:\n" + str(st.session_state.get("saved_scores", "")) + "\n\n")
-                f.write("Review:\n" + str(st.session_state.get("saved_review", "")))
-            st.success("✅ Work saved successfully!")
+            if save_name:
+                save_work(save_name)   # helper function from earlier
+            else:
+                st.warning("Please enter a name before saving.")
 
-        # Generate PDF Button
-        if st.button("Generate PDF"):
-            from fpdf import FPDF
-            pdf = FPDF()
-            pdf.add_page()
-            pdf.set_font("Arial", size=12)
-            pdf.cell(200, 10, txt="Your Saved Work", ln=True, align="C")
-            pdf.multi_cell(0, 10, txt="Notes:\n" + str(st.session_state.get("saved_notes", "")))
-            pdf.multi_cell(0, 10, txt="Scores:\n" + str(st.session_state.get("saved_scores", "")))
-            pdf.multi_cell(0, 10, txt="Review:\n" + str(st.session_state.get("saved_review", "")))
-            pdf.output("saved_work.pdf")
-            with open("saved_work.pdf", "rb") as f:
-                st.download_button("Download PDF", f, file_name="saved_work.pdf")
+        # --- Browse Saved Files ---
+        render_saved_files()  # helper function from earlier
+
+        # --- Radar Chart ---
+        scores = st.session_state.get("saved_scores", {"Leadership":3, "Teamwork":4, "Innovation":2})
+        fig = generate_radar(scores)   # helper function from earlier
+        st.pyplot(fig)
+
+def render_module_6():
+    st.title("📂 Repository")
+
+    if not usage[user_id]["premium"]:
+        st.warning("This feature requires premium ($9.99/month).")
+        if st.button("Upgrade to Premium"):
+            upgrade_to_premium()
+    else:
+        st.success("Premium active! Save your work below.")
+
+        # Show captured data
+        st.write("### Your Current Work")
+        st.write("Notes:", st.session_state.get("saved_notes", "No notes yet"))
+        st.write("Scores:", st.session_state.get("saved_scores", "No scores yet"))
+        st.write("Review:", st.session_state.get("saved_review", "No review yet"))
+
+        # --- Named Save ---
+        save_name = st.text_input("Save work as:")
+        if st.button("Save Work"):
+            if save_name:
+                save_work(save_name)   # helper function from earlier
+            else:
+                st.warning("Please enter a name before saving.")
+
+        # --- Browse Saved Files ---
+        render_saved_files()  # helper function from earlier
+
+        # --- Radar Chart ---
+        scores = st.session_state.get("saved_scores", {"Leadership":3, "Teamwork":4, "Innovation":2})
+        fig = generate_radar(scores)   # helper function from earlier
+        st.pyplot(fig)
+def render_module_6():
+    st.title("📂 Repository")
+
+    if not usage[user_id]["premium"]:
+        st.warning("This feature requires premium ($9.99/month).")
+        if st.button("Upgrade to Premium"):
+            upgrade_to_premium()
+    else:
+        st.success("Premium active! Save your work below.")
+
+        # Show captured data
+        st.write("### Your Current Work")
+        st.write("Notes:", st.session_state.get("saved_notes", "No notes yet"))
+        st.write("Scores:", st.session_state.get("saved_scores", "No scores yet"))
+        st.write("Review:", st.session_state.get("saved_review", "No review yet"))
+
+        # --- Named Save ---
+        save_name = st.text_input("Save work as:")
+        if st.button("Save Work"):
+            if save_name.strip():
+                save_work(save_name.strip())  
+            else:
+                st.warning("Please enter a name before saving.")
+
+        # --- Browse Saved Files ---
+        st.write("### Browse saved work")
+        render_saved_files()  # helper function from earlier
+
+        # --- Radar Chart ---
+        scores = st.session_state.get("saved_scores", {})
+        fig = generate_radar(scores)   # helper function from earlier
+
+        if fig:
+            st.write("### Scores Radar Chart")
+            st.pyplot(fig)
+        else:
+            st.info("No scores available to plot.")
+
+        # --- Generate PDF ---
+if st.button("Generate PDF"):
+    from fpdf import FPDF
+
+    # Save radar chart image if available
+    radar_path = None
+    if fig:  # only save if a chart exists
+        radar_path = "radar.png"
+        fig.savefig(radar_path, bbox_inches="tight")
+
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt="Your Saved Work", ln=True, align="C")
+
+    # Add text sections
+    pdf.multi_cell(0, 10, txt="Notes:\n" + str(st.session_state.get("saved_notes", "")))
+    pdf.multi_cell(0, 10, txt="Scores:\n" + str(scores if scores else "No scores"))
+    pdf.multi_cell(0, 10, txt="Review:\n" + str(st.session_state.get("saved_review", "")))
+
+    # Insert radar chart if available
+    if radar_path:
+        pdf.image(radar_path, x=10, y=80, w=180)
+
+    # Output and download
+    pdf.output("saved_work.pdf")
+    with open("saved_work.pdf", "rb") as f:
+        st.download_button("Download PDF", f, file_name="saved_work.pdf")
+
 # -------------------------------
 # Navigation
 # -------------------------------
