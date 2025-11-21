@@ -5,3 +5,5 @@ supabase
 google-api-python-client
 python-dotenv
 OpenAI
+fpdf
+stripe
