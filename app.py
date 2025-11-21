@@ -524,23 +524,23 @@ def render_module_2():
                     - Practical implications
                     - References to leadership theories where relevant
                     """
-try:
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": question}
-        ],
-        temperature=0.7,
-        max_tokens=1000
-    )
-    st.session_state.prompt_count += 1
-    ai_answer = response.choices[0].message.content
-    st.markdown("### 🔍 Deep Dive Answer")
-    st.markdown(ai_answer)
-
-except Exception as e:
-    st.error(f"❌ Error generating AI response: {e}")
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": question}
+            ],
+            temperature=0.7,
+            max_tokens=1000
+        )
+        st.session_state.prompt_count += 1
+        ai_answer = response.choices[0].message.content
+        st.markdown("### 🔍 Deep Dive Answer")
+        st.markdown(ai_answer)
+    
+    except Exception as e:
+        st.error(f"❌ Error generating AI response: {e}")
 
 def render_module_3():
     st.title("Behavior Under Pressure")
