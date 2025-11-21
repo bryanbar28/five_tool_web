@@ -18,15 +18,23 @@ os.makedirs(SAVE_DIR, exist_ok=True)
 
 def save_work(name):
     filepath = os.path.join(SAVE_DIR, f"{name}.json")
+
+    # Ensure scores are a dict before saving
+    scores = st.session_state.get("saved_scores", {})
+    if isinstance(scores, list):
+        # Convert list into a dict with generic labels
+        scores = {f"Score {i+1}": val for i, val in enumerate(scores)}
+
     data = {
         "notes": st.session_state.get("saved_notes", ""),
-        "scores": st.session_state.get("saved_scores", {}),
+        "scores": scores,
         "review": st.session_state.get("saved_review", "")
     }
+
     with open(filepath, "w") as f:
         json.dump(data, f)
-    st.success(f"✅ Work saved as {name}.json")
 
+    st.success(f"✅ Work saved as {name}.json")
 def render_saved_files():
     files = [f for f in os.listdir(SAVE_DIR) if f.endswith(".json")]
     if files:
@@ -34,20 +42,22 @@ def render_saved_files():
         if st.button("Load Selected"):
             with open(os.path.join(SAVE_DIR, choice)) as f:
                 data = json.load(f)
-            # ✅ After loading the JSON, assign values into session_state
-            
+
+            # After loading JSON, assign values
             st.session_state.saved_notes = data.get("notes", "")
             st.session_state.saved_scores = data.get("scores", {})
             st.session_state.saved_review = data.get("review", "")
-            # 🔧 Fix type if scores came back as a string
-            import ast
-            if isinstance(st.session_state.saved_scores, str):
-                try:
-                    st.session_state.saved_scores = ast.literal_eval(st.session_state.saved_scores)
-                except Exception:
-                    st.session_state.saved_scores = {}
+
+            # 🔧 Normalize again if needed
+            if isinstance(st.session_state.saved_scores, list):
+                st.session_state.saved_scores = {
+                    f"Score {i+1}": val for i, val in enumerate(st.session_state.saved_scores)
+                }
+
+            # Debug check
             st.write("DEBUG saved_scores type:", type(st.session_state.saved_scores))
-            st.write("DEBUG saved_scores value:", st.session_state.saved_scores)  
+            st.write("DEBUG saved_scores value:", st.session_state.saved_scores)
+
             st.success("✅ Work loaded successfully!")
     else:
         st.info("No saved work yet.")
