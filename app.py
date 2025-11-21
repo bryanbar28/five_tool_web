@@ -7,6 +7,22 @@ import streamlit as st
 import plotly.express as px
 from openai import OpenAI
 from googleapiclient.discovery import build
+import json
+
+# ----------------------------
+# Persistent Prompt Tracking
+# ----------------------------
+PROMPT_FILE = "prompt_usage.json"
+
+def load_prompt_usage():
+    if os.path.exists(PROMPT_FILE):
+        with open(PROMPT_FILE, "r") as f:
+            return json.load(f)
+    return {}
+
+def save_prompt_usage(data):
+    with open(PROMPT_FILE, "w") as f:
+        json.dump(data, f)
 
 # -------------------------------
 # Page Config
