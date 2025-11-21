@@ -1031,7 +1031,6 @@ def generate_roadmap(df):
     return pd.DataFrame(roadmap)
 
 # --- Streamlit UI ---
-
 def render_module_6():
     st.title("📂 Repository")
     if not usage[user_id]["premium"]:
@@ -1045,9 +1044,7 @@ def render_module_6():
             os.makedirs(folder_name, exist_ok=True)
             st.success(f"Folder '{folder_name}' created.")
         if st.button("Download PDF"):
-            # For now, just download a placeholder text
             st.download_button("Download PDF", data="Your saved work goes here", file_name="work.pdf")
-    
 # -------------------------------
 # Navigation
 # -------------------------------
