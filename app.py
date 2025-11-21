@@ -1201,33 +1201,33 @@ def render_module_6():
             st.info("No scores available to plot.")
 
         # --- Generate PDF ---
-if st.button("Generate PDF"):
-    from fpdf import FPDF
+        if st.button("Generate PDF"):
+            from fpdf import FPDF
 
-    # Save radar chart image if available
-    radar_path = None
-    if fig:  # only save if a chart exists
-        radar_path = "radar.png"
-        fig.savefig(radar_path, bbox_inches="tight")
+            # Save radar chart image if available
+            radar_path = None
+            if fig:  # only save if a chart exists
+                radar_path = "radar.png"
+                fig.savefig(radar_path, bbox_inches="tight")
 
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=12)
-    pdf.cell(200, 10, txt="Your Saved Work", ln=True, align="C")
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.set_font("Arial", size=12)
+            pdf.cell(200, 10, txt="Your Saved Work", ln=True, align="C")
 
-    # Add text sections
-    pdf.multi_cell(0, 10, txt="Notes:\n" + str(st.session_state.get("saved_notes", "")))
-    pdf.multi_cell(0, 10, txt="Scores:\n" + str(scores if scores else "No scores"))
-    pdf.multi_cell(0, 10, txt="Review:\n" + str(st.session_state.get("saved_review", "")))
+            # Add text sections
+            pdf.multi_cell(0, 10, txt="Notes:\n" + str(st.session_state.get("saved_notes", "")))
+            pdf.multi_cell(0, 10, txt="Scores:\n" + str(scores if scores else "No scores"))
+            pdf.multi_cell(0, 10, txt="Review:\n" + str(st.session_state.get("saved_review", "")))
 
-    # Insert radar chart if available
-    if radar_path:
-        pdf.image(radar_path, x=10, y=80, w=180)
+            # Insert radar chart if available
+            if radar_path:
+                pdf.image(radar_path, x=10, y=80, w=180)
 
-    # Output and download
-    pdf.output("saved_work.pdf")
-    with open("saved_work.pdf", "rb") as f:
-        st.download_button("Download PDF", f, file_name="saved_work.pdf")
+            # Output and download
+            pdf.output("saved_work.pdf")
+            with open("saved_work.pdf", "rb") as f:
+                st.download_button("Download PDF", f, file_name="saved_work.pdf")
 
 # -------------------------------
 # Navigation
