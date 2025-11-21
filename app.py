@@ -23,6 +23,11 @@ if "show_repository" not in st.session_state:
 # ✅ Prompt limit setup
 if "prompt_count" not in st.session_state:
     st.session_state.prompt_count = 0
+def check_prompt_limit():
+    if st.session_state.prompt_count >= MAX_PROMPTS:
+        st.warning("🚫 Free limit reached. Upgrade for unlimited prompts.")
+        return False
+    return True
 
 MAX_PROMPTS = 5  # Free tier limit
 
@@ -166,7 +171,10 @@ def generate_job_review(role, notes=None):
     # Check prompt limit
     if st.session_state.prompt_count >= MAX_PROMPTS:
         st.warning("🚫 You have reached your free limit of 5 prompts this month. Upgrade to premium for unlimited access.")
-    else:
+    else:if check_prompt_limit():
+    response = client.chat.completions.create(...)
+    st.session_state.prompt_count += 1
+        
         try:
             response = client.chat.completions.create(
                 model="gpt-4o-mini",
@@ -489,6 +497,9 @@ def render_module_2():
 
     # ✅ Dive Further button
     if st.button("Dive Further"):
+        if check_prompt_limit():
+    response = client.chat.completions.create(...)
+    st.session_state.prompt_count += 1
         if question.strip():
             try:
                 hidden_context = """
@@ -580,6 +591,9 @@ def render_module_3():
 
     # ✅ Generate AI insights
     if st.button("Generate Insights"):
+        if check_prompt_limit():
+    response = client.chat.completions.create(...)
+    st.session_state.prompt_count += 1
         if user_comments.strip():
             st.subheader("🔍 AI Insights Based on Your Comments")
             response = client.chat.completions.create(
@@ -712,6 +726,9 @@ def render_module_4():
     st.subheader("Ask AI About the Framework")
     user_question = st.text_area("Ask a question (e.g., 'Tell me more about this')")
     if st.button("Send Question"):
+        if check_prompt_limit():
+    response = client.chat.completions.create(...)
+    st.session_state.prompt_count += 1
         if user_question.strip():
             response = client.chat.completions.create(
                 model="gpt-4o-mini",
@@ -754,6 +771,9 @@ def render_module_4():
         st.subheader("Ask a follow-up question about the radar:")
         follow_up_question = st.text_area("Enter your question", placeholder="e.g., Can you make some training recommendations?")
         if st.button("Get AI Answer"):
+            if check_prompt_limit():
+    response = client.chat.completions.create(...)
+    st.session_state.prompt_count += 1
             if follow_up_question.strip():
                 response = client.chat.completions.create(
                     model="gpt-4o-mini",
@@ -866,6 +886,9 @@ def render_module_5():
     st.subheader("AI Chat: Ask about Toxic Leadership or Feedback")
     ai_question = st.text_area("Ask a question (e.g., Tell me more about 360-degree feedback)")
     if st.button("Get AI Response"):
+        if check_prompt_limit():
+    response = client.chat.completions.create(...)
+    st.session_state.prompt_count += 1
         st.markdown(get_ai_response(ai_question))
 
     # Scoring Sliders
@@ -880,6 +903,9 @@ def render_module_5():
 
     # Generate Profile
     if st.button("Generate Profile"):
+        if check_prompt_limit():
+    response = client.chat.completions.create(...)
+    st.session_state.prompt_count += 1
         total_score = speed + power + fielding + hitting + arm_strength
         if total_score >= 15:
             risk_level = "Low Risk"
