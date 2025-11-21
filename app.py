@@ -23,11 +23,6 @@ if "show_repository" not in st.session_state:
 # ✅ Prompt limit setup
 if "prompt_count" not in st.session_state:
     st.session_state.prompt_count = 0
-def check_prompt_limit():
-    if st.session_state.prompt_count >= MAX_PROMPTS:
-        st.warning("🚫 Free limit reached. Upgrade for unlimited prompts.")
-        return False
-    return True
 
 MAX_PROMPTS = 5  # Free tier limit
 
@@ -168,26 +163,27 @@ def generate_job_review(role, notes=None):
     if notes:
         prompt += f"\n\nIncorporate these user-provided notes into the review:\n{notes}"
 
-# Check prompt limit
-if st.session_state.prompt_count >= MAX_PROMPTS:
-    st.warning("🚫 Free limit reached. Upgrade for unlimited prompts.")
-elif check_prompt_limit():
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "You are a workplace analyst writing realistic job reviews for professionals."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.7,
-            max_tokens=800
-        )
-        st.session_state.prompt_count += 1
-        review_text = response.choices[0].message.content
-        st.markdown("### 🧾 Realistic Job Review")
-        st.write(review_text)
-    except Exception as e:
-        st.error(f"❌ Error generating review: {e}")
+    # Check prompt limit
+    if st.session_state.prompt_count >= MAX_PROMPTS:
+        st.warning("🚫 You have reached your free limit of 5 prompts this month. Upgrade to premium for unlimited access.")
+    else:
+        try:
+            response = client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": "You are a workplace analyst writing realistic job reviews for professionals."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
+                max_tokens=800
+            )
+            st.session_state.prompt_count += 1
+            review_text = response.choices[0].message.content
+            st.markdown("### 🧾 Realistic Job Review")
+            st.write(review_text)
+
+        except Exception as e:
+            st.error(f"❌ Error generating review: {e}")
 # -------------------------------
 # ✅ Module 1 Wrapper
 # -------------------------------
@@ -490,57 +486,59 @@ def render_module_2():
 
     # ✅ Question input
     question = st.text_input("Ask a question about the framework:")
+
     # ✅ Dive Further button
     if st.button("Dive Further"):
-        if check_prompt_limit():
-            if question.strip():
-                try:
-                    hidden_context = """
-                    Advanced Leadership Concepts:
-                    - Emotional Intelligence
-                    - Appreciative Inquiry
-                    - Maturana & Varela – Tree of Life
-                    - Invisible, Shared, Authentic, Servant, Toxic Leadership
-                    - Transactional & Transformational Leadership
-                    - Social Cognitive Theory (Bandura)
-                    - Psychoal Capital (Luthans, Avolio, Youssef)
-                    - Ilya Prigogine
-                    - Drucker’s work (The Effective Executive)
-                    - Capra & Autopoiesis
-                    - Balanced Scorecard (Kaplan & Norton)
-                    - Deming’s Quality Circles
-                    - Cameron & Quinn (Competing Values Framework, OCAI)
-                    - Related leadership literature
-                    """
+        if question.strip():
+            try:
+                hidden_context = """
+                Advanced Leadership Concepts:
+                - Emotional Intelligence
+                - Appreciative Inquiry
+                - Maturana & Varela – Tree of Life
+                - Invisible, Shared, Authentic, Servant, Toxic Leadership
+                - Transactional & Transformational Leadership
+                - Social Cognitive Theory (Bandura)
+                - Psychoal Capital (Luthans, Avolio, Youssef)
+                - Ilya Prigogine
+                - Drucker’s work (The Effective Executive)
+                - Capra & Autopoiesis
+                - Balanced Scorecard (Kaplan & Norton)
+                - Deming’s Quality Circles
+                - Cameron & Quinn (Competing Values Framework, OCAI)
+                - Related leadership literature
+                """
 
-                    system_prompt = f"""
-                    You are an advanced HR and leadership research assistant. Use the following framework and concepts to answer deeply:
-                    Framework:
-                    {pdf_content}
-                    Hidden Concepts:
-                    {hidden_context}
-                    Provide:
-                    - A research-level explanation
-                    - Practical implications
-                    - References to leadership theories where relevant
-                    """
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": question}
-            ],
-            temperature=0.7,
-            max_tokens=1000
-        )
-        st.session_state.prompt_count += 1
-        ai_answer = response.choices[0].message.content
-        st.markdown("### 🔍 Deep Dive Answer")
-        st.markdown(ai_answer)
-    
-    except Exception as e:
-        st.error(f"❌ Error generating AI response: {e}")
+                system_prompt = f"""
+                You are an advanced HR and leadership research assistant. Use the following framework and concepts to answer deeply:
+                Framework:
+                {pdf_content}
+                Hidden Concepts:
+                {hidden_context}
+                Provide:
+                - A research-level explanation
+                - Practical implications
+                - References to leadership theories where relevant
+                """
+
+                response = client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[
+                        {"role": "system", "content": question}, 
+                        {"role": "user", "content": question}
+                    ],
+                    temperature=0.7,
+                    max_tokens=1000
+                )
+                st.session_state.prompt_count += 1 
+                ai_answer = response.choices[0].message.content
+                st.markdown("### 🔍 Deep Dive Answer")
+                st.markdown(ai_answer)
+
+            except Exception as e:
+                st.error(f"❌ Error generating AI response: {e}")
+        else:
+            st.warning("Please enter a question before diving further.")
 
 def render_module_3():
     st.title("Behavior Under Pressure")
@@ -582,23 +580,19 @@ def render_module_3():
 
     # ✅ Generate AI insights
     if st.button("Generate Insights"):
-        if check_prompt_limit():
-            if user_comments.strip():
-                st.subheader("🔍 AI Insights Based on Your Comments")
-                try:
-                    response = client.chat.completions.create(
-                        model="gpt-4o-mini",
-                        me   ssages=[
-                            {"role": "system", "content": "You are an organizational psychologist analyzing behavior under pressure."},
-                            {"role": "user", "content": f"Analyze this comment in context of the Behavior Under Pressure Grid: {user_comments}"}
-                        ],
-                        temperature=0.7,
-                        max_tokens=400
-                    )
-                st.session_state.prompt_count += 1
-                st.write(response.choices[0].message.content)
-            except Exception as e:
-                st.error(f"❌ Error generating AI response: {e}")
+        if user_comments.strip():
+            st.subheader("🔍 AI Insights Based on Your Comments")
+            response = client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": "You are an organizational psychologist analyzing behavior under pressure."},
+                {"role": "user", "content": f"Analyze this comment in context of the Behavior Under Pressure Grid: {user_comments}"} 
+                ], 
+                temperature=0.7,
+                max_tokens=400
+            )
+            st.session_state.prompt_count += 1 
+            st.write(response.choices[0].message.content)
         else:
             st.warning("Please add comments before generating insights.")
                     
@@ -718,37 +712,31 @@ def render_module_4():
     st.subheader("Ask AI About the Framework")
     user_question = st.text_area("Ask a question (e.g., 'Tell me more about this')")
     if st.button("Send Question"):
-        if check_prompt_limit():
-            if user_question.strip():
-                try:
-                    response = client.chat.completions.create(
-                        model="gpt-4o-mini",
-                        messages=[
-                            {"role": "system", "content": (
-                                "You are an expert on the 5-Tool Employee Framework. "
-                                "Always include a link to our YouTube channel: https://www.youtube.com/@5toolemployeeframework "
-                                "and add recommended training links."
-                            )},
-                            {"role": "user", "content": user_question}
-                        ],
-                        temperature=0.7,
-                        max_tokens=700
-                    )
-                    st.session_state.prompt_count += 1
-                    st.markdown("### AI Answer")
-                    st.write(response.choices[0].message.content)
-    
-                    # Clickable links
-                    st.markdown("**Recommended Training Links:**")
-                    st.markdown("- Developing Emotional Intelligence – LinkedIn Learning")
-                    st.markdown("- Time Management Fundamentals – LinkedIn Learning")
-                    st.markdown("- Resilience Training – Coursera")
-                    st.markdown("- Scenario-Based Leadership – Harvard Business Publishing")
-                    st.markdown("- Watch tutorials on YouTube")
-                except Exception as e:
-                    st.error(f"❌ Error generating AI response: {e}")
-            else:
-                st.warning("Please enter a question before sending.")
+        if user_question.strip():
+            response = client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": (
+                        "You are an expert on the 5-Tool Employee Framework. "
+                        "Always include a link to our YouTube channel: https://www.youtube.com/@5toolemployeeframework "
+                        "and add recommended training links."
+                    )},
+                    {"role": "user", "content": user_question} 
+                ],
+                temperature=0.7,
+                max_tokens=700
+            )
+            st.session_state.prompt_count += 1  
+            st.markdown("### AI Answer")
+            st.write(response.choices[0].message.content)
+            st.markdown("**Recommended Training Links:**")
+            st.markdown("- Developing Emotional Intelligence – LinkedIn Learning")
+            st.markdown("- Time Management Fundamentals – LinkedIn Learning")
+            st.markdown("- Resilience Training – Coursera")
+            st.markdown("- Scenario-Based Leadership – Harvard Business Publishing")
+            st.markdown("- Watch tutorials on YouTube")
+        else:
+            st.warning("Please enter a question before sending.")
 
     # ✅ Radar Scoring Section
     st.subheader("Score the Employee on Each Tool (1-5)")
@@ -762,40 +750,34 @@ def render_module_4():
         fig.update_traces(fill='toself')
         st.plotly_chart(fig)
 
-    # ✅ Follow-up question box under radar
-    st.subheader("Ask a follow-up question about the radar:")
-    follow_up_question = st.text_area("Enter your question", placeholder="e.g., Can you make some training recommendations?")
-    if st.button("Get AI Answer"):
-        if check_prompt_limit():
+        # ✅ Follow-up question box under radar
+        st.subheader("Ask a follow-up question about the radar:")
+        follow_up_question = st.text_area("Enter your question", placeholder="e.g., Can you make some training recommendations?")
+        if st.button("Get AI Answer"):
             if follow_up_question.strip():
-                try:
-                    response = client.chat.completions.create(
-                        model="gpt-4o-mini",
-                        messages=[
-                            {"role": "system", "content": (
-                                "You are an expert on the 5-Tool Employee Framework. "
-                                "Provide detailed, practical, and psychoally rich insights. "
-                                "Always include a link to our YouTube channel: https://www.youtube.com/@5toolemployeeframework "
-                                "and add recommended training links."
-                            )},
-                            {"role": "user", "content": follow_up_question}
-                        ],
-                        temperature=0.7,
-                        max_tokens=700
-                    )
-                    st.session_state.prompt_count += 1
-                    st.markdown("### AI Answer")
-                    st.write(response.choices[0].message.content)
-    
-                    # Clickable links
-                    st.markdown("**Recommended Training Links:**")
-                    st.markdown("- Developing Emotional Intelligence – LinkedIn Learning")
-                    st.markdown("- Time Management Fundamentals – LinkedIn Learning")
-                    st.markdown("- Resilience Training – Coursera")
-                    st.markdown("- Scenario-Based Leadership – Harvard Business Publishing")
-                    st.markdown("- Watch tutorials on YouTube")
-                except Exception as e:
-                    st.error(f"❌ Error generating AI response: {e}")
+                response = client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[
+                        {"role": "system", "content": (
+                            "You are an expert on the 5-Tool Employee Framework. "
+                            "Provide detailed, practical, and psychoally rich insights. "
+                            "Always include a link to our YouTube channel: https://www.youtube.com/@5toolemployeeframework "
+                            "and add recommended training links."
+                        )},
+                        {"role": "user", "content": follow_up_question} 
+                    ],
+                    temperature=0.7,
+                    max_tokens=700
+                )
+                st.session_state.prompt_count += 1 
+                st.markdown("### AI Answer")
+                st.write(response.choices[0].message.content)
+                st.markdown("**Recommended Training Links:**")
+                st.markdown("- Developing Emotional Intelligence – LinkedIn Learning")
+                st.markdown("- Time Management Fundamentals – LinkedIn Learning")
+                st.markdown("- Resilience Training – Coursera")
+                st.markdown("- Scenario-Based Leadership – Harvard Business Publishing")
+                st.markdown("- Watch tutorials on YouTube")
             else:
                 st.warning("Please enter a question before clicking 'Get AI Answer'.")
                 
@@ -879,17 +861,12 @@ def render_module_5():
     <tr><td>Arm Strength</td><td>Communicates clearly; inspires buy-in.</td><td>Dominates or charms without substance.</td><td>Manipulative; dismisses feedback.</td><td>Divisive communication; manipulativeness derailer.</td></tr>
     </table>
     """, unsafe_allow_html=True)
-    
+
     # AI Chat
     st.subheader("AI Chat: Ask about Toxic Leadership or Feedback")
     ai_question = st.text_area("Ask a question (e.g., Tell me more about 360-degree feedback)")
     if st.button("Get AI Response"):
-        if check_prompt_limit():
-            try:
-                st.markdown(get_ai_response(ai_question))
-                st.session_state.prompt_count += 1
-            except Exception as e:
-                st.error(f"❌ Error generating AI response: {e}")
+        st.markdown(get_ai_response(ai_question))
 
     # Scoring Sliders
     st.subheader("Rate the Employee on Each Dimension")
@@ -903,56 +880,48 @@ def render_module_5():
 
     # Generate Profile
     if st.button("Generate Profile"):
-        if check_prompt_limit():
-            total_score = speed + power + fielding + hitting + arm_strength
-    
-            if total_score >= 15:
-                risk_level = "Low Risk"
-                action_plan = "Retain and support; encourage continued engagement."
-            elif 10 <= total_score < 15:
-                risk_level = "Moderate Risk"
-                action_plan = "Provide coaching and monitor closely for improvement."
-            else:
-                risk_level = "High Risk"
-                action_plan = "Immediate intervention required; consider reassignment or exit strategy."
-    
-            st.write(f"**Total Score:** {total_score}")
-            st.write(f"**Risk Level:** {risk_level}")
-            st.write(f"**Action Plan:** {action_plan}")
-    
-            # Radar Chart
-            categories = ["Speed", "Power", "Fielding", "Hitting", "Arm Strength"]
-            scores = [speed, power, fielding, hitting, arm_strength]
-            fig = px.line_polar(r=scores, theta=categories, line_close=True)
-            fig.update_traces(fill='toself')
-            fig.update_layout(title="Toxicity Profile Radar Chart")
-            st.plotly_chart(fig)
-    
-            # Interpretation Table
-            st.markdown("""
-            <h4>Total Score Interpretation</h4>
-            <table style='width:100%; border:1px solid black;'>
-            <tr><th>Score Range</th><th>Risk Level</th><th>Description</th></tr>
-            <tr><td>15-20</td><td>Low Risk</td><td>Employee demonstrates strong alignment with organizational values.</td></tr>
-            <tr><td>10-14</td><td>Moderate Risk</td><td>Employee shows signs of disengagement or minor toxic behaviors.</td></tr>
-            <tr><td>Below 10</td><td>High Risk</td><td>Immediate intervention required; behaviors are harmful to team culture.</td></tr>
-            </table>
-            """, unsafe_allow_html=True)
-    
-            # AI Insights
-            try:
-                st.subheader("AI Insights")
-                st.markdown(get_ai_response("toxicity in workplace"))
-            except Exception as e:
-                st.error(f"❌ Error generating AI insights: {e}")
-    
-            # Contextual Insight if notes exist
-            if notes.strip():
-                try:
-                    st.subheader("Contextual Insight")
-                    st.markdown(get_contextual_insight(notes, total_score, risk_level))
-                except Exception as e:
-                    st.error(f"❌ Error generating contextual insight: {e}")
+        total_score = speed + power + fielding + hitting + arm_strength
+        if total_score >= 15:
+            risk_level = "Low Risk"
+            action_plan = "Retain and support; encourage continued engagement."
+        elif 10 <= total_score < 15:
+            risk_level = "Moderate Risk"
+            action_plan = "Provide coaching and monitor closely for improvement."
+        else:
+            risk_level = "High Risk"
+            action_plan = "Immediate intervention required; consider reassignment or exit strategy."
+
+        st.write(f"**Total Score:** {total_score}")
+        st.write(f"**Risk Level:** {risk_level}")
+        st.write(f"**Action Plan:** {action_plan}")
+
+        # Radar Chart
+        categories = ["Speed", "Power", "Fielding", "Hitting", "Arm Strength"]
+        scores = [speed, power, fielding, hitting, arm_strength]
+        fig = px.line_polar(r=scores, theta=categories, line_close=True)
+        fig.update_traces(fill='toself')
+        fig.update_layout(title="Toxicity Profile Radar Chart")
+        st.plotly_chart(fig)
+
+        # Interpretation Table
+        st.markdown("""
+        <h4>Total Score Interpretation</h4>
+        <table style='width:100%; border:1px solid black;'>
+        <tr><th>Score Range</th><th>Risk Level</th><th>Description</th></tr>
+        <tr><td>15-20</td><td>Low Risk</td><td>Employee demonstrates strong alignment with organizational values.</td></tr>
+        <tr><td>10-14</td><td>Moderate Risk</td><td>Employee shows signs of disengagement or minor toxic behaviors.</td></tr>
+        <tr><td>Below 10</td><td>High Risk</td><td>Immediate intervention required; behaviors are harmful to team culture.</td></tr>
+        </table>
+        """, unsafe_allow_html=True)
+
+        # AI Insights
+        st.subheader("AI Insights")
+        st.markdown(get_ai_response("toxicity in workplace"))
+
+        # Contextual Insight
+        if notes.strip():
+            st.subheader("Contextual Insight")
+            st.markdown(get_contextual_insight(notes, total_score, risk_level))
 
 import streamlit as st
 import random
@@ -1046,7 +1015,6 @@ PAGES = [
 ]
 
 selected_page = st.sidebar.selectbox("Choose a page", PAGES)
-st.write("DEBUG: Prompt count =", st.session_state.prompt_count)
 
 # ✅ Page rendering logic (unchanged for now)
 if selected_page == "Page 1: The 5 Tool Employee Framework":
@@ -1062,4 +1030,3 @@ elif selected_page == "Page 5: Toxicity in the Workplace":
 elif selected_page == "Page 6: Repository":
     render_module_6()
     
-
