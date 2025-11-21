@@ -85,6 +85,8 @@ if "show_repository" not in st.session_state:
 # ✅ Prompt limit setup
 if "prompt_count" not in st.session_state:
     st.session_state.prompt_count = 0
+if "saved_scores" not in st.session_state:
+    st.session_state.saved_scores = {"Leadership": 3, "Teamwork": 4, "Innovation": 2}
 
 MAX_PROMPTS = 5  # Free tier limit
 # ----------------------------
@@ -1192,7 +1194,13 @@ def render_module_6():
 
         # --- Radar Chart ---
         scores = st.session_state.get("saved_scores", {})
-        fig = generate_radar(scores)   # helper function from earlier
+
+        # Make sure scores is a dict
+        if not isinstance(scores, dict):
+            st.warning("Saved scores are not in the right format (expected a dictionary).")
+            scores = {}  # fallback to empty dict
+
+        fig = generate_radar(scores)
 
         if fig:
             st.write("### Scores Radar Chart")
