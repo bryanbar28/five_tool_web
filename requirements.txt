@@ -7,3 +7,5 @@ python-dotenv
 OpenAI
 fpdf
 stripe
+matplotlib
+numpy
