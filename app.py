@@ -1039,12 +1039,34 @@ def render_module_6():
             upgrade_to_premium()
     else:
         st.success("Premium active! Save your work below.")
-        folder_name = st.text_input("Folder Name")
-        if st.button("Create Folder"):
-            os.makedirs(folder_name, exist_ok=True)
-            st.success(f"Folder '{folder_name}' created.")
-        if st.button("Download PDF"):
-            st.download_button("Download PDF", data="Your saved work goes here", file_name="work.pdf")
+
+        # Show captured data
+        st.write("### Your Current Work")
+        st.write("Notes:", st.session_state.get("saved_notes", "No notes yet"))
+        st.write("Scores:", st.session_state.get("saved_scores", "No scores yet"))
+        st.write("Review:", st.session_state.get("saved_review", "No review yet"))
+
+        # Save Work Button
+        if st.button("Save Work"):
+            with open("saved_work.txt", "w") as f:
+                f.write("Notes:\n" + str(st.session_state.get("saved_notes", "")) + "\n\n")
+                f.write("Scores:\n" + str(st.session_state.get("saved_scores", "")) + "\n\n")
+                f.write("Review:\n" + str(st.session_state.get("saved_review", "")))
+            st.success("✅ Work saved successfully!")
+
+        # Generate PDF Button
+        if st.button("Generate PDF"):
+            from fpdf import FPDF
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.set_font("Arial", size=12)
+            pdf.cell(200, 10, txt="Your Saved Work", ln=True, align="C")
+            pdf.multi_cell(0, 10, txt="Notes:\n" + str(st.session_state.get("saved_notes", "")))
+            pdf.multi_cell(0, 10, txt="Scores:\n" + str(st.session_state.get("saved_scores", "")))
+            pdf.multi_cell(0, 10, txt="Review:\n" + str(st.session_state.get("saved_review", "")))
+            pdf.output("saved_work.pdf")
+            with open("saved_work.pdf", "rb") as f:
+                st.download_button("Download PDF", f, file_name="saved_work.pdf")
 # -------------------------------
 # Navigation
 # -------------------------------
