@@ -885,15 +885,17 @@ def render_module_5():
     <tr><td>Arm Strength</td><td>Communicates clearly; inspires buy-in.</td><td>Dominates or charms without substance.</td><td>Manipulative; dismisses feedback.</td><td>Divisive communication; manipulativeness derailer.</td></tr>
     </table>
     """, unsafe_allow_html=True)
-
-    # AI Chat
-    st.subheader("AI Chat: Ask about Toxic Leadership or Feedback")
-    ai_question = st.text_area("Ask a question (e.g., Tell me more about 360-degree feedback)")
-    if st.button("Get AI Response"):
-        if check_prompt_limit():
-    response = client.chat.completions.create(...)
-    st.session_state.prompt_count += 1
-        st.markdown(get_ai_response(ai_question))
+    
+# AI Chat
+st.subheader("AI Chat: Ask about Toxic Leadership or Feedback")
+ai_question = st.text_area("Ask a question (e.g., Tell me more about 360-degree feedback)")
+if st.button("Get AI Response"):
+    if check_prompt_limit():
+        try:
+            st.markdown(get_ai_response(ai_question))
+            st.session_state.prompt_count += 1
+        except Exception as e:
+            st.error(f"❌ Error generating AI response: {e}")
 
     # Scoring Sliders
     st.subheader("Rate the Employee on Each Dimension")
