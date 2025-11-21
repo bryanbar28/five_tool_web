@@ -16,20 +16,27 @@ SAVE_DIR = "user_saves"
 os.makedirs(SAVE_DIR, exist_ok=True)
 
 def save_work(name):
-    filepath = os.path.join(SAVE_DIR, f"{name}.txt")
+    filepath = os.path.join(SAVE_DIR, f"{name}.json")
+    data = {
+        "notes": st.session_state.get("saved_notes", ""),
+        "scores": st.session_state.get("saved_scores", {}),
+        "review": st.session_state.get("saved_review", "")
+    }
     with open(filepath, "w") as f:
-        f.write("Notes:\n" + str(st.session_state.get("saved_notes", "")) + "\n\n")
-        f.write("Scores:\n" + str(st.session_state.get("saved_scores", "")) + "\n\n")
-        f.write("Review:\n" + str(st.session_state.get("saved_review", "")))
-    st.success(f"✅ Work saved as {name}.txt")
+        json.dump(data, f)
+    st.success(f"✅ Work saved as {name}.json")
 
 def render_saved_files():
-    files = sorted([f for f in os.listdir(SAVE_DIR) if f.endswith(".txt")])
+    files = [f for f in os.listdir(SAVE_DIR) if f.endswith(".json")]
     if files:
-        choice = st.selectbox("Choose a saved file:", files, key="saved_file_choice")
+        choice = st.selectbox("Choose a saved file:", files)
         if st.button("Load Selected"):
             with open(os.path.join(SAVE_DIR, choice)) as f:
-                st.text(f.read())
+                data = json.load(f)
+            st.session_state.saved_notes = data.get("notes", "")
+            st.session_state.saved_scores = data.get("scores", {})
+            st.session_state.saved_review = data.get("review", "")
+            st.success("✅ Work loaded successfully!")
     else:
         st.info("No saved work yet.")
 
