@@ -147,6 +147,21 @@ def generate_rich_context(scores, tools, notes, context_label="General Context")
         st.error(f"❌ Error generating rich context: {e}")
         return "Error generating analysis."
 
+def sanitize_text(text):
+    if not text:
+        return ""
+    # Replace em-dash and other problematic Unicode with safe equivalents
+    return (
+        str(text)
+        .replace("—", "-")   # em dash → hyphen
+        .replace("–", "-")   # en dash → hyphen
+        .replace("“", "\"")  # left double quote → "
+        .replace("”", "\"")  # right double quote → "
+        .replace("’", "'")   # apostrophe → '
+    )
+
+   
+
 # -------------------------------
 # Subscription Logic
 # -------------------------------
