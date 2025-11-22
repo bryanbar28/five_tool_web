@@ -1127,7 +1127,12 @@ def generate_roadmap(df):
         st.session_state["saved_scores"] = scores if "scores" in locals() else st.session_state.get("saved_scores", "")
         st.session_state["saved_review"] = "Your 5-Tool Employee Profile"
         st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
-
+def sanitize_text(text):
+    if not text:
+        return ""
+    # Force conversion to latin-1 safe text
+    return str(text).encode("latin-1", "ignore").decode("latin-1")
+    
 def render_module_6():
     st.title("📂 Repository")
     if not usage[user_id]["premium"]:
@@ -1184,11 +1189,6 @@ def render_module_6():
         # -------------------------------
         # Generate PDF block
         # -------------------------------
-        def safe_text(text):
-            if not text:
-                return ""
-            return str(text).encode("latin-1", "replace").decode("latin-1")
-
         if st.button("Generate PDF", key="pdf_button"):
             from fpdf import FPDF
             pdf = FPDF()
