@@ -1161,6 +1161,13 @@ def render_module_6():
                 f.write("Scores:\n" + str(st.session_state.get("saved_scores", "")) + "\n\n")
                 f.write("Review:\n" + str(st.session_state.get("saved_review", "")))
                 f.write("Rich Context:\n" + str(st.session_state.get("saved_rich_text", "")) + "\n\n")
+                # Add radar chart reference
+                if "saved_fig" in st.session_state:
+                    chart_path = os.path.join(repo_dir, f"radar_{user_id}.png")
+                    st.session_state["saved_fig"].write_image(chart_path)
+                    f.write(f"Radar Chart saved as: {chart_path}\n")
+
+
             st.success(f"✅ Work saved to {file_path}")
 
         # Show repository contents
