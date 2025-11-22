@@ -405,7 +405,7 @@ def render_module_1():
             st.markdown("---")
 
     st.markdown("---")
-if page == "page 1":
+if page == "Page 1":
     # ✅ Notes and Sliders Section
     st.subheader("🛠 Create Your Own 5 Tool Employee")
     notes_input = st.text_area(
