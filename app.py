@@ -1196,21 +1196,23 @@ def render_module_6():
         
         if st.button("Generate PDF", key="pdf_button"):
             from fpdf import FPDF
-            pdf = FPDF()
+        
+            pdf = FPDF(orientation="L")  # Landscape for more width
             pdf.add_page()
             pdf.set_font("Arial", size=12)
-            pdf.cell(190, 10, txt="Your Saved Work", ln=True, align="C")
+            pdf.cell(270, 10, txt="Your Saved Work", ln=True, align="C")  # Wider cell for landscape
         
-            # Use fixed width (190) and sanitize text
-            pdf.multi_cell(190, 10, txt="Notes:\n" + sanitize_text(st.session_state.get("saved_notes", "")))
-            pdf.multi_cell(190, 10, txt="Scores:\n" + sanitize_text(str(st.session_state.get("saved_scores", ""))))
-            pdf.multi_cell(190, 10, txt="Review:\n" + sanitize_text(st.session_state.get("saved_review", "")))
-            pdf.multi_cell(190, 10, txt="Rich Context:\n" + sanitize_text(st.session_state.get("saved_rich_text", "")))
+            # Add sections with wrapping and sanitization
+            pdf.multi_cell(270, 10, txt="Notes:\n" + sanitize_text(st.session_state.get("saved_notes", "")))
+            pdf.multi_cell(270, 10, txt="Scores:\n" + sanitize_text(str(st.session_state.get("saved_scores", ""))))
+            pdf.multi_cell(270, 10, txt="Review:\n" + sanitize_text(st.session_state.get("saved_review", "")))
+            pdf.multi_cell(270, 10, txt="Rich Context:\n" + sanitize_text(st.session_state.get("saved_rich_text", "")))
         
             pdf.output("saved_work.pdf")
             with open("saved_work.pdf", "rb") as f:
-                st.download_button("Download PDF", f, file_name="saved_work.pdf", 
-        key="pdf_download")
+                st.download_button("Download PDF", f, file_name="saved_work.pdf", key="pdf_download")
+
+        
 # -------------------------------
 # Navigation
 # -------------------------------
