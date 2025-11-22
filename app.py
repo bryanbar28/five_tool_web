@@ -437,6 +437,11 @@ def render_module_1():
             rich_text = generate_rich_context(scores, TOOLS, notes_input, context_label="Page 1: Profile Generation")
             st.markdown("### 🔍 Rich Context Analysis")
             st.markdown(rich_text)
+            st.session_state["saved_notes"] = notes_input
+            st.session_state["saved_scores"] = scores
+            st.session_state["saved_review"] = "Your 5-Tool Employee Profile"
+            st.session_state["saved_rich_text"] = rich_text
+            st.session_state["saved_fig"] = fig
         else:
             st.warning("Please add notes before generating the profile.")
 
