@@ -1155,10 +1155,10 @@ def render_module_6():
                 f.write("Scores:\n" + str(st.session_state.get("saved_scores", "")) + "\n\n")
                 f.write("Review:\n" + str(st.session_state.get("saved_review", "")))
             st.success("✅ Work saved successfully!")
+    
         # Generate PDF Button
         if st.button("Generate PDF"):
             from fpdf import FPDF
-            import tempfile  # ✅ needed for radar chart export
         
             pdf = FPDF()
             pdf.add_page()
@@ -1173,17 +1173,12 @@ def render_module_6():
             # ✅ Add Rich Context
             pdf.multi_cell(0, 10, txt="Rich Context:\n" + str(st.session_state.get("saved_rich_text", "")))
         
-            # ✅ Add Radar Chart using write_image
-            if "saved_fig" in st.session_state:
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
-                    st.session_state["saved_fig"].write_image(tmpfile.name, format="png")
-                    pdf.image(tmpfile.name, x=10, y=None, w=180)
+            # 🚫 Radar chart export removed (still visible in app visuals)
         
             # Save and download
             pdf.output("saved_work.pdf")
             with open("saved_work.pdf", "rb") as f:
-                st.download_button("Download PDF", f, file_name="saved_work.pdf")        
-
+                st.download_button("Download PDF", f, file_name="saved_work.pdf")
 
 # -------------------------------
 # Navigation
