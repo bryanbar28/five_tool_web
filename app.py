@@ -1169,6 +1169,11 @@ def render_module_6():
         # -------------------------------
         # Generate PDF block
         # -------------------------------
+        def safe_text(text):
+            if not text:
+                return ""
+            return str(text).encode("latin-1", "replace").decode("latin-1")
+
         if st.button("Generate PDF", key="pdf_button"):
             from fpdf import FPDF
             pdf = FPDF()
