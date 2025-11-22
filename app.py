@@ -8,83 +8,6 @@ import plotly.express as px
 from openai import OpenAI
 from googleapiclient.discovery import build
 import json
-import matplotlib.pyplot as plt 
-import numpy as np 
-from fpdf import FPDF 
-import ast 
-# Navigation
-page = st.sidebar.radio("Navigate", ["Page 1", "Repository"])
-
-if page == "Page 1":
-    st.subheader("🛠 Create Your Own 5 Tool Employee")
-    # sliders, radar, profile_text builder, buttons...
-
-elif page == "Repository":
-    st.subheader("📂 Saved Profiles")
-    # render_saved_files() etc.
-
-SAVE_DIR = "user_saves"
-os.makedirs(SAVE_DIR, exist_ok=True)
-
-def save_work(name):
-    filepath = os.path.join(SAVE_DIR, f"{name}.json")
-
-    # Ensure scores are a dict before saving
-    scores = st.session_state.get("saved_scores", {})
-    if isinstance(scores, list):
-        # Convert list into a dict with generic labels
-        scores = {f"Score {i+1}": val for i, val in enumerate(scores)}
-
-    data = {
-        "notes": st.session_state.get("saved_notes", ""),
-        "scores": scores,
-        "review": st.session_state.get("saved_review", ""),
-        "profile": st.session_state.get("saved_profile", "")   # 👈 add this line
-    }
-
-    with open(filepath, "w") as f:
-        json.dump(data, f)
-
-    st.success(f"✅ Work saved as {name}.json")
-    
-def render_saved_files():
-    files = [f for f in os.listdir(SAVE_DIR) if f.endswith(".json")]
-    if files:
-        choice = st.selectbox("Choose a saved file:", files)
-        if st.button("Load Selected"):
-            with open(os.path.join(SAVE_DIR, choice)) as f:
-                data = json.load(f)
-
-            # After loading JSON, assign values
-            st.session_state.saved_notes = data.get("notes", "")
-            st.session_state.saved_scores = data.get("scores", {})
-            st.session_state.saved_review = data.get("review", "")
-
-            # 🔧 Normalize again if needed
-            if isinstance(st.session_state.saved_scores, list):
-                st.session_state.saved_scores = {
-                    f"Score {i+1}": val for i, val in enumerate(st.session_state.saved_scores)
-                }
-
-            st.success("✅ Work loaded successfully!")
-    else:
-        st.info("No saved work yet.")
-
-def generate_radar(scores_dict):
-    labels = list(scores_dict.keys())
-    values = list(scores_dict.values())
-    if not labels:
-        return None
-
-    angles = np.linspace(0, 2*np.pi, len(labels), endpoint=False).tolist()
-    values += values[:1]
-    angles += angles[:1]
-
-    fig, ax = plt.subplots(figsize=(6,6), subplot_kw=dict(polar=True))
-    ax.plot(angles, values, "o-", linewidth=2)
-    ax.fill(angles, values, alpha=0.25)
-    ax.set_thetagrids(np.degrees(angles[:-1]), labels)
-    return fig
 
 # ----------------------------
 # Persistent Prompt Tracking
@@ -122,8 +45,6 @@ if "show_repository" not in st.session_state:
 # ✅ Prompt limit setup
 if "prompt_count" not in st.session_state:
     st.session_state.prompt_count = 0
-if "saved_scores" not in st.session_state:
-    st.session_state.saved_scores = {"Leadership": 3, "Teamwork": 4, "Innovation": 2}
 
 MAX_PROMPTS = 5  # Free tier limit
 # ----------------------------
@@ -405,14 +326,11 @@ def render_module_1():
             st.markdown("---")
 
     st.markdown("---")
-if page == "page 1":
+
     # ✅ Notes and Sliders Section
     st.subheader("🛠 Create Your Own 5 Tool Employee")
-    notes_input = st.text_area(
-        "Enter notes about your ideal employee or evaluation criteria",
-        placeholder="e.g., strong leadership, adaptable, great communicator"
-    )
-    
+    notes_input = st.text_area("Enter notes about your ideal employee or evaluation criteria", placeholder="e.g., strong leadership, adaptable, great communicator")
+
     st.subheader("Rate the Employee on Each Tool (1–10)")
     TOOLS = [
         "Technical Competence",
@@ -422,74 +340,38 @@ if page == "page 1":
         "Strategic Decision-Making"
     ]
     scores = [st.slider(tool, 1, 10, 5) for tool in TOOLS]
-    
-    # ✅ Build the profile text from the slider values
-    profile_text = f"""
-    🧠 Your Custom 5 Tool Employee Profile
-    
-    Technical Competence (Score: {scores[0]}/10)
-    Behavioral Reality: ...
-    Risk: ...
-    Development: ...
-    
-    Problem-Solving Ability (Score: {scores[1]}/10)
-    Behavioral Reality: ...
-    Risk: ...
-    Development: ...
-    
-    Adaptability & Continuous Learning (Score: {scores[2]}/10)
-    Behavioral Reality: ...
-    Risk: ...
-    Development: ...
-    
-    Communication & Leadership (Score: {scores[3]}/10)
-    Behavioral Reality: ...
-    Risk: ...
-    Development: ...
-    
-    Strategic Decision-Making (Score: {scores[4]}/10)
-    Behavioral Reality: ...
-    Risk: ...
-    Development: ...
-    """
-    
-    # ✅ Save profile text into session_state so it can be reused
-    st.session_state.saved_profile = profile_text
-    
-    # ✅ Display it immediately on page 1
-    st.markdown(profile_text)
-    
+
     # ✅ Generate Profile Button
     if st.button("Generate 5 Tool Employee"):
         if notes_input.strip():
             st.markdown("### 🧠 Your Custom 5 Tool Employee Profile")
-        
+
             for tool, score in zip(TOOLS, scores):
                 st.markdown(f"**{tool} (Score: {score}/10)**")
-    
+
                 # ✅ Detailed interpretation based on your book
                 if score <= 3:
                     st.write("- **Behavioral Reality:** Needs Development.")
                     if tool == "Technical Competence":
-                         st.write("  • Misses execution rhythm; avoids ambiguity; may disengage under pressure.")
-                         st.write("  • Risk: Reliability gaps erode trust and team cadence.")
-                         st.write("  • Development: Structured technical training and accountability systems.")
+                        st.write("  • Misses execution rhythm; avoids ambiguity; may disengage under pressure.")
+                        st.write("  • Risk: Reliability gaps erode trust and team cadence.")
+                        st.write("  • Development: Structured technical training and accountability systems.")
                     elif tool == "Problem-Solving Ability":
-                         st.write("  • Reactive firefighting; freezes or blames others when overwhelmed.")
-                         st.write("  • Risk: Creates chaos instead of solutions.")
-                         st.write("  • Development: Build analytical discipline and scenario planning.")
+                        st.write("  • Reactive firefighting; freezes or blames others when overwhelmed.")
+                        st.write("  • Risk: Creates chaos instead of solutions.")
+                        st.write("  • Development: Build analytical discipline and scenario planning.")
                     elif tool == "Adaptability & Continuous Learning":
-                         st.write("  • Resistant to change; lacks proactive learning habits.")
-                         st.write("  • Risk: Falls behind in dynamic environments.")
-                         st.write("  • Development: Micro-learning and resilience coaching.")
+                        st.write("  • Resistant to change; lacks proactive learning habits.")
+                        st.write("  • Risk: Falls behind in dynamic environments.")
+                        st.write("  • Development: Micro-learning and resilience coaching.")
                     elif tool == "Communication & Leadership":
-                         st.write("  • Communication lacks clarity; influence minimal.")
-                         st.write("  • Risk: Team misalignment and low morale.")
-                         st.write("  • Development: Authentic leadership coaching and feedback loops.")
+                        st.write("  • Communication lacks clarity; influence minimal.")
+                        st.write("  • Risk: Team misalignment and low morale.")
+                        st.write("  • Development: Authentic leadership coaching and feedback loops.")
                     elif tool == "Strategic Decision-Making":
-                         st.write("  • Decisions lack foresight; may chase optics over substance.")
-                         st.write("  • Risk: High chance of costly missteps under pressure.")
-                         st.write("  • Development: Train in strategic frameworks and risk analysis.")
+                        st.write("  • Decisions lack foresight; may chase optics over substance.")
+                        st.write("  • Risk: High chance of costly missteps under pressure.")
+                        st.write("  • Development: Train in strategic frameworks and risk analysis.")
                 elif score <= 6:
                     st.write("- **Behavioral Reality:** Effective but inconsistent.")
                     st.write("  • Strength: Handles routine tasks and moderate complexity.")
@@ -500,59 +382,21 @@ if page == "page 1":
                     st.write("  • Strength: Demonstrates mastery under pressure; inspires confidence.")
                     st.write("  • Watch Out: Overuse can drift into dysfunction (e.g., dominance, rigidity).")
                     st.write("  • Development Path: Maintain humility and balance; leverage as a leadership strength.")
-    
+
                 st.markdown("---")
-    
+
             # ✅ Notes Section
             st.markdown("**Notes:**")
             st.write(notes_input)
-    # ✅ Radar Chart Visualization
-    st.subheader("📊 5-Tool Employee Profile Radar")
-    fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="5-Tool Employee Radar Chart")
-    fig.update_traces(fill='toself')
-    st.plotly_chart(fig)
-    
-    # ✅ Build the profile text using slider values
-    profile_text = f"""
-    🧠 Your Custom 5 Tool Employee Profile
-    
-    Technical Competence (Score: {scores[0]}/10)
-    Behavioral Reality: Needs Development.
-    • Misses execution rhythm; avoids ambiguity; may disengage under pressure.
-    • Risk: Reliability gaps erode trust and team cadence.
-    • Development: Structured technical training and accountability systems.
-    
-    Problem-Solving Ability (Score: {scores[1]}/10)
-    Behavioral Reality: Needs Development.
-    • Reactive firefighting; freezes or blames others when overwhelmed.
-    • Risk: Creates chaos instead of solutions.
-    • Development: Build analytical discipline and scenario planning.
-    
-    Adaptability & Continuous Learning (Score: {scores[2]}/10)
-    Behavioral Reality: Needs Development.
-    • Resistant to change; lacks proactive learning habits.
-    • Risk: Falls behind in dynamic environments.
-    • Development: Micro-learning and resilience coaching.
-    
-    Communication & Leadership (Score: {scores[3]}/10)
-    Behavioral Reality: Exceptional.
-    • Strength: Demonstrates mastery under pressure; inspires confidence.
-    • Watch Out: Overuse can drift into dysfunction (e.g., dominance, rigidity).
-    • Development Path: Maintain humility and balance; leverage as a leadership strength.
-    
-    Strategic Decision-Making (Score: {scores[4]}/10)
-    Behavioral Reality: Needs Development.
-    • Decisions lack foresight; may chase optics over substance.
-    • Risk: High chance of costly missteps under pressure.
-    • Development: Train in strategic frameworks and risk analysis.
-    """
-    
-    # ✅ Save profile text into session_state so it can be reused
-    st.session_state.saved_profile = profile_text
-    
-    # ✅ Display it immediately on page 1
-    st.markdown(profile_text)
-    
+
+            # ✅ Radar Chart Visualization
+            st.subheader("📊 5-Tool Employee Profile Radar")
+            fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="5-Tool Employee Radar Chart")
+            fig.update_traces(fill='toself')
+            st.plotly_chart(fig)
+        else:
+            st.warning("Please add notes before generating the profile.")
+
     # ✅ Clear History Button
     if st.button("Clear History"):
         st.session_state.chat_history = []
@@ -562,7 +406,6 @@ if page == "page 1":
         st.session_state["saved_notes"] = notes_input if "notes_input" in locals() else st.session_state.get("saved_notes", "")
         st.session_state["saved_scores"] = scores if "scores" in locals() else st.session_state.get("saved_scores", "")
         st.session_state["saved_review"] = "Your 5-Tool Employee Profile"
-        st.session_state.saved_profile = profile_text  
         st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
         
 def render_module_2():
@@ -1215,10 +1058,8 @@ def generate_roadmap(df):
         st.session_state["saved_scores"] = scores if "scores" in locals() else st.session_state.get("saved_scores", "")
         st.session_state["saved_review"] = "Your 5-Tool Employee Profile"
         st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
-
 def render_module_6():
     st.title("📂 Repository")
-
     if not usage[user_id]["premium"]:
         st.warning("This feature requires premium ($9.99/month).")
         if st.button("Upgrade to Premium"):
@@ -1232,126 +1073,27 @@ def render_module_6():
         st.write("Scores:", st.session_state.get("saved_scores", "No scores yet"))
         st.write("Review:", st.session_state.get("saved_review", "No review yet"))
 
-        # --- Named Save ---
-        save_name = st.text_input("Save work as:")
+        # Save Work Button
         if st.button("Save Work"):
-            if save_name:
-                save_work(save_name)   # helper function from earlier
-            else:
-                st.warning("Please enter a name before saving.")
+            with open("saved_work.txt", "w") as f:
+                f.write("Notes:\n" + str(st.session_state.get("saved_notes", "")) + "\n\n")
+                f.write("Scores:\n" + str(st.session_state.get("saved_scores", "")) + "\n\n")
+                f.write("Review:\n" + str(st.session_state.get("saved_review", "")))
+            st.success("✅ Work saved successfully!")
 
-        # --- Browse Saved Files ---
-        render_saved_files()  # helper function from earlier
-
-        # --- Radar Chart ---
-        scores = st.session_state.get("saved_scores", {"Leadership":3, "Teamwork":4, "Innovation":2})
-        fig = generate_radar(scores)   # helper function from earlier
-        st.pyplot(fig)
-
-def render_module_6():
-    st.title("📂 Repository")
-
-    if not usage[user_id]["premium"]:
-        st.warning("This feature requires premium ($9.99/month).")
-        if st.button("Upgrade to Premium"):
-            upgrade_to_premium()
-    else:
-        st.success("Premium active! Save your work below.")
-
-        # Show captured data
-        st.write("### Your Current Work")
-        st.write("Notes:", st.session_state.get("saved_notes", "No notes yet"))
-        st.write("Scores:", st.session_state.get("saved_scores", "No scores yet"))
-        st.write("Review:", st.session_state.get("saved_review", "No review yet"))
-
-        # --- Named Save ---
-        save_name = st.text_input("Save work as:")
-        if st.button("Save Work"):
-            if save_name:
-                save_work(save_name)   # helper function from earlier
-            else:
-                st.warning("Please enter a name before saving.")
-
-        # --- Browse Saved Files ---
-        render_saved_files()  # helper function from earlier
-
-        # --- Radar Chart ---
-        scores = st.session_state.get("saved_scores", {"Leadership":3, "Teamwork":4, "Innovation":2})
-        fig = generate_radar(scores)   # helper function from earlier
-        st.pyplot(fig)
-def render_module_6():
-    st.title("📂 Repository")
-
-    if not usage[user_id]["premium"]:
-        st.warning("This feature requires premium ($9.99/month).")
-        if st.button("Upgrade to Premium"):
-            upgrade_to_premium()
-    else:
-        st.success("Premium active! Save your work below.")
-
-        # Show captured data
-        st.write("### Your Current Work")
-        st.write("Notes:", st.session_state.get("saved_notes", "No notes yet"))
-        st.write("Scores:", st.session_state.get("saved_scores", "No scores yet"))
-        st.write("Review:", st.session_state.get("saved_review", "No review yet"))
-
-        # --- Named Save ---
-        save_name = st.text_input("Save work as:")
-        if st.button("Save Work"):
-            if save_name.strip():
-                save_work(save_name.strip())  
-            else:
-                st.warning("Please enter a name before saving.")
-
-        # --- Browse Saved Files ---
-        st.write("### Browse saved work")
-        render_saved_files()  # helper function from earlier
-
-        # --- Radar Chart ---
-        scores = st.session_state.get("saved_scores", {})
-
-        # Make sure scores is a dict
-        if not isinstance(scores, dict):
-            st.warning("Saved scores are not in the right format (expected a dictionary).")
-            scores = {}  # fallback to empty dict
-
-        fig = generate_radar(scores)
-
-        if fig:
-            st.write("### Scores Radar Chart")
-            st.pyplot(fig)
-        else:
-            st.info("No scores available to plot.")
-
-        # --- Generate PDF ---
+        # Generate PDF Button
         if st.button("Generate PDF"):
             from fpdf import FPDF
-
-            # Save radar chart image if available
-            radar_path = None
-            if fig:  # only save if a chart exists
-                radar_path = "radar.png"
-                fig.savefig(radar_path, bbox_inches="tight")
-
             pdf = FPDF()
             pdf.add_page()
             pdf.set_font("Arial", size=12)
             pdf.cell(200, 10, txt="Your Saved Work", ln=True, align="C")
-
-            # Add text sections
             pdf.multi_cell(0, 10, txt="Notes:\n" + str(st.session_state.get("saved_notes", "")))
-            pdf.multi_cell(0, 10, txt="Scores:\n" + str(scores if scores else "No scores"))
+            pdf.multi_cell(0, 10, txt="Scores:\n" + str(st.session_state.get("saved_scores", "")))
             pdf.multi_cell(0, 10, txt="Review:\n" + str(st.session_state.get("saved_review", "")))
-
-            # Insert radar chart if available
-            if radar_path:
-                pdf.image(radar_path, x=10, y=80, w=180)
-
-            # Output and download
             pdf.output("saved_work.pdf")
             with open("saved_work.pdf", "rb") as f:
                 st.download_button("Download PDF", f, file_name="saved_work.pdf")
-
 # -------------------------------
 # Navigation
 # -------------------------------
