@@ -1200,6 +1200,7 @@ def render_module_6():
             pdf.multi_cell(0, 10, txt="Notes:\n" + str(st.session_state.get("saved_notes", "")))
             pdf.multi_cell(0, 10, txt="Scores:\n" + str(st.session_state.get("saved_scores", "")))
             pdf.multi_cell(0, 10, txt="Review:\n" + str(st.session_state.get("saved_review", "")))
+            pdf.multi_cell(0, 10, txt="Rich Context:\n" + str(st.session_state.get("saved_rich_text", "")))
         
             # ✅ Add Rich Context
             pdf.multi_cell(0, 10, txt="Rich Context:\n" + str(st.session_state.get("saved_rich_text", "")))
