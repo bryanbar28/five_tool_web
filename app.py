@@ -1117,7 +1117,7 @@ def render_module_6():
     st.title("📂 Repository")
     if not usage[user_id]["premium"]:
         st.warning("This feature requires premium ($9.99/month).")
-        if st.button("Upgrade to Premium"):
+        if st.button("Upgrade to Premium", key="upgrade_button"):
             upgrade_to_premium()
     else:
         st.success("Premium active! Save your work below.")
@@ -1128,9 +1128,6 @@ def render_module_6():
         if "saved_notes" in st.session_state:
             st.markdown("**Notes:**")
             st.write(st.session_state["saved_notes"])
-
-            if st.button("Create File"):
-                st.success("File created and ready in repository.")
         
         if "saved_scores" in st.session_state:
             st.markdown("**Scores:**")
@@ -1149,7 +1146,7 @@ def render_module_6():
             st.plotly_chart(st.session_state["saved_fig"])
 
         # -------------------------------
-        # 🔑 Replace your old Save Work block with this
+        # Save Work block
         # -------------------------------
         repo_dir = "repository"
         os.makedirs(repo_dir, exist_ok=True)
@@ -1159,27 +1156,20 @@ def render_module_6():
             with open(file_path, "w") as f:
                 f.write("Notes:\n" + str(st.session_state.get("saved_notes", "")) + "\n\n")
                 f.write("Scores:\n" + str(st.session_state.get("saved_scores", "")) + "\n\n")
-                f.write("Review:\n" + str(st.session_state.get("saved_review", "")))
+                f.write("Review:\n" + str(st.session_state.get("saved_review", "")) + "\n\n")
                 f.write("Rich Context:\n" + str(st.session_state.get("saved_rich_text", "")) + "\n\n")
-                # Add radar chart reference
-                if "saved_fig" in st.session_state:
-                    chart_path = os.path.join(repo_dir, f"radar_{user_id}.png")
-                    st.session_state["saved_fig"].write_image(chart_path)
-                    f.write(f"Radar Chart saved as: {chart_path}\n")
-
-
             st.success(f"✅ Work saved to {file_path}")
 
         # Show repository contents
         st.markdown("### 📂 Repository Files")
         for fname in os.listdir(repo_dir):
             with open(os.path.join(repo_dir, fname), "rb") as f:
-                st.download_button(f"Download {fname}", f, file_name=fname)
+                st.download_button(f"Download {fname}", f, file_name=fname, key=f"download_{fname}")
 
         # -------------------------------
-        # Keep your PDF generation block after this
+        # Generate PDF block
         # -------------------------------
-        if st.button("Generate PDF", keys="pdf_button"):
+        if st.button("Generate PDF", key="pdf_button"):
             from fpdf import FPDF
             pdf = FPDF()
             pdf.add_page()
@@ -1193,7 +1183,7 @@ def render_module_6():
 
             pdf.output("saved_work.pdf")
             with open("saved_work.pdf", "rb") as f:
-                st.download_button("Download PDF", f, file_name="saved_work.pdf")
+                st.download_button("Download PDF", f, file_name="saved_work.pdf", key="pdf_download")
 
 # -------------------------------
 # Navigation
