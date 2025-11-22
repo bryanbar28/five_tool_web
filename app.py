@@ -12,8 +12,6 @@ import matplotlib.pyplot as plt
 import numpy as np 
 from fpdf import FPDF 
 import ast 
-# Navigation
-page = st.sidebar.radio("Navigate", ["Page 1", "Repository"])
 
 if page == "Page 1":
     st.subheader("🛠 Create Your Own 5 Tool Employee")
@@ -1279,78 +1277,82 @@ def render_module_6():
         scores = st.session_state.get("saved_scores", {"Leadership":3, "Teamwork":4, "Innovation":2})
         fig = generate_radar(scores)   # helper function from earlier
         st.pyplot(fig)
+
 def render_module_6():
+    import os
     st.title("📂 Repository")
 
     if not usage[user_id]["premium"]:
         st.warning("This feature requires premium ($9.99/month).")
         if st.button("Upgrade to Premium"):
             upgrade_to_premium()
+        return
     else:
         st.success("Premium active! Save your work below.")
 
-        # Show captured data
-        st.write("### Your Current Work")
-        st.write("Notes:", st.session_state.get("saved_notes", "No notes yet"))
-        st.write("Scores:", st.session_state.get("saved_scores", "No scores yet"))
-        st.write("Review:", st.session_state.get("saved_review", "No review yet"))
+    # Show captured data
+    st.write("### Your Current Work")
+    st.write("Notes:", st.session_state.get("saved_notes", "No notes yet"))
+    st.write("Scores:", st.session_state.get("saved_scores", "No scores yet"))
+    st.write("Review:", st.session_state.get("saved_review", "No review yet"))
 
-        # --- Named Save ---
-        save_name = st.text_input("Save work as:")
-        if st.button("Save Work"):
-            if save_name.strip():
-                save_work(save_name.strip())  
-            else:
-                st.warning("Please enter a name before saving.")
-
-        # --- Browse Saved Files ---
-        st.write("### Browse saved work")
-        render_saved_files()  # helper function from earlier
-
-        # --- Radar Chart ---
-        scores = st.session_state.get("saved_scores", {})
-
-        # Make sure scores is a dict
-        if not isinstance(scores, dict):
-            st.warning("Saved scores are not in the right format (expected a dictionary).")
-            scores = {}  # fallback to empty dict
-
-        fig = generate_radar(scores)
-
-        if fig:
-            st.write("### Scores Radar Chart")
-            st.pyplot(fig)
+    # --- Named Save ---
+    save_name = st.text_input("Save work as:")
+    if st.button("Save Work"):
+        if save_name.strip():
+            save_work(save_name.strip())
         else:
-            st.info("No scores available to plot.")
+            st.warning("Please enter a name before saving.")
 
-        # --- Generate PDF ---
-        if st.button("Generate PDF"):
-            from fpdf import FPDF
+    # --- Browse Saved Files ---
+    st.write("### Browse saved work")
+    render_saved_files()  # helper function from earlier
 
-            # Save radar chart image if available
-            radar_path = None
-            if fig:  # only save if a chart exists
-                radar_path = "radar.png"
-                fig.savefig(radar_path, bbox_inches="tight")
+    # --- Radar Chart ---
+    scores = st.session_state.get("saved_scores", {})
 
-            pdf = FPDF()
-            pdf.add_page()
-            pdf.set_font("Arial", size=12)
-            pdf.cell(200, 10, txt="Your Saved Work", ln=True, align="C")
+    # Make sure scores is a dict
+    if not isinstance(scores, dict):
+        st.warning("Saved scores are not in the right format (expected a dictionary).")
+        scores = {}
 
-            # Add text sections
-            pdf.multi_cell(0, 10, txt="Notes:\n" + str(st.session_state.get("saved_notes", "")))
-            pdf.multi_cell(0, 10, txt="Scores:\n" + str(scores if scores else "No scores"))
-            pdf.multi_cell(0, 10, txt="Review:\n" + str(st.session_state.get("saved_review", "")))
+    fig = generate_radar(scores)
 
-            # Insert radar chart if available
-            if radar_path:
-                pdf.image(radar_path, x=10, y=80, w=180)
+    if fig:
+        st.write("### Scores Radar Chart")
+        st.pyplot(fig)
+    else:
+        st.info("No scores available to plot.")
 
-            # Output and download
-            pdf.output("saved_work.pdf")
-            with open("saved_work.pdf", "rb") as f:
-                st.download_button("Download PDF", f, file_name="saved_work.pdf")
+    # --- Generate PDF ---
+    if st.button("Generate PDF"):
+        from fpdf import FPDF
+
+        # Save radar chart image if available
+        radar_path = None
+        if fig:  # only save if a chart exists
+            radar_path = "radar.png"
+            fig.savefig(radar_path, bbox_inches="tight")
+
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", size=12)
+        pdf.cell(200, 10, txt="Your Saved Work", ln=True, align="C")
+
+        # Add text sections
+        pdf.multi_cell(0, 10, txt="Notes:\n" + str(st.session_state.get("saved_notes", "")))
+        pdf.multi_cell(0, 10, txt="Scores:\n" + str(st.session_state.get("saved_scores", {})))
+        pdf.multi_cell(0, 10, txt="Review:\n" + str(st.session_state.get("saved_review", "")))
+
+        # Insert radar chart if available
+        if radar_path and os.path.exists(radar_path):
+            pdf.image(radar_path, x=10, y=None, w=180)
+
+        # Output and download
+        output_name = "saved_work.pdf"
+        pdf.output(output_name)
+        with open(output_name, "rb") as f:
+            st.download_button("Download PDF", f, file_name=output_name)
 
 # -------------------------------
 # Navigation
