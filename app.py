@@ -12,6 +12,16 @@ import matplotlib.pyplot as plt
 import numpy as np 
 from fpdf import FPDF 
 import ast 
+# Navigation
+page = st.sidebar.radio("Navigate", ["Page 1", "Repository"])
+
+if page == "Page 1":
+    st.subheader("🛠 Create Your Own 5 Tool Employee")
+    # sliders, radar, profile_text builder, buttons...
+
+elif page == "Repository":
+    st.subheader("📂 Saved Profiles")
+    # render_saved_files() etc.
 
 SAVE_DIR = "user_saves"
 os.makedirs(SAVE_DIR, exist_ok=True)
