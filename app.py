@@ -107,6 +107,31 @@ def map_videos_to_tools(videos):
             mapping["Power"] = video["url"]
     return mapping
 
+prompt = f"""
+You are an organizational psychologist using the Five-Tool Employee Framework.
+Interpret the following profile:
+
+Context: {context_label}
+Tools: {', '.join(tools)}
+Scores: {scores}
+Notes: {notes}
+
+Instructions:
+- Begin with a **Behavioral Summary** that ties together patterns across tools.
+- For each tool, provide:
+  • Expression at this score (how it shows up day-to-day)
+  • Under-pressure risk (how it distorts under stress)
+  • Calibration/Training (specific interventions to sustain impact)
+- Explicitly weave in the framework’s tension themes:
+  • Motion vs. Processing
+  • Drive vs. Humility
+  • Systems vs. Flexibility
+  • Consistency vs. Innovation
+  • Clarity vs. Performance
+- End with a **Leadership Readiness Signal** and **Next 90-Day Interventions**.
+- Tone: psychologically rich, diagnostic, and grounded in the model. Avoid generic corporate phrasing.
+"""
+
 # -------------------------------
 # Subscription Logic
 # -------------------------------
