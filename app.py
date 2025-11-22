@@ -1209,7 +1209,8 @@ def render_module_6():
         
             pdf.output("saved_work.pdf")
             with open("saved_work.pdf", "rb") as f:
-
+                st.download_button("Download PDF", f, file_name="saved_work.pdf", 
+        key="pdf_download")
 # -------------------------------
 # Navigation
 # -------------------------------
