@@ -8,6 +8,7 @@ import plotly.express as px
 from openai import OpenAI
 from googleapiclient.discovery import build
 import json
+from fpdf import FPDF
 
 # ----------------------------
 # Persistent Prompt Tracking
