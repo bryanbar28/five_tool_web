@@ -1154,12 +1154,13 @@ def render_module_6():
         repo_dir = "repository"
         os.makedirs(repo_dir, exist_ok=True)
 
-        if st.button("Save Work"):
+        if st.button("Save Work", key="save_button"):
             file_path = os.path.join(repo_dir, f"saved_work_{user_id}.txt")
             with open(file_path, "w") as f:
                 f.write("Notes:\n" + str(st.session_state.get("saved_notes", "")) + "\n\n")
                 f.write("Scores:\n" + str(st.session_state.get("saved_scores", "")) + "\n\n")
                 f.write("Review:\n" + str(st.session_state.get("saved_review", "")))
+                f.write("Rich Context:\n" + str(st.session_state.get("saved_rich_text", "")) + "\n\n")
             st.success(f"✅ Work saved to {file_path}")
 
         # Show repository contents
@@ -1171,7 +1172,7 @@ def render_module_6():
         # -------------------------------
         # Keep your PDF generation block after this
         # -------------------------------
-        if st.button("Generate PDF"):
+        if st.button("Generate PDF", keys="pdf_button"):
             from fpdf import FPDF
             pdf = FPDF()
             pdf.add_page()
@@ -1183,31 +1184,6 @@ def render_module_6():
             pdf.multi_cell(0, 10, txt="Review:\n" + str(st.session_state.get("saved_review", "")))
             pdf.multi_cell(0, 10, txt="Rich Context:\n" + str(st.session_state.get("saved_rich_text", "")))
 
-            pdf.output("saved_work.pdf")
-            with open("saved_work.pdf", "rb") as f:
-                st.download_button("Download PDF", f, file_name="saved_work.pdf")
-    
-        # Generate PDF Button
-        if st.button("Generate PDF"):
-            from fpdf import FPDF
-        
-            pdf = FPDF()
-            pdf.add_page()
-            pdf.set_font("Arial", size=12)
-            pdf.cell(200, 10, txt="Your Saved Work", ln=True, align="C")
-        
-            # Existing content
-            pdf.multi_cell(0, 10, txt="Notes:\n" + str(st.session_state.get("saved_notes", "")))
-            pdf.multi_cell(0, 10, txt="Scores:\n" + str(st.session_state.get("saved_scores", "")))
-            pdf.multi_cell(0, 10, txt="Review:\n" + str(st.session_state.get("saved_review", "")))
-            pdf.multi_cell(0, 10, txt="Rich Context:\n" + str(st.session_state.get("saved_rich_text", "")))
-        
-            # ✅ Add Rich Context
-            pdf.multi_cell(0, 10, txt="Rich Context:\n" + str(st.session_state.get("saved_rich_text", "")))
-        
-            # 🚫 Radar chart export removed (still visible in app visuals)
-        
-            # Save and download
             pdf.output("saved_work.pdf")
             with open("saved_work.pdf", "rb") as f:
                 st.download_button("Download PDF", f, file_name="saved_work.pdf")
