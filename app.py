@@ -1183,35 +1183,40 @@ def render_module_6():
                 f.write("Review:\n" + str(st.session_state.get("saved_review", "")) + "\n\n")
                 f.write("Rich Context:\n" + str(st.session_state.get("saved_rich_text", "")) + "\n\n")
             st.success(f"✅ Work saved as {file_name}")
-      
+        
         # Show repository contents
         st.markdown("### 📂 Repository Files")
         for fname in os.listdir(repo_dir):
             with open(os.path.join(repo_dir, fname), "rb") as f:
                 st.download_button(f"Download {fname}", f, file_name=fname, key=f"download_{fname}")
-
+        
+        # -------------------------------
+        # Select file for PDF generation
+        # -------------------------------
+        repo_files = os.listdir(repo_dir)
+        selected_file = st.selectbox("Select a file to generate PDF", repo_files)
+        
+        file_content = ""
+        if selected_file:
+            with open(os.path.join(repo_dir, selected_file), "r") as f:
+                file_content = f.read()
+        
         # -------------------------------
         # Generate PDF block
         # -------------------------------
-        
         if st.button("Generate PDF", key="pdf_button"):
             from fpdf import FPDF
-        
-            pdf = FPDF(orientation="L")  # Landscape for more width
+            pdf = FPDF(orientation="L")  # Landscape for better width
             pdf.add_page()
             pdf.set_font("Arial", size=12)
-            pdf.cell(270, 10, txt="Your Saved Work", ln=True, align="C")  # Wider cell for landscape
+            pdf.cell(270, 10, txt="Your Saved Work", ln=True, align="C")
         
-            # Add sections with wrapping and sanitization
-            pdf.multi_cell(270, 10, txt="Notes:\n" + sanitize_text(st.session_state.get("saved_notes", "")))
-            pdf.multi_cell(270, 10, txt="Scores:\n" + sanitize_text(str(st.session_state.get("saved_scores", ""))))
-            pdf.multi_cell(270, 10, txt="Review:\n" + sanitize_text(st.session_state.get("saved_review", "")))
-            pdf.multi_cell(270, 10, txt="Rich Context:\n" + sanitize_text(st.session_state.get("saved_rich_text", "")))
+            # Use the selected file's content
+            pdf.multi_cell(270, 10, txt=sanitize_text(file_content))
         
-            pdf.output("saved_work.pdf")
-            with open("saved_work.pdf", "rb") as f:
-                st.download_button("Download PDF", f, file_name="saved_work.pdf", key="pdf_download")
-
+            pdf.output("selected_work.pdf")
+            with open("selected_work.pdf", "rb") as f:
+                st.download_button("Download PDF", f, file_name="selected_work.pdf", key="pdf_download")
         
 # -------------------------------
 # Navigation
