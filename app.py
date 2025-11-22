@@ -456,45 +456,45 @@ if st.button("Generate 5 Tool Employee"):
         for tool, score in zip(TOOLS, scores):
             st.markdown(f"**{tool} (Score: {score}/10)**")
 
-                # ✅ Detailed interpretation based on your book
-                if score <= 3:
-                    st.write("- **Behavioral Reality:** Needs Development.")
-                    if tool == "Technical Competence":
-                        st.write("  • Misses execution rhythm; avoids ambiguity; may disengage under pressure.")
-                        st.write("  • Risk: Reliability gaps erode trust and team cadence.")
-                        st.write("  • Development: Structured technical training and accountability systems.")
-                    elif tool == "Problem-Solving Ability":
-                        st.write("  • Reactive firefighting; freezes or blames others when overwhelmed.")
-                        st.write("  • Risk: Creates chaos instead of solutions.")
-                        st.write("  • Development: Build analytical discipline and scenario planning.")
-                    elif tool == "Adaptability & Continuous Learning":
-                        st.write("  • Resistant to change; lacks proactive learning habits.")
-                        st.write("  • Risk: Falls behind in dynamic environments.")
-                        st.write("  • Development: Micro-learning and resilience coaching.")
-                    elif tool == "Communication & Leadership":
-                        st.write("  • Communication lacks clarity; influence minimal.")
-                        st.write("  • Risk: Team misalignment and low morale.")
-                        st.write("  • Development: Authentic leadership coaching and feedback loops.")
-                    elif tool == "Strategic Decision-Making":
-                        st.write("  • Decisions lack foresight; may chase optics over substance.")
-                        st.write("  • Risk: High chance of costly missteps under pressure.")
-                        st.write("  • Development: Train in strategic frameworks and risk analysis.")
-                elif score <= 6:
-                    st.write("- **Behavioral Reality:** Effective but inconsistent.")
-                    st.write("  • Strength: Handles routine tasks and moderate complexity.")
-                    st.write("  • Growth Area: Needs calibration for high-pressure scenarios.")
-                    st.write("  • Development Path: Reinforce rhythm and foresight through structured coaching.")
-                else:
-                    st.write("- **Behavioral Reality:** Exceptional.")
-                    st.write("  • Strength: Demonstrates mastery under pressure; inspires confidence.")
-                    st.write("  • Watch Out: Overuse can drift into dysfunction (e.g., dominance, rigidity).")
-                    st.write("  • Development Path: Maintain humility and balance; leverage as a leadership strength.")
+            # ✅ Detailed interpretation based on your book
+            if score <= 3:
+                st.write("- **Behavioral Reality:** Needs Development.")
+                if tool == "Technical Competence":
+                     st.write("  • Misses execution rhythm; avoids ambiguity; may disengage under pressure.")
+                     st.write("  • Risk: Reliability gaps erode trust and team cadence.")
+                     st.write("  • Development: Structured technical training and accountability systems.")
+                 elif tool == "Problem-Solving Ability":
+                     st.write("  • Reactive firefighting; freezes or blames others when overwhelmed.")
+                     st.write("  • Risk: Creates chaos instead of solutions.")
+                     st.write("  • Development: Build analytical discipline and scenario planning.")
+                 elif tool == "Adaptability & Continuous Learning":
+                     st.write("  • Resistant to change; lacks proactive learning habits.")
+                     st.write("  • Risk: Falls behind in dynamic environments.")
+                     st.write("  • Development: Micro-learning and resilience coaching.")
+                elif tool == "Communication & Leadership":
+                     st.write("  • Communication lacks clarity; influence minimal.")
+                     st.write("  • Risk: Team misalignment and low morale.")
+                     st.write("  • Development: Authentic leadership coaching and feedback loops.")
+                elif tool == "Strategic Decision-Making":
+                     st.write("  • Decisions lack foresight; may chase optics over substance.")
+                     st.write("  • Risk: High chance of costly missteps under pressure.")
+                     st.write("  • Development: Train in strategic frameworks and risk analysis.")
+            elif score <= 6:
+                st.write("- **Behavioral Reality:** Effective but inconsistent.")
+                st.write("  • Strength: Handles routine tasks and moderate complexity.")
+                st.write("  • Growth Area: Needs calibration for high-pressure scenarios.")
+                st.write("  • Development Path: Reinforce rhythm and foresight through structured coaching.")
+            else:
+                st.write("- **Behavioral Reality:** Exceptional.")
+                st.write("  • Strength: Demonstrates mastery under pressure; inspires confidence.")
+                st.write("  • Watch Out: Overuse can drift into dysfunction (e.g., dominance, rigidity).")
+                st.write("  • Development Path: Maintain humility and balance; leverage as a leadership strength.")
 
-                st.markdown("---")
+            st.markdown("---")
 
-            # ✅ Notes Section
-            st.markdown("**Notes:**")
-            st.write(notes_input)
+        # ✅ Notes Section
+        st.markdown("**Notes:**")
+        st.write(notes_input)
 # ✅ Radar Chart Visualization
 st.subheader("📊 5-Tool Employee Profile Radar")
 fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="5-Tool Employee Radar Chart")
