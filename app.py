@@ -9,6 +9,7 @@ from openai import OpenAI
 from googleapiclient.discovery import build
 import json
 from fpdf import FPDF
+import time
 
 # ----------------------------
 # Persistent Prompt Tracking
@@ -1171,16 +1172,18 @@ def render_module_6():
         # -------------------------------
         repo_dir = "repository"
         os.makedirs(repo_dir, exist_ok=True)
-
+        
         if st.button("Save Work", key="save_button"):
-            file_path = os.path.join(repo_dir, f"saved_work_{user_id}.txt")
+            timestamp = time.strftime("%Y%m%d_%H%M%S")
+            file_name = f"saved_work_{user_id}_{timestamp}.txt"
+            file_path = os.path.join(repo_dir, file_name)
             with open(file_path, "w") as f:
                 f.write("Notes:\n" + str(st.session_state.get("saved_notes", "")) + "\n\n")
                 f.write("Scores:\n" + str(st.session_state.get("saved_scores", "")) + "\n\n")
                 f.write("Review:\n" + str(st.session_state.get("saved_review", "")) + "\n\n")
                 f.write("Rich Context:\n" + str(st.session_state.get("saved_rich_text", "")) + "\n\n")
-            st.success(f"✅ Work saved to {file_path}")
-
+            st.success(f"✅ Work saved as {file_name}")
+      
         # Show repository contents
         st.markdown("### 📂 Repository Files")
         for fname in os.listdir(repo_dir):
@@ -1190,21 +1193,22 @@ def render_module_6():
         # -------------------------------
         # Generate PDF block
         # -------------------------------
+        
         if st.button("Generate PDF", key="pdf_button"):
             from fpdf import FPDF
             pdf = FPDF()
             pdf.add_page()
             pdf.set_font("Arial", size=12)
-            pdf.cell(200, 10, txt="Your Saved Work", ln=True, align="C")
-
-            pdf.multi_cell(0, 10, txt="Notes:\n" + str(st.session_state.get("saved_notes", "")))
-            pdf.multi_cell(0, 10, txt="Scores:\n" + str(st.session_state.get("saved_scores", "")))
-            pdf.multi_cell(0, 10, txt="Review:\n" + str(st.session_state.get("saved_review", "")))
-            pdf.multi_cell(0, 10, txt="Rich Context:\n" + str(st.session_state.get("saved_rich_text", "")))
-
+            pdf.cell(190, 10, txt="Your Saved Work", ln=True, align="C")
+        
+            # Use fixed width (190) and sanitize text
+            pdf.multi_cell(190, 10, txt="Notes:\n" + sanitize_text(st.session_state.get("saved_notes", "")))
+            pdf.multi_cell(190, 10, txt="Scores:\n" + sanitize_text(str(st.session_state.get("saved_scores", ""))))
+            pdf.multi_cell(190, 10, txt="Review:\n" + sanitize_text(st.session_state.get("saved_review", "")))
+            pdf.multi_cell(190, 10, txt="Rich Context:\n" + sanitize_text(st.session_state.get("saved_rich_text", "")))
+        
             pdf.output("saved_work.pdf")
             with open("saved_work.pdf", "rb") as f:
-                st.download_button("Download PDF", f, file_name="saved_work.pdf", key="pdf_download")
 
 # -------------------------------
 # Navigation
