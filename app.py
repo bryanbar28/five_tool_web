@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np 
 from fpdf import FPDF 
 import ast 
+page = st.selectbox("Choose a page", ["Page 1", "Page 2", "Page 3", "Page 4", "Page 5", "Page 6: Repository"])
 
 if page == "Page 1":
     st.subheader("🛠 Create Your Own 5 Tool Employee")
