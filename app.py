@@ -134,20 +134,20 @@ Instructions:
 if not record_prompt_use():
     return "Premium required or prompt limit reached."
 
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "You are an organizational psychologist analyzing employees with the Five-Tool Employee Framework."},
-                {"role": "user", "content": prompt},
-            ],
-            temperature=0.7,
-            max_tokens=900,
-        )
-        return response.choices[0].message.content
-    except Exception as e:
-        st.error(f"❌ Error generating rich context: {e}")
-        return "Error generating analysis."
+try:
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are an organizational psychologist analyzing employees with the Five-Tool Employee Framework."},
+            {"role": "user", "content": prompt},
+        ],
+        temperature=0.7,
+        max_tokens=900,
+    )
+    return response.choices[0].message.content
+except Exception as e:
+    st.error(f"❌ Error generating rich context: {e}")
+    return "Error generating analysis."
 
 # -------------------------------
 # Subscription Logic
