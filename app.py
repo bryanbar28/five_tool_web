@@ -448,13 +448,13 @@ st.session_state.saved_profile = profile_text
 # ✅ Display it immediately on page 1
 st.markdown(profile_text)
 
-    # ✅ Generate Profile Button
-        if st.button("Generate 5 Tool Employee"):
-            if notes_input.strip():
-                st.markdown("### 🧠 Your Custom 5 Tool Employee Profile")
+# ✅ Generate Profile Button
+    if st.button("Generate 5 Tool Employee"):
+        if notes_input.strip():
+            st.markdown("### 🧠 Your Custom 5 Tool Employee Profile")
     
-                for tool, score in zip(TOOLS, scores):
-                    st.markdown(f"**{tool} (Score: {score}/10)**")
+            for tool, score in zip(TOOLS, scores):
+                st.markdown(f"**{tool} (Score: {score}/10)**")
 
                 # ✅ Detailed interpretation based on your book
                 if score <= 3:
