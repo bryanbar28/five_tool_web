@@ -395,164 +395,165 @@ def render_module_1():
             st.markdown("---")
 
     st.markdown("---")
-# ✅ Notes and Sliders Section
-st.subheader("🛠 Create Your Own 5 Tool Employee")
-notes_input = st.text_area(
-    "Enter notes about your ideal employee or evaluation criteria",
-    placeholder="e.g., strong leadership, adaptable, great communicator"
-)
-
-st.subheader("Rate the Employee on Each Tool (1–10)")
-TOOLS = [
-    "Technical Competence",
-    "Problem-Solving Ability",
-    "Adaptability & Continuous Learning",
-    "Communication & Leadership",
-    "Strategic Decision-Making"
-]
-scores = [st.slider(tool, 1, 10, 5) for tool in TOOLS]
-
-# ✅ Build the profile text from the slider values
-profile_text = f"""
-🧠 Your Custom 5 Tool Employee Profile
-
-Technical Competence (Score: {scores[0]}/10)
-Behavioral Reality: ...
-Risk: ...
-Development: ...
-
-Problem-Solving Ability (Score: {scores[1]}/10)
-Behavioral Reality: ...
-Risk: ...
-Development: ...
-
-Adaptability & Continuous Learning (Score: {scores[2]}/10)
-Behavioral Reality: ...
-Risk: ...
-Development: ...
-
-Communication & Leadership (Score: {scores[3]}/10)
-Behavioral Reality: ...
-Risk: ...
-Development: ...
-
-Strategic Decision-Making (Score: {scores[4]}/10)
-Behavioral Reality: ...
-Risk: ...
-Development: ...
-"""
-
-# ✅ Save profile text into session_state so it can be reused
-st.session_state.saved_profile = profile_text
-
-# ✅ Display it immediately on page 1
-st.markdown(profile_text)
-
-# ✅ Generate Profile Button
-if st.button("Generate 5 Tool Employee"):
-    if notes_input.strip():
-        st.markdown("### 🧠 Your Custom 5 Tool Employee Profile")
+if page == "page 1":
+    # ✅ Notes and Sliders Section
+    st.subheader("🛠 Create Your Own 5 Tool Employee")
+    notes_input = st.text_area(
+        "Enter notes about your ideal employee or evaluation criteria",
+        placeholder="e.g., strong leadership, adaptable, great communicator"
+    )
     
-        for tool, score in zip(TOOLS, scores):
-            st.markdown(f"**{tool} (Score: {score}/10)**")
-
-            # ✅ Detailed interpretation based on your book
-            if score <= 3:
-                st.write("- **Behavioral Reality:** Needs Development.")
-                if tool == "Technical Competence":
-                     st.write("  • Misses execution rhythm; avoids ambiguity; may disengage under pressure.")
-                     st.write("  • Risk: Reliability gaps erode trust and team cadence.")
-                     st.write("  • Development: Structured technical training and accountability systems.")
-                elif tool == "Problem-Solving Ability":
-                     st.write("  • Reactive firefighting; freezes or blames others when overwhelmed.")
-                     st.write("  • Risk: Creates chaos instead of solutions.")
-                     st.write("  • Development: Build analytical discipline and scenario planning.")
-                elif tool == "Adaptability & Continuous Learning":
-                     st.write("  • Resistant to change; lacks proactive learning habits.")
-                     st.write("  • Risk: Falls behind in dynamic environments.")
-                     st.write("  • Development: Micro-learning and resilience coaching.")
-                elif tool == "Communication & Leadership":
-                     st.write("  • Communication lacks clarity; influence minimal.")
-                     st.write("  • Risk: Team misalignment and low morale.")
-                     st.write("  • Development: Authentic leadership coaching and feedback loops.")
-                elif tool == "Strategic Decision-Making":
-                     st.write("  • Decisions lack foresight; may chase optics over substance.")
-                     st.write("  • Risk: High chance of costly missteps under pressure.")
-                     st.write("  • Development: Train in strategic frameworks and risk analysis.")
-            elif score <= 6:
-                st.write("- **Behavioral Reality:** Effective but inconsistent.")
-                st.write("  • Strength: Handles routine tasks and moderate complexity.")
-                st.write("  • Growth Area: Needs calibration for high-pressure scenarios.")
-                st.write("  • Development Path: Reinforce rhythm and foresight through structured coaching.")
-            else:
-                st.write("- **Behavioral Reality:** Exceptional.")
-                st.write("  • Strength: Demonstrates mastery under pressure; inspires confidence.")
-                st.write("  • Watch Out: Overuse can drift into dysfunction (e.g., dominance, rigidity).")
-                st.write("  • Development Path: Maintain humility and balance; leverage as a leadership strength.")
-
-            st.markdown("---")
-
-        # ✅ Notes Section
-        st.markdown("**Notes:**")
-        st.write(notes_input)
-# ✅ Radar Chart Visualization
-st.subheader("📊 5-Tool Employee Profile Radar")
-fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="5-Tool Employee Radar Chart")
-fig.update_traces(fill='toself')
-st.plotly_chart(fig)
-
-# ✅ Build the profile text using slider values
-profile_text = f"""
-🧠 Your Custom 5 Tool Employee Profile
-
-Technical Competence (Score: {scores[0]}/10)
-Behavioral Reality: Needs Development.
-• Misses execution rhythm; avoids ambiguity; may disengage under pressure.
-• Risk: Reliability gaps erode trust and team cadence.
-• Development: Structured technical training and accountability systems.
-
-Problem-Solving Ability (Score: {scores[1]}/10)
-Behavioral Reality: Needs Development.
-• Reactive firefighting; freezes or blames others when overwhelmed.
-• Risk: Creates chaos instead of solutions.
-• Development: Build analytical discipline and scenario planning.
-
-Adaptability & Continuous Learning (Score: {scores[2]}/10)
-Behavioral Reality: Needs Development.
-• Resistant to change; lacks proactive learning habits.
-• Risk: Falls behind in dynamic environments.
-• Development: Micro-learning and resilience coaching.
-
-Communication & Leadership (Score: {scores[3]}/10)
-Behavioral Reality: Exceptional.
-• Strength: Demonstrates mastery under pressure; inspires confidence.
-• Watch Out: Overuse can drift into dysfunction (e.g., dominance, rigidity).
-• Development Path: Maintain humility and balance; leverage as a leadership strength.
-
-Strategic Decision-Making (Score: {scores[4]}/10)
-Behavioral Reality: Needs Development.
-• Decisions lack foresight; may chase optics over substance.
-• Risk: High chance of costly missteps under pressure.
-• Development: Train in strategic frameworks and risk analysis.
-"""
-
-# ✅ Save profile text into session_state so it can be reused
-st.session_state.saved_profile = profile_text
-
-# ✅ Display it immediately on page 1
-st.markdown(profile_text)
-
-# ✅ Clear History Button
-if st.button("Clear History"):
-    st.session_state.chat_history = []
-    st.experimental_rerun()
-# ✅ After generating the profile and radar chart
-if st.button("Save to Repository"):
-    st.session_state["saved_notes"] = notes_input if "notes_input" in locals() else st.session_state.get("saved_notes", "")
-    st.session_state["saved_scores"] = scores if "scores" in locals() else st.session_state.get("saved_scores", "")
-    st.session_state["saved_review"] = "Your 5-Tool Employee Profile"
-    st.session_state.saved_profile = profile_text  
-    st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
+    st.subheader("Rate the Employee on Each Tool (1–10)")
+    TOOLS = [
+        "Technical Competence",
+        "Problem-Solving Ability",
+        "Adaptability & Continuous Learning",
+        "Communication & Leadership",
+        "Strategic Decision-Making"
+    ]
+    scores = [st.slider(tool, 1, 10, 5) for tool in TOOLS]
+    
+    # ✅ Build the profile text from the slider values
+    profile_text = f"""
+    🧠 Your Custom 5 Tool Employee Profile
+    
+    Technical Competence (Score: {scores[0]}/10)
+    Behavioral Reality: ...
+    Risk: ...
+    Development: ...
+    
+    Problem-Solving Ability (Score: {scores[1]}/10)
+    Behavioral Reality: ...
+    Risk: ...
+    Development: ...
+    
+    Adaptability & Continuous Learning (Score: {scores[2]}/10)
+    Behavioral Reality: ...
+    Risk: ...
+    Development: ...
+    
+    Communication & Leadership (Score: {scores[3]}/10)
+    Behavioral Reality: ...
+    Risk: ...
+    Development: ...
+    
+    Strategic Decision-Making (Score: {scores[4]}/10)
+    Behavioral Reality: ...
+    Risk: ...
+    Development: ...
+    """
+    
+    # ✅ Save profile text into session_state so it can be reused
+    st.session_state.saved_profile = profile_text
+    
+    # ✅ Display it immediately on page 1
+    st.markdown(profile_text)
+    
+    # ✅ Generate Profile Button
+    if st.button("Generate 5 Tool Employee"):
+        if notes_input.strip():
+            st.markdown("### 🧠 Your Custom 5 Tool Employee Profile")
+        
+            for tool, score in zip(TOOLS, scores):
+                st.markdown(f"**{tool} (Score: {score}/10)**")
+    
+                # ✅ Detailed interpretation based on your book
+                if score <= 3:
+                    st.write("- **Behavioral Reality:** Needs Development.")
+                    if tool == "Technical Competence":
+                         st.write("  • Misses execution rhythm; avoids ambiguity; may disengage under pressure.")
+                         st.write("  • Risk: Reliability gaps erode trust and team cadence.")
+                         st.write("  • Development: Structured technical training and accountability systems.")
+                    elif tool == "Problem-Solving Ability":
+                         st.write("  • Reactive firefighting; freezes or blames others when overwhelmed.")
+                         st.write("  • Risk: Creates chaos instead of solutions.")
+                         st.write("  • Development: Build analytical discipline and scenario planning.")
+                    elif tool == "Adaptability & Continuous Learning":
+                         st.write("  • Resistant to change; lacks proactive learning habits.")
+                         st.write("  • Risk: Falls behind in dynamic environments.")
+                         st.write("  • Development: Micro-learning and resilience coaching.")
+                    elif tool == "Communication & Leadership":
+                         st.write("  • Communication lacks clarity; influence minimal.")
+                         st.write("  • Risk: Team misalignment and low morale.")
+                         st.write("  • Development: Authentic leadership coaching and feedback loops.")
+                    elif tool == "Strategic Decision-Making":
+                         st.write("  • Decisions lack foresight; may chase optics over substance.")
+                         st.write("  • Risk: High chance of costly missteps under pressure.")
+                         st.write("  • Development: Train in strategic frameworks and risk analysis.")
+                elif score <= 6:
+                    st.write("- **Behavioral Reality:** Effective but inconsistent.")
+                    st.write("  • Strength: Handles routine tasks and moderate complexity.")
+                    st.write("  • Growth Area: Needs calibration for high-pressure scenarios.")
+                    st.write("  • Development Path: Reinforce rhythm and foresight through structured coaching.")
+                else:
+                    st.write("- **Behavioral Reality:** Exceptional.")
+                    st.write("  • Strength: Demonstrates mastery under pressure; inspires confidence.")
+                    st.write("  • Watch Out: Overuse can drift into dysfunction (e.g., dominance, rigidity).")
+                    st.write("  • Development Path: Maintain humility and balance; leverage as a leadership strength.")
+    
+                st.markdown("---")
+    
+            # ✅ Notes Section
+            st.markdown("**Notes:**")
+            st.write(notes_input)
+    # ✅ Radar Chart Visualization
+    st.subheader("📊 5-Tool Employee Profile Radar")
+    fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="5-Tool Employee Radar Chart")
+    fig.update_traces(fill='toself')
+    st.plotly_chart(fig)
+    
+    # ✅ Build the profile text using slider values
+    profile_text = f"""
+    🧠 Your Custom 5 Tool Employee Profile
+    
+    Technical Competence (Score: {scores[0]}/10)
+    Behavioral Reality: Needs Development.
+    • Misses execution rhythm; avoids ambiguity; may disengage under pressure.
+    • Risk: Reliability gaps erode trust and team cadence.
+    • Development: Structured technical training and accountability systems.
+    
+    Problem-Solving Ability (Score: {scores[1]}/10)
+    Behavioral Reality: Needs Development.
+    • Reactive firefighting; freezes or blames others when overwhelmed.
+    • Risk: Creates chaos instead of solutions.
+    • Development: Build analytical discipline and scenario planning.
+    
+    Adaptability & Continuous Learning (Score: {scores[2]}/10)
+    Behavioral Reality: Needs Development.
+    • Resistant to change; lacks proactive learning habits.
+    • Risk: Falls behind in dynamic environments.
+    • Development: Micro-learning and resilience coaching.
+    
+    Communication & Leadership (Score: {scores[3]}/10)
+    Behavioral Reality: Exceptional.
+    • Strength: Demonstrates mastery under pressure; inspires confidence.
+    • Watch Out: Overuse can drift into dysfunction (e.g., dominance, rigidity).
+    • Development Path: Maintain humility and balance; leverage as a leadership strength.
+    
+    Strategic Decision-Making (Score: {scores[4]}/10)
+    Behavioral Reality: Needs Development.
+    • Decisions lack foresight; may chase optics over substance.
+    • Risk: High chance of costly missteps under pressure.
+    • Development: Train in strategic frameworks and risk analysis.
+    """
+    
+    # ✅ Save profile text into session_state so it can be reused
+    st.session_state.saved_profile = profile_text
+    
+    # ✅ Display it immediately on page 1
+    st.markdown(profile_text)
+    
+    # ✅ Clear History Button
+    if st.button("Clear History"):
+        st.session_state.chat_history = []
+        st.experimental_rerun()
+    # ✅ After generating the profile and radar chart
+    if st.button("Save to Repository"):
+        st.session_state["saved_notes"] = notes_input if "notes_input" in locals() else st.session_state.get("saved_notes", "")
+        st.session_state["saved_scores"] = scores if "scores" in locals() else st.session_state.get("saved_scores", "")
+        st.session_state["saved_review"] = "Your 5-Tool Employee Profile"
+        st.session_state.saved_profile = profile_text  
+        st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
         
 def render_module_2():
     import streamlit as st
