@@ -131,6 +131,23 @@ Instructions:
 - End with a **Leadership Readiness Signal** and **Next 90-Day Interventions**.
 - Tone: psychologically rich, diagnostic, and grounded in the model. Avoid generic corporate phrasing.
 """
+    if not record_prompt_use():
+        return "Premium required or prompt limit reached."
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are an organizational psychologist analyzing employees with the Five-Tool Employee Framework."},
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0.7,
+            max_tokens=900,
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        st.error(f"❌ Error generating rich context: {e}")
+        return "Error generating analysis."
 
 # -------------------------------
 # Subscription Logic
@@ -419,6 +436,9 @@ def render_module_1():
             fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="5-Tool Employee Radar Chart")
             fig.update_traces(fill='toself')
             st.plotly_chart(fig)
+            rich_text = generate_rich_context(scores, TOOLS, notes_input, context_label="Page 1: Profile Generation")
+            st.markdown("### 🔍 Rich Context Analysis")
+            st.markdown(rich_text)
         else:
             st.warning("Please add notes before generating the profile.")
 
@@ -824,6 +844,9 @@ def render_module_4():
         fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="Behavioral Tool Scoring Radar")
         fig.update_traces(fill='toself')
         st.plotly_chart(fig)
+        rich_text = generate_rich_context(scores_p4, TOOLS_P4, employee_notes_p4, context_label="Page 4: Calibration")
+        st.markdown("### 🔍 Rich Context Analysis")
+        st.markdown(rich_text)
 
         # ✅ Follow-up question box under radar
         st.subheader("Ask a follow-up question about the radar:")
@@ -982,6 +1005,9 @@ def render_module_5():
         fig.update_traces(fill='toself')
         fig.update_layout(title="Toxicity Profile Radar Chart")
         st.plotly_chart(fig)
+        rich_text = generate_rich_context(scores_p5, TOOLS_P5, notes, context_label="Page 5: Toxicity Profile")
+        st.markdown("### 🔍 Rich Context Analysis")
+        st.markdown(rich_text)
 
         # Interpretation Table
         st.markdown("""
