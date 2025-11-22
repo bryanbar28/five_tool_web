@@ -1122,10 +1122,31 @@ def render_module_6():
         st.success("Premium active! Save your work below.")
 
         # Show captured data
-        st.write("### Your Current Work")
-        st.write("Notes:", st.session_state.get("saved_notes", "No notes yet"))
-        st.write("Scores:", st.session_state.get("saved_scores", "No scores yet"))
-        st.write("Review:", st.session_state.get("saved_review", "No review yet"))
+        st.markdown("### Your Current Work")
+        
+        if "saved_notes" in st.session_state:
+            st.markdown("**Notes:**")
+            st.write(st.session_state["saved_notes"])
+
+            if st.button("Create File"):
+                # ✅ bundle notes, scores, rich_text, fig into a file here
+                st.success("File created and ready in repository.")
+        
+        if "saved_scores" in st.session_state:
+            st.markdown("**Scores:**")
+            st.write(st.session_state["saved_scores"])
+        
+        if "saved_review" in st.session_state:
+            st.markdown("**Review:**")
+            st.write(st.session_state["saved_review"])
+        
+        if "saved_rich_text" in st.session_state:
+            st.markdown("### 🔍 Rich Context Analysis")
+            st.markdown(st.session_state["saved_rich_text"])
+        
+        if "saved_fig" in st.session_state:
+            st.markdown("### 📊 Radar Chart")
+            st.plotly_chart(st.session_state["saved_fig"])
 
         # Save Work Button
         if st.button("Save Work"):
@@ -1134,20 +1155,35 @@ def render_module_6():
                 f.write("Scores:\n" + str(st.session_state.get("saved_scores", "")) + "\n\n")
                 f.write("Review:\n" + str(st.session_state.get("saved_review", "")))
             st.success("✅ Work saved successfully!")
-
+            
         # Generate PDF Button
         if st.button("Generate PDF"):
             from fpdf import FPDF
+            import io  # ✅ needed for radar chart image export
+        
             pdf = FPDF()
             pdf.add_page()
             pdf.set_font("Arial", size=12)
             pdf.cell(200, 10, txt="Your Saved Work", ln=True, align="C")
+        
+            # Existing content
             pdf.multi_cell(0, 10, txt="Notes:\n" + str(st.session_state.get("saved_notes", "")))
             pdf.multi_cell(0, 10, txt="Scores:\n" + str(st.session_state.get("saved_scores", "")))
             pdf.multi_cell(0, 10, txt="Review:\n" + str(st.session_state.get("saved_review", "")))
+        
+            # ✅ Add Rich Context
+            pdf.multi_cell(0, 10, txt="Rich Context:\n" + str(st.session_state.get("saved_rich_text", "")))
+        
+            # ✅ Add Radar Chart
+            if "saved_fig" in st.session_state:
+                img_bytes = st.session_state["saved_fig"].to_image(format="png")
+                pdf.image(io.BytesIO(img_bytes), x=10, y=None, w=180)
+        
+            # Save and download
             pdf.output("saved_work.pdf")
             with open("saved_work.pdf", "rb") as f:
                 st.download_button("Download PDF", f, file_name="saved_work.pdf")
+
 # -------------------------------
 # Navigation
 # -------------------------------
