@@ -5,7 +5,7 @@ supabase
 google-api-python-client
 python-dotenv
 OpenAI
-fpdf
+fpdf2
 stripe
 matplotlib
 numpy
