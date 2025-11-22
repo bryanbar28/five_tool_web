@@ -131,8 +131,8 @@ Instructions:
 - End with a **Leadership Readiness Signal** and **Next 90-Day Interventions**.
 - Tone: psychologically rich, diagnostic, and grounded in the model. Avoid generic corporate phrasing.
 """
-    if not record_prompt_use():
-        return "Premium required or prompt limit reached."
+if not record_prompt_use():
+    return "Premium required or prompt limit reached."
 
     try:
         response = client.chat.completions.create(
