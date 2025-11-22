@@ -106,48 +106,48 @@ def map_videos_to_tools(videos):
         elif "strategy" in title or "decision" in title or "power" in title:
             mapping["Power"] = video["url"]
     return mapping
-
-prompt = f"""
-You are an organizational psychologist using the Five-Tool Employee Framework.
-Interpret the following profile:
-
-Context: {context_label}
-Tools: {', '.join(tools)}
-Scores: {scores}
-Notes: {notes}
-
-Instructions:
-- Begin with a **Behavioral Summary** that ties together patterns across tools.
-- For each tool, provide:
-  • Expression at this score (how it shows up day-to-day)
-  • Under-pressure risk (how it distorts under stress)
-  • Calibration/Training (specific interventions to sustain impact)
-- Explicitly weave in the framework’s tension themes:
-  • Motion vs. Processing
-  • Drive vs. Humility
-  • Systems vs. Flexibility
-  • Consistency vs. Innovation
-  • Clarity vs. Performance
-- End with a **Leadership Readiness Signal** and **Next 90-Day Interventions**.
-- Tone: psychologically rich, diagnostic, and grounded in the model. Avoid generic corporate phrasing.
-"""
-if not record_prompt_use():
-    return "Premium required or prompt limit reached."
-
-try:
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "You are an organizational psychologist analyzing employees with the Five-Tool Employee Framework."},
-            {"role": "user", "content": prompt},
-        ],
-        temperature=0.7,
-        max_tokens=900,
-    )
-    return response.choices[0].message.content
-except Exception as e:
-    st.error(f"❌ Error generating rich context: {e}")
-    return "Error generating analysis."
+def generate_rich_context(scores, tools, notes, context_label="General Context"):
+    prompt = f"""
+    You are an organizational psychologist using the Five-Tool Employee Framework.
+    Interpret the following profile:
+    
+    Context: {context_label}
+    Tools: {', '.join(tools)}
+    Scores: {scores}
+    Notes: {notes}
+    
+    Instructions:
+    - Begin with a **Behavioral Summary** that ties together patterns across tools.
+    - For each tool, provide:
+      • Expression at this score (how it shows up day-to-day)
+      • Under-pressure risk (how it distorts under stress)
+      • Calibration/Training (specific interventions to sustain impact)
+    - Explicitly weave in the framework’s tension themes:
+      • Motion vs. Processing
+      • Drive vs. Humility
+      • Systems vs. Flexibility
+      • Consistency vs. Innovation
+      • Clarity vs. Performance
+    - End with a **Leadership Readiness Signal** and **Next 90-Day Interventions**.
+    - Tone: psychologically rich, diagnostic, and grounded in the model. Avoid generic corporate phrasing.
+    """
+    if not record_prompt_use():
+        return "Premium required or prompt limit reached."
+    
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are an organizational psychologist analyzing employees with the Five-Tool Employee Framework."},
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0.7,
+            max_tokens=900,
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        st.error(f"❌ Error generating rich context: {e}")
+        return "Error generating analysis."
 
 # -------------------------------
 # Subscription Logic
