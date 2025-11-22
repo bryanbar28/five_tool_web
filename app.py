@@ -542,17 +542,17 @@ st.session_state.saved_profile = profile_text
 # ✅ Display it immediately on page 1
 st.markdown(profile_text)
 
-    # ✅ Clear History Button
-    if st.button("Clear History"):
-        st.session_state.chat_history = []
-        st.experimental_rerun()
-    # ✅ After generating the profile and radar chart
-    if st.button("Save to Repository"):
-        st.session_state["saved_notes"] = notes_input if "notes_input" in locals() else st.session_state.get("saved_notes", "")
-        st.session_state["saved_scores"] = scores if "scores" in locals() else st.session_state.get("saved_scores", "")
-        st.session_state["saved_review"] = "Your 5-Tool Employee Profile"
-        st.session_state.saved_profile = profile_text  
-        st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
+# ✅ Clear History Button
+if st.button("Clear History"):
+    st.session_state.chat_history = []
+    st.experimental_rerun()
+# ✅ After generating the profile and radar chart
+if st.button("Save to Repository"):
+    st.session_state["saved_notes"] = notes_input if "notes_input" in locals() else st.session_state.get("saved_notes", "")
+    st.session_state["saved_scores"] = scores if "scores" in locals() else st.session_state.get("saved_scores", "")
+    st.session_state["saved_review"] = "Your 5-Tool Employee Profile"
+    st.session_state.saved_profile = profile_text  
+    st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
         
 def render_module_2():
     import streamlit as st
