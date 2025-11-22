@@ -463,11 +463,11 @@ if st.button("Generate 5 Tool Employee"):
                      st.write("  • Misses execution rhythm; avoids ambiguity; may disengage under pressure.")
                      st.write("  • Risk: Reliability gaps erode trust and team cadence.")
                      st.write("  • Development: Structured technical training and accountability systems.")
-                 elif tool == "Problem-Solving Ability":
+                elif tool == "Problem-Solving Ability":
                      st.write("  • Reactive firefighting; freezes or blames others when overwhelmed.")
                      st.write("  • Risk: Creates chaos instead of solutions.")
                      st.write("  • Development: Build analytical discipline and scenario planning.")
-                 elif tool == "Adaptability & Continuous Learning":
+                elif tool == "Adaptability & Continuous Learning":
                      st.write("  • Resistant to change; lacks proactive learning habits.")
                      st.write("  • Risk: Falls behind in dynamic environments.")
                      st.write("  • Development: Micro-learning and resilience coaching.")
