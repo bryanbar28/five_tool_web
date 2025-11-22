@@ -1112,6 +1112,7 @@ def generate_roadmap(df):
         st.session_state["saved_scores"] = scores if "scores" in locals() else st.session_state.get("saved_scores", "")
         st.session_state["saved_review"] = "Your 5-Tool Employee Profile"
         st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
+
 def render_module_6():
     st.title("📂 Repository")
     if not usage[user_id]["premium"]:
@@ -1129,7 +1130,6 @@ def render_module_6():
             st.write(st.session_state["saved_notes"])
 
             if st.button("Create File"):
-                # ✅ bundle notes, scores, rich_text, fig into a file here
                 st.success("File created and ready in repository.")
         
         if "saved_scores" in st.session_state:
@@ -1148,13 +1148,44 @@ def render_module_6():
             st.markdown("### 📊 Radar Chart")
             st.plotly_chart(st.session_state["saved_fig"])
 
-        # Save Work Button
+        # -------------------------------
+        # 🔑 Replace your old Save Work block with this
+        # -------------------------------
+        repo_dir = "repository"
+        os.makedirs(repo_dir, exist_ok=True)
+
         if st.button("Save Work"):
-            with open("saved_work.txt", "w") as f:
+            file_path = os.path.join(repo_dir, f"saved_work_{user_id}.txt")
+            with open(file_path, "w") as f:
                 f.write("Notes:\n" + str(st.session_state.get("saved_notes", "")) + "\n\n")
                 f.write("Scores:\n" + str(st.session_state.get("saved_scores", "")) + "\n\n")
                 f.write("Review:\n" + str(st.session_state.get("saved_review", "")))
-            st.success("✅ Work saved successfully!")
+            st.success(f"✅ Work saved to {file_path}")
+
+        # Show repository contents
+        st.markdown("### 📂 Repository Files")
+        for fname in os.listdir(repo_dir):
+            with open(os.path.join(repo_dir, fname), "rb") as f:
+                st.download_button(f"Download {fname}", f, file_name=fname)
+
+        # -------------------------------
+        # Keep your PDF generation block after this
+        # -------------------------------
+        if st.button("Generate PDF"):
+            from fpdf import FPDF
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.set_font("Arial", size=12)
+            pdf.cell(200, 10, txt="Your Saved Work", ln=True, align="C")
+
+            pdf.multi_cell(0, 10, txt="Notes:\n" + str(st.session_state.get("saved_notes", "")))
+            pdf.multi_cell(0, 10, txt="Scores:\n" + str(st.session_state.get("saved_scores", "")))
+            pdf.multi_cell(0, 10, txt="Review:\n" + str(st.session_state.get("saved_review", "")))
+            pdf.multi_cell(0, 10, txt="Rich Context:\n" + str(st.session_state.get("saved_rich_text", "")))
+
+            pdf.output("saved_work.pdf")
+            with open("saved_work.pdf", "rb") as f:
+                st.download_button("Download PDF", f, file_name="saved_work.pdf")
     
         # Generate PDF Button
         if st.button("Generate PDF"):
