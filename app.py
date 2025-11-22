@@ -12,6 +12,8 @@ import matplotlib.pyplot as plt
 import numpy as np 
 from fpdf import FPDF 
 import ast 
+# Navigation
+page = st.sidebar.radio("Navigate", ["Page 1", "Repository"])
 
 if page == "Page 1":
     st.subheader("🛠 Create Your Own 5 Tool Employee")
