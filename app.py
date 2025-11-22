@@ -28,13 +28,15 @@ def save_work(name):
     data = {
         "notes": st.session_state.get("saved_notes", ""),
         "scores": scores,
-        "review": st.session_state.get("saved_review", "")
+        "review": st.session_state.get("saved_review", ""),
+        "profile": st.session_state.get("saved_profile", "")   # 👈 add this line
     }
 
     with open(filepath, "w") as f:
         json.dump(data, f)
 
     st.success(f"✅ Work saved as {name}.json")
+    
 def render_saved_files():
     files = [f for f in os.listdir(SAVE_DIR) if f.endswith(".json")]
     if files:
@@ -53,10 +55,6 @@ def render_saved_files():
                 st.session_state.saved_scores = {
                     f"Score {i+1}": val for i, val in enumerate(st.session_state.saved_scores)
                 }
-
-            # Debug check
-            st.write("DEBUG saved_scores type:", type(st.session_state.saved_scores))
-            st.write("DEBUG saved_scores value:", st.session_state.saved_scores)
 
             st.success("✅ Work loaded successfully!")
     else:
@@ -397,20 +395,58 @@ def render_module_1():
             st.markdown("---")
 
     st.markdown("---")
+# ✅ Notes and Sliders Section
+st.subheader("🛠 Create Your Own 5 Tool Employee")
+notes_input = st.text_area(
+    "Enter notes about your ideal employee or evaluation criteria",
+    placeholder="e.g., strong leadership, adaptable, great communicator"
+)
 
-    # ✅ Notes and Sliders Section
-    st.subheader("🛠 Create Your Own 5 Tool Employee")
-    notes_input = st.text_area("Enter notes about your ideal employee or evaluation criteria", placeholder="e.g., strong leadership, adaptable, great communicator")
+st.subheader("Rate the Employee on Each Tool (1–10)")
+TOOLS = [
+    "Technical Competence",
+    "Problem-Solving Ability",
+    "Adaptability & Continuous Learning",
+    "Communication & Leadership",
+    "Strategic Decision-Making"
+]
+scores = [st.slider(tool, 1, 10, 5) for tool in TOOLS]
 
-    st.subheader("Rate the Employee on Each Tool (1–10)")
-    TOOLS = [
-        "Technical Competence",
-        "Problem-Solving Ability",
-        "Adaptability & Continuous Learning",
-        "Communication & Leadership",
-        "Strategic Decision-Making"
-    ]
-    scores = [st.slider(tool, 1, 10, 5) for tool in TOOLS]
+# ✅ Build the profile text from the slider values
+profile_text = f"""
+🧠 Your Custom 5 Tool Employee Profile
+
+Technical Competence (Score: {scores[0]}/10)
+Behavioral Reality: ...
+Risk: ...
+Development: ...
+
+Problem-Solving Ability (Score: {scores[1]}/10)
+Behavioral Reality: ...
+Risk: ...
+Development: ...
+
+Adaptability & Continuous Learning (Score: {scores[2]}/10)
+Behavioral Reality: ...
+Risk: ...
+Development: ...
+
+Communication & Leadership (Score: {scores[3]}/10)
+Behavioral Reality: ...
+Risk: ...
+Development: ...
+
+Strategic Decision-Making (Score: {scores[4]}/10)
+Behavioral Reality: ...
+Risk: ...
+Development: ...
+"""
+
+# ✅ Save profile text into session_state so it can be reused
+st.session_state.saved_profile = profile_text
+
+# ✅ Display it immediately on page 1
+st.markdown(profile_text)
 
     # ✅ Generate Profile Button
     if st.button("Generate 5 Tool Employee"):
@@ -459,14 +495,52 @@ def render_module_1():
             # ✅ Notes Section
             st.markdown("**Notes:**")
             st.write(notes_input)
+# ✅ Radar Chart Visualization
+st.subheader("📊 5-Tool Employee Profile Radar")
+fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="5-Tool Employee Radar Chart")
+fig.update_traces(fill='toself')
+st.plotly_chart(fig)
 
-            # ✅ Radar Chart Visualization
-            st.subheader("📊 5-Tool Employee Profile Radar")
-            fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="5-Tool Employee Radar Chart")
-            fig.update_traces(fill='toself')
-            st.plotly_chart(fig)
-        else:
-            st.warning("Please add notes before generating the profile.")
+# ✅ Build the profile text using slider values
+profile_text = f"""
+🧠 Your Custom 5 Tool Employee Profile
+
+Technical Competence (Score: {scores[0]}/10)
+Behavioral Reality: Needs Development.
+• Misses execution rhythm; avoids ambiguity; may disengage under pressure.
+• Risk: Reliability gaps erode trust and team cadence.
+• Development: Structured technical training and accountability systems.
+
+Problem-Solving Ability (Score: {scores[1]}/10)
+Behavioral Reality: Needs Development.
+• Reactive firefighting; freezes or blames others when overwhelmed.
+• Risk: Creates chaos instead of solutions.
+• Development: Build analytical discipline and scenario planning.
+
+Adaptability & Continuous Learning (Score: {scores[2]}/10)
+Behavioral Reality: Needs Development.
+• Resistant to change; lacks proactive learning habits.
+• Risk: Falls behind in dynamic environments.
+• Development: Micro-learning and resilience coaching.
+
+Communication & Leadership (Score: {scores[3]}/10)
+Behavioral Reality: Exceptional.
+• Strength: Demonstrates mastery under pressure; inspires confidence.
+• Watch Out: Overuse can drift into dysfunction (e.g., dominance, rigidity).
+• Development Path: Maintain humility and balance; leverage as a leadership strength.
+
+Strategic Decision-Making (Score: {scores[4]}/10)
+Behavioral Reality: Needs Development.
+• Decisions lack foresight; may chase optics over substance.
+• Risk: High chance of costly missteps under pressure.
+• Development: Train in strategic frameworks and risk analysis.
+"""
+
+# ✅ Save profile text into session_state so it can be reused
+st.session_state.saved_profile = profile_text
+
+# ✅ Display it immediately on page 1
+st.markdown(profile_text)
 
     # ✅ Clear History Button
     if st.button("Clear History"):
@@ -477,6 +551,7 @@ def render_module_1():
         st.session_state["saved_notes"] = notes_input if "notes_input" in locals() else st.session_state.get("saved_notes", "")
         st.session_state["saved_scores"] = scores if "scores" in locals() else st.session_state.get("saved_scores", "")
         st.session_state["saved_review"] = "Your 5-Tool Employee Profile"
+        st.session_state.saved_profile = profile_text  
         st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
         
 def render_module_2():
