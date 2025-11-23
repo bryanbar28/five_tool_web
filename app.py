@@ -865,53 +865,40 @@ def render_module_4():
     st.subheader("Score the Employee on Each Tool (1-5)")
     scores = [st.slider(tool, 1, 5, 3) for tool in TOOLS]
     employee_notes = st.text_area("Enter notes about the employee")
-
+    
     if st.button("Generate Scoring"):
+        # Generate analysis
         analysis = generate_analysis(scores, employee_notes, framework)
         st.markdown(analysis)
+    
+        # Radar chart
         fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="Behavioral Tool Scoring Radar")
         fig.update_traces(fill='toself')
         st.plotly_chart(fig)
-        rich_text = generate_rich_context(scores_p4, TOOLS_P4, employee_notes_p4, context_label="Page 4: Calibration")
+    
+        # Rich context
+        rich_text = generate_rich_context(scores, TOOLS, employee_notes, context_label="Page 4: Calibration")
         st.markdown("### 🔍 Rich Context Analysis")
         st.markdown(rich_text)
-
-        # ✅ Follow-up question box under radar
-        st.subheader("Ask a follow-up question about the radar:")
-        follow_up_question = st.text_area("Enter your question", placeholder="e.g., Can you make some training recommendations?")
-        if st.button("Get AI Answer"):
-            if follow_up_question.strip():
-                response = client.chat.completions.create(
-                    model="gpt-4o-mini",
-                    messages=[
-                        {"role": "system", "content": (
-                            "You are an expert on the 5-Tool Employee Framework. "
-                            "Provide detailed, practical, and psychoally rich insights. "
-                            "Always include a link to our YouTube channel: https://www.youtube.com/@5toolemployeeframework "
-                            "and add recommended training links."
-                        )},
-                        {"role": "user", "content": follow_up_question} 
-                    ],
-                    temperature=0.7,
-                    max_tokens=700
-                )
-                st.session_state.prompt_count += 1 
-                st.markdown("### AI Answer")
-                st.write(response.choices[0].message.content)
-                st.markdown("**Recommended Training Links:**")
-                st.markdown("- Developing Emotional Intelligence – LinkedIn Learning")
-                st.markdown("- Time Management Fundamentals – LinkedIn Learning")
-                st.markdown("- Resilience Training – Coursera")
-                st.markdown("- Scenario-Based Leadership – Harvard Business Publishing")
-                st.markdown("- Watch tutorials on YouTube")
-            else:
-                st.warning("Please enter a question before clicking 'Get AI Answer'.")
-    # ✅ After generating the profile and radar chart
-    if st.button("Save to Repository"):
-        st.session_state["saved_notes"] = notes_input if "notes_input" in locals() else st.session_state.get("saved_notes", "")
-        st.session_state["saved_scores"] = scores if "scores" in locals() else st.session_state.get("saved_scores", "")
-        st.session_state["saved_review"] = "Your 5-Tool Employee Profile"
-        st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")        
+    
+        # ✅ Add YouTube channel and training links directly here
+        st.markdown("### 📺 Recommended Resources")
+        st.markdown("**Our YouTube Channel:** 5-Tool Employee Framework")
+        st.markdown("**Recommended Training Links:**")
+        st.markdown("- Developing Emotional Intelligence – LinkedIn Learning")
+        st.markdown("- Time Management Fundamentals – LinkedIn Learning")
+        st.markdown("- Resilience Training – Coursera")
+        st.markdown("- Scenario-Based Leadership – Harvard Business Publishing")
+        st.markdown("- Watch tutorials on YouTube")
+    
+        # ✅ Save to Repository for Page 4
+        if st.button("Save to Repository"):
+            st.session_state["saved_notes_p4"] = employee_notes
+            st.session_state["saved_scores_p4"] = scores
+            st.session_state["saved_rich_text_p4"] = rich_text
+            st.session_state["saved_fig_p4"] = fig
+            st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
+     
 def render_module_5():
     import streamlit as st
     import plotly.express as px
