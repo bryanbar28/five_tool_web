@@ -688,6 +688,7 @@ def render_module_3():
     # ✅ Add comments input
     user_comments = st.text_area("Add your comments or observations", placeholder="e.g., This candidate freezes under pressure but excels in planning.")
 
+
     # ✅ Generate AI insights
     if st.button("Generate Insights"):
         if user_comments.strip():
@@ -696,25 +697,27 @@ def render_module_3():
                 model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are an organizational psychologist analyzing behavior under pressure."},
-                {"role": "user", "content": f"Analyze this comment in context of the Behavior Under Pressure Grid: {user_comments}"} 
-                ], 
+                    {"role": "user", "content": f"Analyze this comment in context of the Behavior Under Pressure Grid: {user_comments}"}
+                ],
                 temperature=0.7,
                 max_tokens=400
             )
-            st.session_state.prompt_count += 1 
-            st.write(response.choices[0].message.content)
+            st.session_state.prompt_count += 1
+            ai_insights = response.choices[0].message.content  # ✅ Capture AI output
+            st.session_state["ai_insights_p3"] = ai_insights   # ✅ Store in session state
+            st.write(ai_insights)
         else:
             st.warning("Please add comments before generating insights.")
-    # ✅ After generating the profile and radar chart
-
-    # ✅ Page 3 Save to Repository (Behavior Under Pressure)
+    
+    # ✅ Save to Repository
     if st.button("Save to Repository"):
-        st.session_state["saved_notes_p3"] = user_comments  # Page 3 notes
-        st.session_state["saved_scores_p3"] = None  # Page 3 doesn't use numeric scores
+        st.session_state["saved_notes_p3"] = user_comments
+        st.session_state["saved_scores_p3"] = None
         st.session_state["saved_review_p3"] = "Behavior Under Pressure Grid"
-        st.session_state["saved_rich_text_p3"] = None  # If you add AI insights later
-        st.session_state["saved_fig_p3"] = None  # If you add radar chart later
+        st.session_state["saved_rich_text_p3"] = st.session_state.get("ai_insights_p3", "")  # ✅ Include AI insights
+        st.session_state["saved_fig_p3"] = None
         st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
+
   
 def render_module_4():
     import plotly.express as px
