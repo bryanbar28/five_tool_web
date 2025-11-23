@@ -706,11 +706,16 @@ def render_module_3():
         else:
             st.warning("Please add comments before generating insights.")
     # ✅ After generating the profile and radar chart
+
+    # ✅ Page 3 Save to Repository (Behavior Under Pressure)
     if st.button("Save to Repository"):
-        st.session_state["saved_notes"] = notes_input if "notes_input" in locals() else st.session_state.get("saved_notes", "")
-        st.session_state["saved_scores"] = scores if "scores" in locals() else st.session_state.get("saved_scores", "")
-        st.session_state["saved_review"] = "Your 5-Tool Employee Profile"
-        st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")          
+        st.session_state["saved_notes_p3"] = user_comments  # Page 3 notes
+        st.session_state["saved_scores_p3"] = None  # Page 3 doesn't use numeric scores
+        st.session_state["saved_review_p3"] = "Behavior Under Pressure Grid"
+        st.session_state["saved_rich_text_p3"] = None  # If you add AI insights later
+        st.session_state["saved_fig_p3"] = None  # If you add radar chart later
+        st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
+  
 def render_module_4():
     import plotly.express as px
 
