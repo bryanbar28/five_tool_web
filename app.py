@@ -1215,9 +1215,6 @@ def render_module_6():
             st.markdown("### 📊 Page 5 Radar Chart")
             st.plotly_chart(st.session_state["saved_fig_p5"])
 
-
-       
-
         # -------------------------------
         # Save Work block
         # -------------------------------
@@ -1250,6 +1247,10 @@ def render_module_6():
                 f.write("Page 5 Notes:\n" + str(st.session_state.get("saved_notes_p5", "")) + "\n\n")
                 f.write("Page 5 Scores:\n" + str(st.session_state.get("saved_scores_p5", "")) + "\n\n")
                 f.write("Page 5 Rich Context:\n" + str(st.session_state.get("saved_rich_text_p5", "")) + "\n\n")
+
+        
+            st.success(f"✅ Work saved as {file_name}")
+            st.experimental_rerun()  # ✅ Forces Streamlit to refresh and show the new file
 
         
         # Show repository contents
