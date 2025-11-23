@@ -1026,7 +1026,7 @@ def render_module_5():
         fig.update_traces(fill='toself')
         fig.update_layout(title="Toxicity Profile Radar Chart")
         st.plotly_chart(fig)
-        rich_text = generate_rich_context(scores_p5, TOOLS_P5, notes, context_label="Page 5: Toxicity Profile")
+        rich_text = generate_rich_context(scores, categories, notes, context_label="Page 5: Toxicity Profile")
         st.markdown("### 🔍 Rich Context Analysis")
         st.markdown(rich_text)
 
@@ -1054,82 +1054,15 @@ import streamlit as st
 import random
 import pandas as pd
 
-# --- AI + Web Insights Simulation ---
-# In real implementation, these would call an AI model and integrate web-scraped insights.
-# For now, we'll simulate with blended  from user notes and industry best practices.
-
-def generate_ai_swot(notes, ai_chat):
-    """Generate SWOT bullet points based on user notes and web insights."""
-    user_strengths = [
-        "Strong engineering expertise and leadership",
-        "New hire brings extensive industry connections",
-        "Ability to deliver complex coding projects quickly"
-    ]
-    user_weaknesses = [
-        "Potential cultural disruption due to salary disparity",
-        "Over-reliance on one individual for core coding tasks",
-        "Risk of burnout among existing engineers"
-    ]
-    web_strengths = [
-        "High demand for senior engineers positions company competitively",
-        "Hybrid team structures reduce burnout and improve delivery"
-    ]
-    web_weaknesses = [
-        "Salary gaps can lead to morale issues and attrition",
-        "Limited succession planning increases vulnerability"
-    ]
-    web_opportunities = [
-        "Upskilling programs can boost retention and engagement",
-        "Leverage new hire's network for strategic partnerships",
-        "Adopt automation tools to reduce workload on engineers"
-    ]
-    web_threats = [
-        "Competitors exploiting instability during transition",
-        "Client dissatisfaction if onboarding disrupts service",
-        "Industry salary inflation increasing cost pressures"
-    ]
-
-    strengths = user_strengths + web_strengths
-    weaknesses = user_weaknesses + web_weaknesses
-    opportunities = web_opportunities
-    threats = web_threats
-
-    return strengths, weaknesses, opportunities, threats
-
-# Weighted scoring logic
-weights = {"Impact": 0.4, "Feasibility": 0.3, "Urgency": 0.2, "Confidence": 0.1}
-
-def score_factor():
-    return {criterion: random.randint(1, 5) for criterion in weights}
-
-def calculate_weighted_score(scores):
-    return sum(scores[c] * weights[c] for c in weights)
-
-# Generate roadmap from top-ranked items
-def generate_roadmap(df):
-    roadmap = []
-    top_items = df.sort_values(by="Total Score", ascending=False).head(5)
-    for _, row in top_items.iterrows():
-        factor = row["Factor"]
-        category = row["Category"]
-        roadmap.append({
-            "Action": f"Address {category}: {factor}",
-            "Milestone": "Complete initial implementation in 90 days",
-            "Owner": "Cross-functional team",
-            "Review Cycle": "Quarterly reassessment",
-            "Best Case": "Improved team stability and client satisfaction",
-            "Worst Case": "Attrition increases, delays in delivery",
-            "Pivot Strategy": "Reallocate resources and accelerate upskilling"
-        })
-    return pd.DataFrame(roadmap)
-
 # --- Streamlit UI ---
     # ✅ After generating the profile and radar chart
     if st.button("Save to Repository"):
-        st.session_state["saved_notes"] = notes_input if "notes_input" in locals() else st.session_state.get("saved_notes", "")
-        st.session_state["saved_scores"] = scores if "scores" in locals() else st.session_state.get("saved_scores", "")
-        st.session_state["saved_review"] = "Your 5-Tool Employee Profile"
-        st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
+        st.session_state["saved_notes_p5"] = notes
+        st.session_state["saved_scores_p5"] = scores
+        st.session_state["saved_rich_text_p5"] = rich_text
+        st.session_state["saved_fig_p5"] = fig
+        st.success("✅ Page 5 work saved! Go to Page 6 (Repository) to download or organize.")
+
 def sanitize_text(text):
     if not text:
         return ""
