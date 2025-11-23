@@ -1250,8 +1250,6 @@ def render_module_6():
 
         
             st.success(f"✅ Work saved as {file_name}")
-            st.experimental_rerun()  # ✅ Forces Streamlit to refresh and show the new file
-
         
         # Show repository contents
         st.markdown("### 📂 Repository Files")
