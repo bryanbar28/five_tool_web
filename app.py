@@ -1226,7 +1226,7 @@ def render_module_6():
         
         if st.button("Save Work", key="save_button"):      
             repo_dir = "repository"
-            os.makedirs(repo_dir, exist_ok=True
+            os.makedirs(repo_dir, exist_ok=True)
             timestamp = time.strftime("%Y%m%d_%H%M%S")
             file_name = f"saved_work_{user_id}_{timestamp}.txt"
             file_path = os.path.join(repo_dir, file_name)
