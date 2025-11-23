@@ -1175,14 +1175,47 @@ def render_module_6():
             st.markdown("### 📊 Radar Chart")
             st.plotly_chart(st.session_state["saved_fig"])
         
-        # ✅ Display Page 3 data
+
+        # ✅ Page 3
         if "saved_notes_p3" in st.session_state:
             st.markdown("**Page 3 Notes:**")
             st.write(st.session_state["saved_notes_p3"])
-        
         if "saved_review_p3" in st.session_state:
             st.markdown("**Page 3 Review:**")
             st.write(st.session_state["saved_review_p3"])
+        if "saved_rich_text_p3" in st.session_state and st.session_state["saved_rich_text_p3"]:
+            st.markdown("### 🔍 Page 3 AI Insights")
+            st.markdown(st.session_state["saved_rich_text_p3"])
+        
+        # ✅ Page 4
+        if "saved_notes_p4" in st.session_state:
+            st.markdown("**Page 4 Notes:**")
+            st.write(st.session_state["saved_notes_p4"])
+        if "saved_scores_p4" in st.session_state:
+            st.markdown("**Page 4 Scores:**")
+            st.write(st.session_state["saved_scores_p4"])
+        if "saved_rich_text_p4" in st.session_state and st.session_state["saved_rich_text_p4"]:
+            st.markdown("### 🔍 Page 4 Rich Context")
+            st.markdown(st.session_state["saved_rich_text_p4"])
+        if "saved_fig_p4" in st.session_state:
+            st.markdown("### 📊 Page 4 Radar Chart")
+            st.plotly_chart(st.session_state["saved_fig_p4"])
+        
+        # ✅ Page 5
+        if "saved_notes_p5" in st.session_state:
+            st.markdown("**Page 5 Notes:**")
+            st.write(st.session_state["saved_notes_p5"])
+        if "saved_scores_p5" in st.session_state:
+            st.markdown("**Page 5 Scores:**")
+            st.write(st.session_state["saved_scores_p5"])
+        if "saved_rich_text_p5" in st.session_state and st.session_state["saved_rich_text_p5"]:
+            st.markdown("### 🔍 Page 5 Rich Context")
+            st.markdown(st.session_state["saved_rich_text_p5"])
+        if "saved_fig_p5" in st.session_state:
+            st.markdown("### 📊 Page 5 Radar Chart")
+            st.plotly_chart(st.session_state["saved_fig_p5"])
+
+
        
 
         # -------------------------------
@@ -1196,11 +1229,26 @@ def render_module_6():
             file_name = f"saved_work_{user_id}_{timestamp}.txt"
             file_path = os.path.join(repo_dir, file_name)
             with open(file_path, "w") as f:
-                f.write("Notes:\n" + str(st.session_state.get("saved_notes", "")) + "\n\n")
-                f.write("Scores:\n" + str(st.session_state.get("saved_scores", "")) + "\n\n")
-                f.write("Review:\n" + str(st.session_state.get("saved_review", "")) + "\n\n")
-                f.write("Rich Context:\n" + str(st.session_state.get("saved_rich_text", "")) + "\n\n")
-            st.success(f"✅ Work saved as {file_name}")
+                # Page 1
+                f.write("Page 1 Notes:\n" + str(st.session_state.get("saved_notes", "")) + "\n\n")
+                f.write("Page 1 Scores:\n" + str(st.session_state.get("saved_scores", "")) + "\n\n")
+                f.write("Page 1 Review:\n" + str(st.session_state.get("saved_review", "")) + "\n\n")
+                f.write("Page 1 Rich Context:\n" + str(st.session_state.get("saved_rich_text", "")) + "\n\n")
+            
+                # Page 3
+                f.write("Page 3 Notes:\n" + str(st.session_state.get("saved_notes_p3", "")) + "\n\n")
+                f.write("Page 3 AI Insights:\n" + str(st.session_state.get("saved_rich_text_p3", "")) + "\n\n")
+            
+                # Page 4
+                f.write("Page 4 Notes:\n" + str(st.session_state.get("saved_notes_p4", "")) + "\n\n")
+                f.write("Page 4 Scores:\n" + str(st.session_state.get("saved_scores_p4", "")) + "\n\n")
+                f.write("Page 4 Rich Context:\n" + str(st.session_state.get("saved_rich_text_p4", "")) + "\n\n")
+            
+                # Page 5
+                f.write("Page 5 Notes:\n" + str(st.session_state.get("saved_notes_p5", "")) + "\n\n")
+                f.write("Page 5 Scores:\n" + str(st.session_state.get("saved_scores_p5", "")) + "\n\n")
+                f.write("Page 5 Rich Context:\n" + str(st.session_state.get("saved_rich_text_p5", "")) + "\n\n")
+
         
         # Show repository contents
         st.markdown("### 📂 Repository Files")
@@ -1227,7 +1275,18 @@ def render_module_6():
             pdf = FPDF(orientation="L")  # Landscape for better width
             pdf.add_page()
             pdf.set_font("Arial", size=12)
-            pdf.cell(270, 10, txt="Your Saved Work", ln=True, align="C")
+            pdf.multi_cell(270, 10, txt=sanitize_text(
+                file_content +
+                "\n\nPage 3 Notes:\n" + str(st.session_state.get("saved_notes_p3", "")) +
+                "\n\nPage 3 AI Insights:\n" + str(st.session_state.get("saved_rich_text_p3", "")) +
+                "\n\nPage 4 Notes:\n" + str(st.session_state.get("saved_notes_p4", "")) +
+                "\n\nPage 4 Scores:\n" + str(st.session_state.get("saved_scores_p4", "")) +
+                "\n\nPage 4 Rich Context:\n" + str(st.session_state.get("saved_rich_text_p4", "")) +
+                "\n\nPage 5 Notes:\n" + str(st.session_state.get("saved_notes_p5", "")) +
+                "\n\nPage 5 Scores:\n" + str(st.session_state.get("saved_scores_p5", "")) +
+                "\n\nPage 5 Rich Context:\n" + str(st.session_state.get("saved_rich_text_p5", ""))
+            ))
+
         
             # Use the selected file's content
             pdf.multi_cell(270, 10, txt=sanitize_text(file_content))
