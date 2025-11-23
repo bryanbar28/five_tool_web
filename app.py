@@ -1171,6 +1171,16 @@ def render_module_6():
         if "saved_fig" in st.session_state:
             st.markdown("### 📊 Radar Chart")
             st.plotly_chart(st.session_state["saved_fig"])
+        
+        # ✅ Display Page 3 data
+        if "saved_notes_p3" in st.session_state:
+            st.markdown("**Page 3 Notes:**")
+            st.write(st.session_state["saved_notes_p3"])
+        
+        if "saved_review_p3" in st.session_state:
+            st.markdown("**Page 3 Review:**")
+            st.write(st.session_state["saved_review_p3"])
+       
 
         # -------------------------------
         # Save Work block
