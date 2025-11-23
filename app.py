@@ -866,22 +866,28 @@ def render_module_4():
     scores = [st.slider(tool, 1, 5, 3) for tool in TOOLS]
     employee_notes = st.text_area("Enter notes about the employee")
     
+    # Generate Scoring
     if st.button("Generate Scoring"):
-        # Generate analysis
         analysis = generate_analysis(scores, employee_notes, framework)
-        st.markdown(analysis)
-    
-        # Radar chart
         fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="Behavioral Tool Scoring Radar")
         fig.update_traces(fill='toself')
-        st.plotly_chart(fig)
-    
-        # Rich context
         rich_text = generate_rich_context(scores, TOOLS, employee_notes, context_label="Page 4: Calibration")
-        st.markdown("### 🔍 Rich Context Analysis")
-        st.markdown(rich_text)
     
-        # ✅ Add YouTube channel and training links directly here
+        # ✅ Store results in session state
+        st.session_state["analysis_p4"] = analysis
+        st.session_state["fig_p4"] = fig
+        st.session_state["rich_text_p4"] = rich_text
+        st.session_state["scores_p4"] = scores
+        st.session_state["notes_p4"] = employee_notes
+    
+    # ✅ Display results if they exist
+    if "analysis_p4" in st.session_state:
+        st.markdown(st.session_state["analysis_p4"])
+        st.plotly_chart(st.session_state["fig_p4"])
+        st.markdown("### 🔍 Rich Context Analysis")
+        st.markdown(st.session_state["rich_text_p4"])
+    
+        # ✅ Add YouTube channel and training links
         st.markdown("### 📺 Recommended Resources")
         st.markdown("**Our YouTube Channel:** 5-Tool Employee Framework")
         st.markdown("**Recommended Training Links:**")
@@ -891,14 +897,14 @@ def render_module_4():
         st.markdown("- Scenario-Based Leadership – Harvard Business Publishing")
         st.markdown("- Watch tutorials on YouTube")
     
-        # ✅ Save to Repository for Page 4
+        # ✅ Save to Repository button stays visible
         if st.button("Save to Repository"):
-            st.session_state["saved_notes_p4"] = employee_notes
-            st.session_state["saved_scores_p4"] = scores
-            st.session_state["saved_rich_text_p4"] = rich_text
-            st.session_state["saved_fig_p4"] = fig
+            st.session_state["saved_notes_p4"] = st.session_state["notes_p4"]
+            st.session_state["saved_scores_p4"] = st.session_state["scores_p4"]
+            st.session_state["saved_rich_text_p4"] = st.session_state["rich_text_p4"]
+            st.session_state["saved_fig_p4"] = st.session_state["fig_p4"]
             st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
-     
+
 def render_module_5():
     import streamlit as st
     import plotly.express as px
