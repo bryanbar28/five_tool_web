@@ -1933,7 +1933,7 @@ def render_module_5():
         fig.update_traces(fill='toself')
         fig.update_layout(title="Toxicity Profile Radar Chart")
         st.plotly_chart(fig)
-        rich_text = generate_rich_context(scores_p5, TOOLS_P5, notes, context_label="Page 5: Toxicity Profile")
+        rich_text = generate_rich_context(scores, categories, notes, context_label="Page 5: Toxicity Profile")
         st.markdown("### 🔍 Rich Context Analysis")
         st.markdown(rich_text)
 
@@ -1964,15 +1964,18 @@ import pandas as pd
 # --- Streamlit UI ---
     # ✅ After generating the profile and radar chart
     if st.button("Save to Repository"):
-        st.session_state["saved_notes"] = notes_input if "notes_input" in locals() else st.session_state.get("saved_notes", "")
-        st.session_state["saved_scores"] = scores if "scores" in locals() else st.session_state.get("saved_scores", "")
-        st.session_state["saved_review"] = "Your 5-Tool Employee Profile"
-        st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
+        st.session_state["saved_notes_p5"] = notes
+        st.session_state["saved_scores_p5"] = scores
+        st.session_state["saved_rich_text_p5"] = rich_text
+        st.session_state["saved_fig_p5"] = fig
+        st.success("✅ Page 5 work saved! Go to Page 6 (Repository) to download or organize.")
+
 def sanitize_text(text):
     if not text:
         return ""
     # Force conversion to latin-1 safe text
     return str(text).encode("latin-1", "ignore").decode("latin-1")
+
     
 def render_module_6():
     st.title("📂 Repository")
