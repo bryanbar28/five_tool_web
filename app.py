@@ -1977,9 +1977,8 @@ def render_module_5():
 
 def render_module_6():
     st.title("📂 Repository")
-        if not usage[user_id]["premium"]:
-            st.warning("This feature requires premium ($9.99/month).")
-        
+    if not usage[user_id]["premium"]:
+        st.warning("This feature requires premium ($9.99/month).")        
             # Embed Stripe Buy Button
             components.html("""
             <script async src="https://js.stripe.com/v3/buy-button.jspe-buy-button
