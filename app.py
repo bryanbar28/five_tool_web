@@ -1936,9 +1936,6 @@ def render_module_5():
         st.markdown("### 🔍 Rich Context Analysis")
         st.markdown(rich_text)
     
-        # Interpretation Table
-        st.markdown(""" ... HTML table ... """)
-    
         # Contextual Insight
         if notes.strip():
             st.subheader("Contextual Insight")
