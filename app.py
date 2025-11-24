@@ -1984,8 +1984,9 @@ def render_module_6():
         components.html(""" 
         <script async src="https://js.stripe.com/v3ipt>
                 <stripe-buy-button
-                  buy-button-id="buy_btn_1SX7yLEDUxoFlt7iIJTwRMZn"
-                  publishable-key="pk_live_51MGvtWEDUxoFlt7ihZ2UnGmbqju4DpL3ITvbSEgLy9wtj278PDW81l6ApHQ1YyUKzXLkQf3poEdJm3tNIvD796L800y7i6g7i9">
+                    buy-button-id="buy_btn_1SX7yLEDUxoFlt7iIJTwRMZn"
+  publishable-key="pk_live_51MGvtWEDUxoFlt7ihZ2UnGmbqju4DpL3ITvbSEgLy9wtj278PDW81l6ApHQ1YyUKzXLkQf3poEdJm3tNIvD796L800y7i6g7i9"
+>
                 </stripe-buy-button>
                 """, height=600)
     
