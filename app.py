@@ -1071,7 +1071,6 @@ if st.session_state.get("profile_generated_p5"):
     st.markdown(st.session_state["saved_rich_text_p5"])
     st.plotly_chart(st.session_state["saved_fig_p5"], key="fig_p5_saved")
 
-
 def render_module_6():
     st.title("📂 Repository")
     if not usage[user_id]["premium"]:
