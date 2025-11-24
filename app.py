@@ -12,6 +12,8 @@ from fpdf import FPDF
 import time
 import stripe 
 
+stripe.api_key = os.getenv("prod_TPyapu2n40KuuN")  # Set your Stripe secret key in environment variables
+
 # ----------------------------
 # Persistent Prompt Tracking
 # ----------------------------
@@ -33,6 +35,20 @@ def upgrade_to_premium():
     usage[user_id]["premium"] = True
     save_prompt_usage(usage)
     st.success("✅ Premium activated! Unlimited prompts and repository access.")
+    
+def create_checkout_session():
+    session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        mode='subscription',
+        line_items=[{
+            'price': 'price_12345',  # Replace with your Stripe Price ID
+            'quantity': 1,
+        }],
+        success_url='https://yourapp.com/success?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url='https://yourapp.com/cancel',
+    )
+    return session.url
+
 # -------------------------------
 # Page Config
 # -------------------------------
@@ -1962,8 +1978,10 @@ def render_module_6():
     st.title("📂 Repository")
     if not usage[user_id]["premium"]:
         st.warning("This feature requires premium ($9.99/month).")
-        if st.button("Upgrade to Premium", key="upgrade_button"):
-            upgrade_to_premium()
+        if st.button("Upgrade to Premium ($9.99/month)", key="upgrade_button"):
+            checkout_url = create_checkout_session()
+            st.markdown(f"[Clickhere to complete payment")
+
     else:
         st.success("Premium active! Save your work below.")
 
