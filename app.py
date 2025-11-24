@@ -913,26 +913,6 @@ def render_module_5():
     # Initialize OpenAI client
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-    # --- Helper: AI response for general questions ---
-        system_prompt = """
-        You are an expert in organizational psychology and leadership.
-        Provide a structured response in this format:
-        **Explanation:** Summary of the concept.
-        **Detail:** Key insights and why it matters.
-        **Practical Tips:** Actionable steps for real-world application.
-        """
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": contextual_prompt},
-                {"role": "user", "content": question}
-            ],
-            temperature=0.7,
-            max_tokens=700
-        )
-        st.session_state.prompt_count += 1 
-        return response.choices[0].message.content
-
     def get_contextual_insight(notes, score, risk_level):
         contextual_prompt = f"""
         Analyze this scenario:
