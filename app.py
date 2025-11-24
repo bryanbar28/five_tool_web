@@ -1014,19 +1014,16 @@ def render_module_5():
         else:
             risk_level = "High Risk"
             action_plan = "Immediate intervention required; consider reassignment or exit strategy."
-
+    
         st.write(f"**Total Score:** {total_score}")
         st.write(f"**Risk Level:** {risk_level}")
         st.write(f"**Action Plan:** {action_plan}")
-
-        
-        # Persist profile data in session state
+    
+        # Persist basic profile data
         st.session_state["profile_generated_p5"] = True
         st.session_state["saved_notes_p5"] = notes
         st.session_state["saved_scores_p5"] = [speed, power, fielding, hitting, arm_strength]
-        # rich_text and fig will be created next, so we’ll update them after generation
-
-
+    
         # Radar Chart
         categories = ["Speed", "Power", "Fielding", "Hitting", "Arm Strength"]
         scores = [speed, power, fielding, hitting, arm_strength]
@@ -1034,20 +1031,16 @@ def render_module_5():
         fig.update_traces(fill='toself')
         fig.update_layout(title="Toxicity Profile Radar Chart")
         st.plotly_chart(fig)
+    
+        # Rich Context Analysis
         rich_text = generate_rich_context(scores, categories, notes, context_label="Page 5: Toxicity Profile")
         st.markdown("### 🔍 Rich Context Analysis")
         st.markdown(rich_text)
-        
+    
         # ✅ Persist generated outputs
         st.session_state["saved_rich_text_p5"] = rich_text
         st.session_state["saved_fig_p5"] = fig
-
-        
-        # ✅ Update session state with generated outputs
-        st.session_state["saved_rich_text_p5"] = rich_text
-        st.session_state["saved_fig_p5"] = fig
-
-
+    
         # Interpretation Table
         st.markdown("""
         <h4>Total Score Interpretation</h4>
@@ -1058,28 +1051,16 @@ def render_module_5():
         <tr><td>Below 10</td><td>High Risk</td><td>Immediate intervention required; behaviors are harmful to team culture.</td></tr>
         </table>
         """, unsafe_allow_html=True)
-
+    
         # ✅ Save to Repository button
         if st.button("Save to Repository"):
-            st.session_state["saved_notes_p5"] = notes                    
-            st.session_state["saved_scores_p5"] = scores
-            st.session_state["saved_rich_text_p5"] = rich_text
-            st.session_state["saved_fig_p5"] = fig
             st.success("✅ Page 5 work saved! Go to Page 6 (Repository) to download or organize.")
-
-
-# Show profile if already generated
-if st.session_state.get("profile_generated_p5"):
-    st.markdown("### ✅ Profile Generated and Saved")
-    st.markdown(st.session_state["saved_rich_text_p5"])
-    st.plotly_chart(st.session_state["saved_fig_p5"])
-
-
-def sanitize_text(text):
-    if not text:
-        return ""
-    # Force conversion to latin-1 safe text
-    return str(text).encode("latin-1", "ignore").decode("latin-1")
+    
+    # Show profile if already generated (persists after rerun)
+    if st.session_state.get("profile_generated_p5"):
+        st.markdown("### ✅ Profile Generated and Saved")
+        st.markdown(st.session_state["saved_rich_text_p5"])
+        st.plotly_chart(st.session_state["saved_fig_p5"])
     
 def render_module_6():
     st.title("📂 Repository")
