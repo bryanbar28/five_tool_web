@@ -1974,6 +1974,7 @@ def render_module_5():
             st.session_state["saved_fig_p5"] = st.session_state["fig_p5"]
             st.success("✅ Page 5 work saved! Go to Page 6 (Repository) to download or organize.")
 
+
 def render_module_6():
     st.title("📂 Repository")
 
