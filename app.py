@@ -1936,15 +1936,19 @@ def render_module_5():
         st.markdown("### 🔍 Rich Context Analysis")
         st.markdown(rich_text)
 
-        # Interpretation Table
-        st.markdown("""... HTML table ... """)
-
         # Contextual Insight
         if notes.strip():
             st.subheader("Contextual Insight")
             st.markdown(get_contextual_insight(notes, total_score, risk_level))
+    
+        # ✅ Store in session for later save
+        st.session_state["notes_p5"] = notes
+        st.session_state["scores_p5"] = scores
+        st.session_state["rich_text_p5"] = rich_text
+        st.session_state["fig_p5"] = fig
 
-    # ✅ Show Save button after generation 
+# ✅ Show Save button only if profile was generated
+if "scores_p5" in st.session_state: 
     if st.button("Save to Repository"):
         st.session_state["saved_notes_p5"] = notes
         st.session_state["saved_scores_p5"] = scores
