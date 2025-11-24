@@ -1931,45 +1931,25 @@ def render_module_5():
         fig.update_traces(fill='toself')
         fig.update_layout(title="Toxicity Profile Radar Chart")
         st.plotly_chart(fig)
+        
         rich_text = generate_rich_context(scores, categories, notes, context_label="Page 5: Toxicity Profile")
         st.markdown("### 🔍 Rich Context Analysis")
         st.markdown(rich_text)
 
         # Interpretation Table
-        st.markdown("""
-        <h4>Total Score Interpretation</h4>
-        <table style='width:100%; border:1px solid black;'>
-        <tr><th>Score Range</th><th>Risk Level</th><th>Description</th></tr>
-        <tr><td>15-20</td><td>Low Risk</td><td>Employee demonstrates strong alignment with organizational values.</td></tr>
-        <tr><td>10-14</td><td>Moderate Risk</td><td>Employee shows signs of disengagement or minor toxic behaviors.</td></tr>
-        <tr><td>Below 10</td><td>High Risk</td><td>Immediate intervention required; behaviors are harmful to team culture.</td></tr>
-        </table>
-        """, unsafe_allow_html=True)
+        st.markdown("""... HTML table ... """)
 
         # Contextual Insight
         if notes.strip():
             st.subheader("Contextual Insight")
             st.markdown(get_contextual_insight(notes, total_score, risk_level))
 
-import streamlit as st
-import random
-import pandas as pd
-
-# --- Streamlit UI ---
-# ✅ After generating the profile and radar chart
-if st.button("Save to Repository"):
+    # ✅ Save immediately after generation
     st.session_state["saved_notes_p5"] = notes
     st.session_state["saved_scores_p5"] = scores
     st.session_state["saved_rich_text_p5"] = rich_text
     st.session_state["saved_fig_p5"] = fig
     st.success("✅ Page 5 work saved! Go to Page 6 (Repository) to download or organize.")
-
-def sanitize_text(text):
-    if not text:
-        return ""
-    # Force conversion to latin-1 safe text
-    return str(text).encode("latin-1", "ignore").decode("latin-1")
-
     
 def render_module_6():
     st.title("📂 Repository")
