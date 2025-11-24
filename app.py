@@ -1956,13 +1956,13 @@ import random
 import pandas as pd
 
 # --- Streamlit UI ---
-        # ✅ After generating the profile and radar chart
-            if st.button("Save to Repository"):
-                st.session_state["saved_notes_p5"] = notes
-                st.session_state["saved_scores_p5"] = scores
-                st.session_state["saved_rich_text_p5"] = rich_text
-                st.session_state["saved_fig_p5"] = fig
-                st.success("✅ Page 5 work saved! Go to Page 6 (Repository) to download or organize.")
+# ✅ After generating the profile and radar chart
+if st.button("Save to Repository"):
+    st.session_state["saved_notes_p5"] = notes
+    st.session_state["saved_scores_p5"] = scores
+    st.session_state["saved_rich_text_p5"] = rich_text
+    st.session_state["saved_fig_p5"] = fig
+    st.success("✅ Page 5 work saved! Go to Page 6 (Repository) to download or organize.")
 
 def sanitize_text(text):
     if not text:
