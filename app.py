@@ -1944,12 +1944,13 @@ def render_module_5():
             st.subheader("Contextual Insight")
             st.markdown(get_contextual_insight(notes, total_score, risk_level))
 
-    # ✅ Save immediately after generation
-    st.session_state["saved_notes_p5"] = notes
-    st.session_state["saved_scores_p5"] = scores
-    st.session_state["saved_rich_text_p5"] = rich_text
-    st.session_state["saved_fig_p5"] = fig
-    st.success("✅ Page 5 work saved! Go to Page 6 (Repository) to download or organize.")
+    # ✅ Show Save button after generation 
+    if st.button("Save to Repository"):
+        st.session_state["saved_notes_p5"] = notes
+        st.session_state["saved_scores_p5"] = scores
+        st.session_state["saved_rich_text_p5"] = rich_text
+        st.session_state["saved_fig_p5"] = fig
+        st.success("✅ Page 5 work saved! Go to Page 6 (Repository) to download or organize.")
     
 def render_module_6():
     st.title("📂 Repository")
