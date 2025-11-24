@@ -1041,22 +1041,13 @@ def render_module_5():
         </table>
         """, unsafe_allow_html=True)
 
-        # AI Insights
-        st.subheader("AI Insights")
-        st.markdown(get_ai_response("toxicity in workplace"))
-
-        # Contextual Insight
-        if notes.strip():
-            st.subheader("Contextual Insight")
-            st.markdown(get_contextual_insight(notes, total_score, risk_level))
-
-        # ✅ Save to Repository button
-        if st.button("Save to Repository"):
-            st.session_state["saved_notes_p5"] = notes
-            st.session_state["saved_scores_p5"] = scores
-            st.session_state["saved_rich_text_p5"] = rich_text
-            st.session_state["saved_fig_p5"] = fig
-            st.success("✅ Page 5 work saved! Go to Page 6 (Repository) to download or organize.")
+            # ✅ Save to Repository button
+            if st.button("Save to Repository"):
+                st.session_state["saved_notes_p5"] = notes
+                st.session_state["saved_scores_p5"] = scores
+                st.session_state["saved_rich_text_p5"] = rich_text
+                st.session_state["saved_fig_p5"] = fig
+                st.success("✅ Page 5 work saved! Go to Page 6 (Repository) to download or organize.")
 
 def sanitize_text(text):
     if not text:
