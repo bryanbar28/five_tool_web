@@ -1019,6 +1019,14 @@ def render_module_5():
         st.write(f"**Risk Level:** {risk_level}")
         st.write(f"**Action Plan:** {action_plan}")
 
+        
+        # Persist profile data in session state
+        st.session_state["profile_generated_p5"] = True
+        st.session_state["saved_notes_p5"] = notes
+        st.session_state["saved_scores_p5"] = [speed, power, fielding, hitting, arm_strength]
+        # rich_text and fig will be created next, so we’ll update them after generation
+
+
         # Radar Chart
         categories = ["Speed", "Power", "Fielding", "Hitting", "Arm Strength"]
         scores = [speed, power, fielding, hitting, arm_strength]
@@ -1029,6 +1037,16 @@ def render_module_5():
         rich_text = generate_rich_context(scores, categories, notes, context_label="Page 5: Toxicity Profile")
         st.markdown("### 🔍 Rich Context Analysis")
         st.markdown(rich_text)
+        
+        # ✅ Persist generated outputs
+        st.session_state["saved_rich_text_p5"] = rich_text
+        st.session_state["saved_fig_p5"] = fig
+
+        
+        # ✅ Update session state with generated outputs
+        st.session_state["saved_rich_text_p5"] = rich_text
+        st.session_state["saved_fig_p5"] = fig
+
 
         # Interpretation Table
         st.markdown("""
@@ -1048,6 +1066,14 @@ def render_module_5():
             st.session_state["saved_rich_text_p5"] = rich_text
             st.session_state["saved_fig_p5"] = fig
             st.success("✅ Page 5 work saved! Go to Page 6 (Repository) to download or organize.")
+
+
+# Show profile if already generated
+if st.session_state.get("profile_generated_p5"):
+    st.markdown("### ✅ Profile Generated and Saved")
+    st.markdown(st.session_state["saved_rich_text_p5"])
+    st.plotly_chart(st.session_state["saved_fig_p5"])
+
 
 def sanitize_text(text):
     if not text:
