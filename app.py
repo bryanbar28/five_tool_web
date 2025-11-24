@@ -1907,57 +1907,57 @@ def render_module_5():
 
     notes = st.text_area("Additional Notes")
 
-# Generate Profile
-if st.button("Generate Profile"):
-    total_score = speed + power + fielding + hitting + arm_strength
-    if total_score >= 15:
-        risk_level = "Low Risk"
-        action_plan = "Retain and support; encourage continued engagement."
-    elif 10 <= total_score < 15:
-        risk_level = "Moderate Risk"
-        action_plan = "Provide coaching and monitor closely for improvement."
-    else:
-        risk_level = "High Risk"
-        action_plan = "Immediate intervention required; consider reassignment or exit strategy."
-
-    st.write(f"**Total Score:** {total_score}")
-    st.write(f"**Risk Level:** {risk_level}")
-    st.write(f"**Action Plan:** {action_plan}")
-
-    # Radar Chart
-    categories = ["Speed", "Power", "Fielding", "Hitting", "Arm Strength"]
-    scores = [speed, power, fielding, hitting, arm_strength]
-    fig = px.line_polar(r=scores, theta=categories, line_close=True)
-    fig.update_traces(fill='toself')
-    fig.update_layout(title="Toxicity Profile Radar Chart")
-    st.plotly_chart(fig)
-
-    rich_text = generate_rich_context(scores, categories, notes, context_label="Page 5: Toxicity Profile")
-    st.markdown("### 🔍 Rich Context Analysis")
-    st.markdown(rich_text)
-
-    # Interpretation Table
-    st.markdown(""" ... HTML table ... """)
-
-    # Contextual Insight
-    if notes.strip():
-        st.subheader("Contextual Insight")
-        st.markdown(get_contextual_insight(notes, total_score, risk_level))
-
-    # ✅ Store generated data in session state
-    st.session_state["notes_p5"] = notes
-    st.session_state["scores_p5"] = scores
-    st.session_state["rich_text_p5"] = rich_text
-    st.session_state["fig_p5"] = fig
-
-# ✅ Show Save button only if profile was generated
-if "scores_p5" in st.session_state:
-    if st.button("Save to Repository"):
-        st.session_state["saved_notes_p5"] = st.session_state["notes_p5"]
-        st.session_state["saved_scores_p5"] = st.session_state["scores_p5"]
-        st.session_state["saved_rich_text_p5"] = st.session_state["rich_text_p5"]
-        st.session_state["saved_fig_p5"] = st.session_state["fig_p5"]
-        st.success("✅ Page 5 work saved! Go to Page 6 (Repository) to download or organize.")
+    # Generate Profile
+    if st.button("Generate Profile"):
+        total_score = speed + power + fielding + hitting + arm_strength
+        if total_score >= 15:
+            risk_level = "Low Risk"
+            action_plan = "Retain and support; encourage continued engagement."
+        elif 10 <= total_score < 15:
+            risk_level = "Moderate Risk"
+            action_plan = "Provide coaching and monitor closely for improvement."
+        else:
+            risk_level = "High Risk"
+            action_plan = "Immediate intervention required; consider reassignment or exit strategy."
+    
+        st.write(f"**Total Score:** {total_score}")
+        st.write(f"**Risk Level:** {risk_level}")
+        st.write(f"**Action Plan:** {action_plan}")
+    
+        # Radar Chart
+        categories = ["Speed", "Power", "Fielding", "Hitting", "Arm Strength"]
+        scores = [speed, power, fielding, hitting, arm_strength]
+        fig = px.line_polar(r=scores, theta=categories, line_close=True)
+        fig.update_traces(fill='toself')
+        fig.update_layout(title="Toxicity Profile Radar Chart")
+        st.plotly_chart(fig)
+    
+        rich_text = generate_rich_context(scores, categories, notes, context_label="Page 5: Toxicity Profile")
+        st.markdown("### 🔍 Rich Context Analysis")
+        st.markdown(rich_text)
+    
+        # Interpretation Table
+        st.markdown(""" ... HTML table ... """)
+    
+        # Contextual Insight
+        if notes.strip():
+            st.subheader("Contextual Insight")
+            st.markdown(get_contextual_insight(notes, total_score, risk_level))
+    
+        # ✅ Store generated data in session state
+        st.session_state["notes_p5"] = notes
+        st.session_state["scores_p5"] = scores
+        st.session_state["rich_text_p5"] = rich_text
+        st.session_state["fig_p5"] = fig
+    
+    # ✅ Show Save button only if profile was generated
+    if "scores_p5" in st.session_state:
+        if st.button("Save to Repository"):
+            st.session_state["saved_notes_p5"] = st.session_state["notes_p5"]
+            st.session_state["saved_scores_p5"] = st.session_state["scores_p5"]
+            st.session_state["saved_rich_text_p5"] = st.session_state["rich_text_p5"]
+            st.session_state["saved_fig_p5"] = st.session_state["fig_p5"]
+            st.success("✅ Page 5 work saved! Go to Page 6 (Repository) to download or organize.")
 
 
 def render_module_6():
