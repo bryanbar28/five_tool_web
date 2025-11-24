@@ -1974,14 +1974,13 @@ def render_module_5():
             st.session_state["saved_fig_p5"] = st.session_state["fig_p5"]
             st.success("✅ Page 5 work saved! Go to Page 6 (Repository) to download or organize.")
 
-
 def render_module_6():
     st.title("📂 Repository")
 
     if not usage[user_id]["premium"]:
         st.warning("This feature requires premium ($9.99/month).")
 
-        # ✅ Embed Stripe Buy Button (official snippet, unescaped)
+        # ✅ Stripe Buy Button (Official Snippet)
         components.html("""
         https://js.stripe.com/v3/buy-button.js</script>
         <stripe-buy-button
@@ -1993,6 +1992,7 @@ def render_module_6():
     else:
         st.success("✅ Premium active! Save your work below.")
         # Add repository display logic here
+
 
         # Show captured data
         st.markdown("### Your Current Work")
