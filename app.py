@@ -1002,65 +1002,67 @@ def render_module_5():
 
     notes = st.text_area("Additional Notes")
 
-    # Generate Profile
-    if st.button("Generate Profile"):
-        total_score = speed + power + fielding + hitting + arm_strength
-        if total_score >= 15:
-            risk_level = "Low Risk"
-            action_plan = "Retain and support; encourage continued engagement."
-        elif 10 <= total_score < 15:
-            risk_level = "Moderate Risk"
-            action_plan = "Provide coaching and monitor closely for improvement."
-        else:
-            risk_level = "High Risk"
-            action_plan = "Immediate intervention required; consider reassignment or exit strategy."
-    
-        st.write(f"**Total Score:** {total_score}")
-        st.write(f"**Risk Level:** {risk_level}")
-        st.write(f"**Action Plan:** {action_plan}")
-    
-        # Persist basic profile data
-        st.session_state["profile_generated_p5"] = True
-        st.session_state["saved_notes_p5"] = notes
-        st.session_state["saved_scores_p5"] = [speed, power, fielding, hitting, arm_strength]
-    
-        # Radar Chart
-        categories = ["Speed", "Power", "Fielding", "Hitting", "Arm Strength"]
-        scores = [speed, power, fielding, hitting, arm_strength]
-        fig = px.line_polar(r=scores, theta=categories, line_close=True)
-        fig.update_traces(fill='toself')
-        fig.update_layout(title="Toxicity Profile Radar Chart")
-        st.plotly_chart(fig)
-    
-        # Rich Context Analysis
-        rich_text = generate_rich_context(scores, categories, notes, context_label="Page 5: Toxicity Profile")
-        st.markdown("### 🔍 Rich Context Analysis")
-        st.markdown(rich_text)
-    
-        # ✅ Persist generated outputs
-        st.session_state["saved_rich_text_p5"] = rich_text
-        st.session_state["saved_fig_p5"] = fig
-    
-        # Interpretation Table
-        st.markdown("""
-        <h4>Total Score Interpretation</h4>
-        <table style='width:100%; border:1px solid black;'>
-        <tr><th>Score Range</th><th>Risk Level</th><th>Description</th></tr>
-        <tr><td>15-20</td><td>Low Risk</td><td>Employee demonstrates strong alignment with organizational values.</td></tr>
-        <tr><td>10-14</td><td>Moderate Risk</td><td>Employee shows signs of disengagement or minor toxic behaviors.</td></tr>
-        <tr><td>Below 10</td><td>High Risk</td><td>Immediate intervention required; behaviors are harmful to team culture.</td></tr>
-        </table>
-        """, unsafe_allow_html=True)
-    
-        # ✅ Save to Repository button
-        if st.button("Save to Repository"):
-            st.success("✅ Page 5 work saved! Go to Page 6 (Repository) to download or organize.")
-    
-    # Show profile if already generated (persists after rerun)
-    if st.session_state.get("profile_generated_p5"):
-        st.markdown("### ✅ Profile Generated and Saved")
-        st.markdown(st.session_state["saved_rich_text_p5"])
-        st.plotly_chart(st.session_state["saved_fig_p5"])
+# Generate Profile
+if st.button("Generate Profile"):
+    total_score = speed + power + fielding + hitting + arm_strength
+    if total_score >= 15:
+        risk_level = "Low Risk"
+        action_plan = "Retain and support; encourage continued engagement."
+    elif 10 <= total_score < 15:
+        risk_level = "Moderate Risk"
+        action_plan = "Provide coaching and monitor closely for improvement."
+    else:
+        risk_level = "High Risk"
+        action_plan = "Immediate intervention required; consider reassignment or exit strategy."
+
+    st.write(f"**Total Score:** {total_score}")
+    st.write(f"**Risk Level:** {risk_level}")
+    st.write(f"**Action Plan:** {action_plan}")
+
+    # Persist basic profile data
+    st.session_state["profile_generated_p5"] = True
+    st.session_state["saved_notes_p5"] = notes
+    st.session_state["saved_scores_p5"] = [speed, power, fielding, hitting, arm_strength]
+
+    # Radar Chart
+    categories = ["Speed", "Power", "Fielding", "Hitting", "Arm Strength"]
+    scores = [speed, power, fielding, hitting, arm_strength]
+    fig = px.line_polar(r=scores, theta=categories, line_close=True)
+    fig.update_traces(fill='toself')
+    fig.update_layout(title="Toxicity Profile Radar Chart")
+    st.plotly_chart(fig, key="fig_p5_generated")
+
+    # Rich Context Analysis
+    rich_text = generate_rich_context(scores, categories, notes, context_label="Page 5: Toxicity Profile")
+    st.markdown("### 🔍 Rich Context Analysis")
+    st.markdown(rich_text)
+
+    # ✅ Persist generated outputs
+    st.session_state["saved_rich_text_p5"] = rich_text
+    st.session_state["saved_fig_p5"] = fig
+
+    # Interpretation Table
+    st.markdown("""
+    <h4>Total Score Interpretation</h4>
+    <table style='width:100%; border:1px solid black;'>
+    <tr><th>Score Range</th><th>Risk Level</th><th>Description</th></tr>
+    <tr><td>15-20</td><td>Low Risk</td><td>Employee demonstrates strong alignment with organizational values.</td></tr>
+    <tr><td>10-14</td><td>Moderate Risk</td><td>Employee shows signs of disengagement or minor toxic behaviors.</td></tr>
+    <tr><td>Below 10</td><td>High Risk</td><td>Immediate intervention required; behaviors are harmful to team culture.</td></tr>
+    </table>
+    """, unsafe_allow_html=True)
+
+    # ✅ Save to Repository button
+    if st.button("Save to Repository"):
+        st.success("✅ Page 5 work saved! Go to Page 6 (Repository) to download or organize.")
+
+# Show profile if already generated (persists after rerun)
+if st.session_state.get("profile_generated_p5"):
+    st.markdown("### ✅ Profile Generated and Saved")
+    st.markdown(st.session_state["saved_rich_text_p5"])
+    st.plotly_chart(st.session_state["saved_fig_p5"], key="fig_p5_saved")
+
+
     
 def render_module_6():
     st.title("📂 Repository")
