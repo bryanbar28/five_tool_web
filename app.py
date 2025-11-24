@@ -1993,7 +1993,6 @@ def render_module_6():
         st.success("✅ Premium active! Save your work below.")
         # Add repository display logic here
 
-
         # Show captured data
         st.markdown("### Your Current Work")
         
