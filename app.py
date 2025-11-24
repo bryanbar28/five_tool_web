@@ -1988,7 +1988,7 @@ def render_module_6():
         </stripe-buy-button>
         """, height=600)
         
-        else:
+    else:
 
         # Show captured data
         st.markdown("### Your Current Work")
