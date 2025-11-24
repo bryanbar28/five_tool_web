@@ -904,7 +904,6 @@ def render_module_4():
             st.session_state["saved_rich_text_p4"] = st.session_state["rich_text_p4"]
             st.session_state["saved_fig_p4"] = st.session_state["fig_p4"]
             st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
-
 def render_module_5():
     import streamlit as st
     import plotly.express as px
