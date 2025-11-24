@@ -1947,14 +1947,14 @@ def render_module_5():
         st.session_state["rich_text_p5"] = rich_text
         st.session_state["fig_p5"] = fig
 
-# ✅ Show Save button only if profile was generated
-if "scores_p5" in st.session_state: 
-    if st.button("Save to Repository"):
-        st.session_state["saved_notes_p5"] = notes
-        st.session_state["saved_scores_p5"] = scores
-        st.session_state["saved_rich_text_p5"] = rich_text
-        st.session_state["saved_fig_p5"] = fig
-        st.success("✅ Page 5 work saved! Go to Page 6 (Repository) to download or organize.")
+    # ✅ Show Save button only if profile was generated
+    if "scores_p5" in st.session_state: 
+        if st.button("Save to Repository"):
+            st.session_state["saved_notes_p5"] = notes
+            st.session_state["saved_scores_p5"] = scores
+            st.session_state["saved_rich_text_p5"] = rich_text
+            st.session_state["saved_fig_p5"] = fig
+            st.success("✅ Page 5 work saved! Go to Page 6 (Repository) to download or organize.")
     
 def render_module_6():
     st.title("📂 Repository")
