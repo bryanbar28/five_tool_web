@@ -162,8 +162,6 @@ def sanitize_text(text):
         .replace("’", "'")   # apostrophe → '
     )
 
-   
-
 # -------------------------------
 # Subscription Logic
 # -------------------------------
@@ -1947,10 +1945,6 @@ def render_module_5():
         <tr><td>Below 10</td><td>High Risk</td><td>Immediate intervention required; behaviors are harmful to team culture.</td></tr>
         </table>
         """, unsafe_allow_html=True)
-
-        # AI Insights
-        st.subheader("AI Insights")
-        st.markdown(get_ai_response("toxicity in workplace"))
 
         # Contextual Insight
         if notes.strip():
