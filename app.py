@@ -12,7 +12,7 @@ from fpdf import FPDF
 import time
 import stripe 
 
-stripe.api_key = os.getenv("prod_TPyapu2n40KuuN")  # Set your Stripe secret key in environment variables
+stripe.api_key = os.getenv("https://buy.stripe.com/14AcN5ghFapx7Jz5xM6oo00")  # Set your Stripe secret key in environment variables
 
 # ----------------------------
 # Persistent Prompt Tracking
