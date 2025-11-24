@@ -904,6 +904,7 @@ def render_module_4():
             st.session_state["saved_rich_text_p4"] = st.session_state["rich_text_p4"]
             st.session_state["saved_fig_p4"] = st.session_state["fig_p4"]
             st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
+
 def render_module_5():
     import streamlit as st
     import plotly.express as px
@@ -913,6 +914,28 @@ def render_module_5():
     # Initialize OpenAI client
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+    # --- Helper: AI response for general questions ---
+    def get_ai_response(question):
+        system_prompt = """
+        You are an expert in organizational psychology and leadership.
+        Provide a structured response in this format:
+        **Explanation:** Summary of the concept.
+        **Detail:** Key insights and why it matters.
+        **Practical Tips:** Actionable steps for real-world application.
+        """
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": contextual_prompt},
+                {"role": "user", "content": question}
+            ],
+            temperature=0.7,
+            max_tokens=700
+        )
+        st.session_state.prompt_count += 1 
+        return response.choices[0].message.content
+
+    # --- Helper: Contextual Insight combining notes and score ---
     def get_contextual_insight(notes, score, risk_level):
         contextual_prompt = f"""
         Analyze this scenario:
@@ -922,6 +945,7 @@ def render_module_5():
 
         Determine if notes indicate toxic intent or cultural risk even if numeric score suggests low risk.
         Provide:
+        **Contextual Insight:** Explain toxicity risk based on notes.
         **Recommendation:** Suggest actions considering both score and notes.
         """
         response = client.chat.completions.create(
@@ -966,6 +990,7 @@ def render_module_5():
     st.subheader("AI Chat: Ask about Toxic Leadership or Feedback")
     ai_question = st.text_area("Ask a question (e.g., Tell me more about 360-degree feedback)")
     if st.button("Get AI Response"):
+        st.markdown(get_ai_response(ai_question))
 
     # Scoring Sliders
     st.subheader("Rate the Employee on Each Dimension")
@@ -1000,7 +1025,7 @@ def render_module_5():
         fig = px.line_polar(r=scores, theta=categories, line_close=True)
         fig.update_traces(fill='toself')
         fig.update_layout(title="Toxicity Profile Radar Chart")
-        st.plotly_chart(fig, key="fig_p5_generated")
+        st.plotly_chart(fig)
         rich_text = generate_rich_context(scores, categories, notes, context_label="Page 5: Toxicity Profile")
         st.markdown("### 🔍 Rich Context Analysis")
         st.markdown(rich_text)
@@ -1016,8 +1041,13 @@ def render_module_5():
         </table>
         """, unsafe_allow_html=True)
 
+        # AI Insights
+        st.subheader("AI Insights")
+        st.markdown(get_ai_response("toxicity in workplace"))
 
+        # Contextual Insight
         if notes.strip():
+            st.subheader("Contextual Insight")
             st.markdown(get_contextual_insight(notes, total_score, risk_level))
 
 import streamlit as st
@@ -1026,12 +1056,7 @@ import pandas as pd
 
 # --- Streamlit UI ---
     # ✅ After generating the profile and radar chart
-if st.button("Save to Repository"):
-        st.session_state["saved_notes_p5"] = notes
-        st.session_state["saved_scores_p5"] = scores
-        st.session_state["saved_rich_text_p5"] = rich_text
-        st.session_state["saved_fig_p5"] = fig
-        st.success("✅ Page 5 work saved! Go to Page 6 (Repository) to download or organize.")
+    if st.button("Save to Repository"):
         st.session_state["saved_notes_p5"] = notes
         st.session_state["saved_scores_p5"] = scores
         st.session_state["saved_rich_text_p5"] = rich_text
@@ -1043,12 +1068,6 @@ def sanitize_text(text):
         return ""
     # Force conversion to latin-1 safe text
     return str(text).encode("latin-1", "ignore").decode("latin-1")
-
-# Show profile if already generated
-if st.session_state.get("profile_generated_p5"):
-    st.markdown("### ✅ Profile Generated and Saved")
-    st.markdown(st.session_state["saved_rich_text_p5"])
-    st.plotly_chart(st.session_state["saved_fig_p5"], key="fig_p5_saved")
 
 def render_module_6():
     st.title("📂 Repository")
