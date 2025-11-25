@@ -134,6 +134,7 @@ def map_videos_to_tools(videos):
         elif "strategy" in title or "decision" in title or "power" in title:
             mapping["Power"] = video["url"]
     return mapping
+    
 def generate_rich_context(scores, tools, notes, context_label="General Context"):
     prompt = f"""
     You are an organizational psychologist using the Five-Tool Employee Framework.
