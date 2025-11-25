@@ -55,6 +55,14 @@ def create_checkout_session():
 # -------------------------------
 st.set_page_config(page_title="Five-Tool App", layout="wide")
 
+# ✅ Add helper function here
+def check_prompt_limit():
+    if not usage[user_id]["premium"] and usage[user_id]["count"] >= MAX_PROMPTS:
+        st.warning("🚫 You have reached your free limit of 5 prompts this month. Upgrade to premium for unlimited access.")
+        if st.button("Upgrade to Premium ($9.99/month)"):
+            upgrade_to_premium()
+        st.stop()
+
 # -------------------------------
 # Session State Setup
 # -------------------------------
@@ -327,18 +335,14 @@ def render_module_1():
     st.markdown("---")
 
     # ✅ Chatbox Section
+    check_prompt_limit()  # Call this BEFORE any AI logic
     st.subheader("🤖 Ask AI About the Framework")
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
 
     user_question = st.text_input("Ask a question (e.g., 'Tell me more about hitting for average', 'Explain adaptability')")
-    
-    if not usage[user_id]["premium"] and usage[user_id]["count"] >= MAX_PROMPTS:
-        st.warning("🚫 You have reached your free limit of 5 prompts this month. Upgrade to premium for unlimited access.")
-        if st.button("Upgrade to Premium ($9.99/month)"):
-            upgrade_to_premium()
-        st.stop()
 
+    check_prompt_limit()  # Call this BEFORE any AI logic
     if st.button("Send Question"):
         if user_question.strip():
             # ✅ Rich descriptive answers based on question keywords
@@ -421,13 +425,7 @@ def render_module_1():
     scores = [st.slider(tool, 1, 10, 5) for tool in TOOLS]
 
     # ✅ Generate Profile Button
-    
-    if not usage[user_id]["premium"] and usage[user_id]["count"] >= MAX_PROMPTS:
-        st.warning("🚫 You have reached your free limit of 5 prompts this month. Upgrade to premium for unlimited access.")
-        if st.button("Upgrade to Premium ($9.99/month)"):
-            upgrade_to_premium()
-        st.stop()
-
+    check_prompt_limit()  # Call this BEFORE any AI logic
     if st.button("Generate 5 Tool Employee"):
         if notes_input.strip():
             st.markdown("### 🧠 Your Custom 5 Tool Employee Profile")
@@ -622,13 +620,7 @@ def render_module_2():
     question = st.text_input("Ask a question about the framework:")
 
     # ✅ Dive Further button
-    
-    if not usage[user_id]["premium"] and usage[user_id]["count"] >= MAX_PROMPTS:
-        st.warning("🚫 You have reached your free limit of 5 prompts this month. Upgrade to premium for unlimited access.")
-        if st.button("Upgrade to Premium ($9.99/month)"):
-            upgrade_to_premium()
-        st.stop()
-
+    check_prompt_limit()  # Call this BEFORE any AI logic
     if st.button("Dive Further"):
         if question.strip():
             try:
@@ -722,17 +714,12 @@ def render_module_3():
     st.dataframe(df, hide_index=True)  # Works in latest Streamlit versions
 
     # ✅ Add comments input
+    check_prompt_limit()  # Call this BEFORE any AI logic
     user_comments = st.text_area("Add your comments or observations", placeholder="e.g., This candidate freezes under pressure but excels in planning.")
 
 
     # ✅ Generate AI insights
-    
-    if not usage[user_id]["premium"] and usage[user_id]["count"] >= MAX_PROMPTS:
-        st.warning("🚫 You have reached your free limit of 5 prompts this month. Upgrade to premium for unlimited access.")
-        if st.button("Upgrade to Premium ($9.99/month)"):
-            upgrade_to_premium()
-        st.stop()
-
+    check_prompt_limit()  # Call this BEFORE any AI logic
     if st.button("Generate Insights"):
         if user_comments.strip():
             st.subheader("🔍 AI Insights Based on Your Comments")
@@ -875,6 +862,7 @@ def render_module_4():
             st.write(content)
 
     # ✅ Original AI Q&A Box
+    check_prompt_limit()  # Call this BEFORE any AI logic
     st.subheader("Ask AI About the Framework")
     user_question = st.text_area("Ask a question (e.g., 'Tell me more about this')")
     if st.button("Send Question"):
@@ -910,6 +898,7 @@ def render_module_4():
     employee_notes = st.text_area("Enter notes about the employee")
     
     # Generate Scoring
+    check_prompt_limit()  # Call this BEFORE any AI logic
     if st.button("Generate Scoring"):
         analysis = generate_analysis(scores, employee_notes, framework)
         fig = px.line_polar(r=scores, theta=TOOLS, line_close=True, title="Behavioral Tool Scoring Radar")
@@ -1031,6 +1020,7 @@ def render_module_5():
     """, unsafe_allow_html=True)
 
     # AI Chat
+    check_prompt_limit()  # Call this BEFORE any AI logic
     st.subheader("AI Chat: Ask about Toxic Leadership or Feedback")
     ai_question = st.text_area("Ask a question (e.g., Tell me more about 360-degree feedback)")
 check_prompt_limit()
@@ -1048,7 +1038,7 @@ check_prompt_limit()
     notes = st.text_area("Additional Notes")
 
     # Generate Profile
-check_prompt_limit()
+    check_prompt_limit()  # Call this BEFORE any AI logic
     if st.button("Generate Profile"):
         total_score = speed + power + fielding + hitting + arm_strength
         if total_score >= 15:
