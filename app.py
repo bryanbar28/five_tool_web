@@ -307,8 +307,10 @@ def render_module_1():
     # ✅ Title and Intro
     st.title("The 5 Tool Employee Framework")
     st.markdown("### _Introduction into the 5 Tool Employee Framework_")
-    st.markdown("An Interchangeable Model. Finding the Right Fit.")
-
+    st.markdown("An Interchangeable Model")
+    st.markdown ("For more resources check out the book on Amazon https://a.co/d/8noHFlA and/or check out detailed descriptions on each module on YouTube: www.youtube.com/@5toolemployeeframework
+    st.markdown ("Disclaimer: This tool provides AI-powered insights and recommendations only. All outputs are for informational and decision-support purposes under CA FEHA guidelines. Final hiring, promotion, and employment decisions remain the sole responsibility of the user/employer, who must ensure compliance with anti-discrimination laws (including bias audits and accommodations). The developer is not liable for any actions taken based on the app results."))
+                 
     # ✅ Framework Section
     st.markdown("#### 5 Tool Baseball Player")
     st.markdown("""
