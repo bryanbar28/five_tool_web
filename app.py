@@ -332,6 +332,12 @@ def render_module_1():
         st.session_state.chat_history = []
 
     user_question = st.text_input("Ask a question (e.g., 'Tell me more about hitting for average', 'Explain adaptability')")
+    
+    if not usage[user_id]["premium"] and usage[user_id]["count"] >= MAX_PROMPTS:
+        st.warning("🚫 You have reached your free limit of 5 prompts this month. Upgrade to premium for unlimited access.")
+        if st.button("Upgrade to Premium ($9.99/month)"):
+            upgrade_to_premium()
+        st.stop()
 
     if st.button("Send Question"):
         if user_question.strip():
@@ -415,6 +421,13 @@ def render_module_1():
     scores = [st.slider(tool, 1, 10, 5) for tool in TOOLS]
 
     # ✅ Generate Profile Button
+    
+    if not usage[user_id]["premium"] and usage[user_id]["count"] >= MAX_PROMPTS:
+        st.warning("🚫 You have reached your free limit of 5 prompts this month. Upgrade to premium for unlimited access.")
+        if st.button("Upgrade to Premium ($9.99/month)"):
+            upgrade_to_premium()
+        st.stop()
+
     if st.button("Generate 5 Tool Employee"):
         if notes_input.strip():
             st.markdown("### 🧠 Your Custom 5 Tool Employee Profile")
@@ -609,6 +622,13 @@ def render_module_2():
     question = st.text_input("Ask a question about the framework:")
 
     # ✅ Dive Further button
+    
+    if not usage[user_id]["premium"] and usage[user_id]["count"] >= MAX_PROMPTS:
+        st.warning("🚫 You have reached your free limit of 5 prompts this month. Upgrade to premium for unlimited access.")
+        if st.button("Upgrade to Premium ($9.99/month)"):
+            upgrade_to_premium()
+        st.stop()
+
     if st.button("Dive Further"):
         if question.strip():
             try:
@@ -706,6 +726,13 @@ def render_module_3():
 
 
     # ✅ Generate AI insights
+    
+    if not usage[user_id]["premium"] and usage[user_id]["count"] >= MAX_PROMPTS:
+        st.warning("🚫 You have reached your free limit of 5 prompts this month. Upgrade to premium for unlimited access.")
+        if st.button("Upgrade to Premium ($9.99/month)"):
+            upgrade_to_premium()
+        st.stop()
+
     if st.button("Generate Insights"):
         if user_comments.strip():
             st.subheader("🔍 AI Insights Based on Your Comments")
