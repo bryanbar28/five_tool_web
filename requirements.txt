@@ -9,4 +9,4 @@ fpdf2
 stripe
 matplotlib
 numpy
-kaleido
+snowflake-snowpark-python
