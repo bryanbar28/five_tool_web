@@ -886,12 +886,7 @@ def render_module_4():
             st.session_state.prompt_count += 1  
             st.markdown("### AI Answer")
             st.write(response.choices[0].message.content)
-            st.markdown("**Recommended Training Links:**")
-            st.markdown("- Developing Emotional Intelligence – LinkedIn Learning")
-            st.markdown("- Time Management Fundamentals – LinkedIn Learning")
-            st.markdown("- Resilience Training – Coursera")
-            st.markdown("- Scenario-Based Leadership – Harvard Business Publishing")
-            st.markdown("- Watch tutorials on YouTube")
+
         else:
             st.warning("Please enter a question before sending.")
 
