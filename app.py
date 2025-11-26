@@ -945,7 +945,7 @@ def render_module_5():
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": contextual_prompt},
+                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": question}
             ],
             temperature=0.7,
@@ -1010,6 +1010,7 @@ def render_module_5():
     st.subheader("AI Chat: Ask about Toxic Leadership or Feedback")
     ai_question = st.text_area("Ask a question (e.g., Tell me more about 360-degree feedback)")
 
+    check_prompt_limit()  # Call this BEFORE any AI logic
     if st.button("Get AI Response"):
         st.markdown(get_ai_response(ai_question))
 
