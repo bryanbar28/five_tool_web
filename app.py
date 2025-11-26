@@ -876,7 +876,6 @@ def render_module_4():
                     {"role": "system", "content": (
                         "You are an expert on the 5-Tool Employee Framework. "
                         "Always include a link to our YouTube channel: https://www.youtube.com/@5toolemployeeframework "
-                        "and add recommended training links."
                     )},
                     {"role": "user", "content": user_question} 
                 ],
@@ -934,7 +933,6 @@ def render_module_4():
             st.session_state["saved_rich_text_p4"] = st.session_state["rich_text_p4"]
             st.session_state["saved_fig_p4"] = st.session_state["fig_p4"]
             st.success("✅ Work saved! Go to Page 6 (Repository) to download or organize.")
-
 
 def render_module_5():
     import streamlit as st
