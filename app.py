@@ -916,16 +916,6 @@ def render_module_4():
         st.markdown("### 🔍 Rich Context Analysis")
         st.markdown(st.session_state["rich_text_p4"])
     
-        # ✅ Add YouTube channel and training links
-        st.markdown("### 📺 Recommended Resources")
-        st.markdown("**Our YouTube Channel:** 5-Tool Employee Framework")
-        st.markdown("**Recommended Training Links:**")
-        st.markdown("- Developing Emotional Intelligence – LinkedIn Learning")
-        st.markdown("- Time Management Fundamentals – LinkedIn Learning")
-        st.markdown("- Resilience Training – Coursera")
-        st.markdown("- Scenario-Based Leadership – Harvard Business Publishing")
-        st.markdown("- Watch tutorials on YouTube")
-    
         # ✅ Save to Repository button stays visible
         if st.button("Save to Repository"):
             st.session_state["saved_notes_p4"] = st.session_state["notes_p4"]
