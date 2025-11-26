@@ -1056,7 +1056,7 @@ def render_module_5():
     
         # Contextual Insight
         if notes.strip():
-            st.subheader("Contextual Insight")
+            st.subheader("What's really going on and can it create a toxic culture:")
             st.markdown(get_contextual_insight(notes, total_score, risk_level))
     
         # ✅ Store generated data in session state
